@@ -7,21 +7,25 @@
                 <div class="shrink-0 flex items-center">
                     @auth
                         @if(auth()->user()->isClient())
-                            <a href="{{ route('client.dashboard') }}" class="text-xl font-bold text-indigo-600">
-                                PhotoMatch
+                            <a href="{{ route('client.dashboard') }}" class="flex items-center space-x-2">
+                                <x-application-logo class="h-8 w-8 text-emerald-600" />
+                                <span class="text-xl font-bold text-gray-900">PhotoMatch</span>
                             </a>
                         @elseif(auth()->user()->isPhotographer())
-                            <a href="{{ route('photographer.dashboard') }}" class="text-xl font-bold text-indigo-600">
-                                PhotoMatch
+                            <a href="{{ route('photographer.dashboard') }}" class="flex items-center space-x-2">
+                                <x-application-logo class="h-8 w-8 text-emerald-600" />
+                                <span class="text-xl font-bold text-gray-900">PhotoMatch</span>
                             </a>
                         @else
-                            <a href="{{ route('dashboard') }}" class="text-xl font-bold text-indigo-600">
-                                PhotoMatch
+                            <a href="{{ route('dashboard') }}" class="flex items-center space-x-2">
+                                <x-application-logo class="h-8 w-8 text-emerald-600" />
+                                <span class="text-xl font-bold text-gray-900">PhotoMatch</span>
                             </a>
                         @endif
                     @else
-                        <a href="{{ url('/') }}" class="text-xl font-bold text-indigo-600">
-                            PhotoMatch
+                        <a href="{{ url('/') }}" class="flex items-center space-x-2">
+                            <x-application-logo class="h-8 w-8 text-emerald-600" />
+                            <span class="text-xl font-bold text-gray-900">PhotoMatch</span>
                         </a>
                     @endauth
                 </div>
@@ -31,26 +35,23 @@
                     @auth
                         {{-- Client Navigation --}}
                         @if(auth()->user()->isClient())
-                            <x-nav-link :href="route('client.dashboard')" :active="request()->routeIs('client.dashboard')">
-                                Tableau de bord
+                            <x-nav-link :href="route('search.index')" :active="request()->routeIs('search.*') || request()->routeIs('photographers.*')">
+                                Trouver un photographe
                             </x-nav-link>
                             <x-nav-link :href="route('client.projects.index')" :active="request()->routeIs('client.projects.*')">
-                                Mes projets
+                                Mes projets photo
                             </x-nav-link>
                             <x-nav-link :href="route('client.requests.index')" :active="request()->routeIs('client.requests.*')">
-                                Mes demandes
-                            </x-nav-link>
-                            <x-nav-link :href="route('search.index')" :active="request()->routeIs('search.*')">
-                                Rechercher
+                                Mes demandes envoyees
                             </x-nav-link>
 
                         {{-- Photographer Navigation --}}
                         @elseif(auth()->user()->isPhotographer())
                             <x-nav-link :href="route('photographer.dashboard')" :active="request()->routeIs('photographer.dashboard')">
-                                Tableau de bord
+                                Mon activite
                             </x-nav-link>
                             <x-nav-link :href="route('photographer.requests.index')" :active="request()->routeIs('photographer.requests.*')">
-                                Demandes
+                                Demandes de clients
                                 @php
                                     $pendingCount = auth()->user()->photographer?->bookingRequests()->where('status', 'pending')->count() ?? 0;
                                 @endphp
@@ -61,10 +62,10 @@
                                 @endif
                             </x-nav-link>
                             <x-nav-link :href="route('photographer.availabilities.index')" :active="request()->routeIs('photographer.availabilities.*')">
-                                Disponibilités
+                                Mon calendrier
                             </x-nav-link>
                             <x-nav-link :href="route('photographer.profile.edit')" :active="request()->routeIs('photographer.profile.*')">
-                                Mon profil
+                                Ma fiche pro
                             </x-nav-link>
 
                         {{-- Admin Navigation --}}
@@ -75,8 +76,8 @@
                         @endif
                     @else
                         {{-- Guest Navigation --}}
-                        <x-nav-link :href="route('photographers.index')" :active="request()->routeIs('photographers.*')">
-                            Photographes
+                        <x-nav-link :href="route('search.index')" :active="request()->routeIs('search.*') || request()->routeIs('photographers.*')">
+                            Trouver un photographe
                         </x-nav-link>
                     @endauth
                 </div>
@@ -130,7 +131,7 @@
                         @endif
 
                         <div class="border-t border-gray-100">
-                            <a href="{{ route('notifications.index') }}" class="block px-4 py-2 text-sm text-center text-indigo-600 hover:bg-gray-50">
+                            <a href="{{ route('notifications.index') }}" class="block px-4 py-2 text-sm text-center text-emerald-600 hover:bg-gray-50">
                                 Voir toutes les notifications
                             </a>
                         </div>
@@ -142,8 +143,8 @@
                     <x-slot name="trigger">
                         <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
                             <div class="flex items-center">
-                                <div class="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center mr-2">
-                                    <span class="text-indigo-600 font-medium text-sm">{{ substr(Auth::user()->name, 0, 1) }}</span>
+                                <div class="h-8 w-8 rounded-full bg-emerald-100 flex items-center justify-center mr-2">
+                                    <span class="text-emerald-600 font-medium text-sm">{{ substr(Auth::user()->name, 0, 1) }}</span>
                                 </div>
                                 <span>{{ Auth::user()->name }}</span>
                             </div>
@@ -187,7 +188,7 @@
             <!-- Guest Links -->
             <div class="hidden sm:flex sm:items-center sm:ms-6 space-x-4">
                 <a href="{{ route('login') }}" class="text-sm text-gray-700 hover:text-gray-900">Connexion</a>
-                <a href="{{ route('register') }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md text-sm font-medium text-white hover:bg-indigo-700">Inscription</a>
+                <a href="{{ route('register') }}" class="inline-flex items-center px-4 py-2 bg-emerald-600 border border-transparent rounded-md text-sm font-medium text-white hover:bg-emerald-700">Inscription</a>
             </div>
             @endauth
 
@@ -209,26 +210,23 @@
             @auth
                 {{-- Client Mobile Navigation --}}
                 @if(auth()->user()->isClient())
-                    <x-responsive-nav-link :href="route('client.dashboard')" :active="request()->routeIs('client.dashboard')">
-                        Tableau de bord
+                    <x-responsive-nav-link :href="route('search.index')" :active="request()->routeIs('search.*') || request()->routeIs('photographers.*')">
+                        Trouver un photographe
                     </x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('client.projects.index')" :active="request()->routeIs('client.projects.*')">
-                        Mes projets
+                        Mes projets photo
                     </x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('client.requests.index')" :active="request()->routeIs('client.requests.*')">
-                        Mes demandes
-                    </x-responsive-nav-link>
-                    <x-responsive-nav-link :href="route('search.index')" :active="request()->routeIs('search.*')">
-                        Rechercher des photographes
+                        Mes demandes envoyees
                     </x-responsive-nav-link>
 
                 {{-- Photographer Mobile Navigation --}}
                 @elseif(auth()->user()->isPhotographer())
                     <x-responsive-nav-link :href="route('photographer.dashboard')" :active="request()->routeIs('photographer.dashboard')">
-                        Tableau de bord
+                        Mon activite
                     </x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('photographer.requests.index')" :active="request()->routeIs('photographer.requests.*')">
-                        Demandes reçues
+                        Demandes de clients
                         @php
                             $pendingCount = auth()->user()->photographer?->bookingRequests()->where('status', 'pending')->count() ?? 0;
                         @endphp
@@ -239,10 +237,10 @@
                         @endif
                     </x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('photographer.availabilities.index')" :active="request()->routeIs('photographer.availabilities.*')">
-                        Mes disponibilités
+                        Mon calendrier
                     </x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('photographer.profile.edit')" :active="request()->routeIs('photographer.profile.*')">
-                        Mon profil photographe
+                        Ma fiche pro
                     </x-responsive-nav-link>
 
                 {{-- Admin Mobile Navigation --}}
@@ -252,8 +250,8 @@
                     </x-responsive-nav-link>
                 @endif
             @else
-                <x-responsive-nav-link :href="route('photographers.index')" :active="request()->routeIs('photographers.*')">
-                    Photographes
+                <x-responsive-nav-link :href="route('search.index')" :active="request()->routeIs('search.*') || request()->routeIs('photographers.*')">
+                    Trouver un photographe
                 </x-responsive-nav-link>
             @endauth
         </div>

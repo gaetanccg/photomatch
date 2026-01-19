@@ -28,11 +28,11 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        // Redirect to role-specific dashboard
+        // Redirect to role-specific page
         $user = Auth::user();
         $defaultRoute = match ($user->role) {
             'photographer' => route('photographer.dashboard', absolute: false),
-            'client' => route('client.dashboard', absolute: false),
+            'client' => route('search.index', absolute: false), // Clients go to photographer search
             'admin' => route('dashboard', absolute: false),
             default => route('dashboard', absolute: false),
         };

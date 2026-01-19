@@ -13,23 +13,21 @@ use Illuminate\View\View;
 
 class PhotoProjectController extends Controller
 {
-    public function __construct()
-    {
-        $this->authorizeResource(PhotoProject::class, 'project');
-    }
-
     public function index(): View
     {
+        $this->authorize('viewAny', PhotoProject::class);
         $projects = auth()->user()->photoProjects()
-            ->withCount('bookingRequests')
-            ->latest()
-            ->paginate(10);
+                          ->withCount('bookingRequests')
+                          ->latest()
+                          ->paginate(10);
 
         return view('client.projects.index', compact('projects'));
     }
 
     public function create(): View
     {
+        $this->authorize('create', PhotoProject::class);
+
         $specialties = Specialty::all();
         $projectTypes = $this->getProjectTypes();
 
@@ -38,6 +36,8 @@ class PhotoProjectController extends Controller
 
     public function store(StorePhotoProjectRequest $request): RedirectResponse
     {
+        $this->authorize('create', PhotoProject::class);
+
         $data = $request->validated();
         $data['client_id'] = auth()->id();
         $data['status'] = $request->input('status', 'draft');
@@ -51,10 +51,12 @@ class PhotoProjectController extends Controller
 
     public function show(PhotoProject $project, PhotographerMatchingService $matchingService): View
     {
+        $this->authorize('view', $project);
+
         $project->load([
             'bookingRequests' => function ($query) {
                 $query->with(['photographer.user'])->latest();
-            }
+            },
         ]);
 
         // Get top matching photographers for this project
@@ -73,8 +75,8 @@ class PhotoProjectController extends Controller
     {
         // Get all verified photographers with matching specialty
         $query = Photographer::query()
-            ->whereHas('user')
-            ->with(['user', 'specialties']);
+                             ->whereHas('user')
+                             ->with(['user', 'specialties']);
 
         // Must be verified
         $query->verified();
@@ -85,6 +87,7 @@ class PhotoProjectController extends Controller
         // Calculate scores and sort
         $scoredPhotographers = $photographers->map(function ($photographer) use ($project, $matchingService) {
             $photographer->matching_score = $matchingService->calculateScore($photographer, $project);
+
             return $photographer;
         });
 
@@ -97,6 +100,8 @@ class PhotoProjectController extends Controller
 
     public function edit(PhotoProject $project): View
     {
+        $this->authorize('update', $project);
+
         // Can only edit if draft or published
         if (!in_array($project->status, ['draft', 'published'])) {
             return redirect()
@@ -112,6 +117,8 @@ class PhotoProjectController extends Controller
 
     public function update(UpdatePhotoProjectRequest $request, PhotoProject $project): RedirectResponse
     {
+        $this->authorize('update', $project);
+
         // Can only update if draft or published
         if (!in_array($project->status, ['draft', 'published'])) {
             return redirect()
@@ -128,10 +135,12 @@ class PhotoProjectController extends Controller
 
     public function destroy(PhotoProject $project): RedirectResponse
     {
+        $this->authorize('delete', $project);
+
         // Cannot delete if has accepted requests
         $hasAcceptedRequests = $project->bookingRequests()
-            ->where('status', 'accepted')
-            ->exists();
+                                       ->where('status', 'accepted')
+                                       ->exists();
 
         if ($hasAcceptedRequests) {
             return redirect()

@@ -19,6 +19,7 @@ docker-compose.override.yml
 # Documentation
 *.md
 !README.md
+!DEPLOYMENT.md
 
 # Logs
 *.log

@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="fr">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+
+        <title>PhotoMatch — Trouvez et réservez un photographe professionnel</title>
+        <meta name="description" content="PhotoMatch permet aux particuliers et entreprises de trouver et réserver le photographe adapté à leur projet : type de mission, localisation, date et budget." />
+        <meta name="keywords" content="photographe, réserver photographe, photographe professionnel, photomatch, shooting, reportage, portrait, mariage" />
+        <meta name="robots" content="index, follow" />
+
+        <!-- Canonical: remplacez par votre domaine en production -->
+        <link rel="canonical" href="https://www.example.com/" />
+        <link rel="alternate" hreflang="fr" href="https://www.example.com/" />
+
+        <!-- Open Graph / Facebook -->
+        <meta property="og:site_name" content="PhotoMatch" />
+        <meta property="og:title" content="PhotoMatch — Trouvez et réservez un photographe professionnel" />
+        <meta property="og:description" content="Plateforme pour trouver et réserver un photographe professionnel selon le type de mission, la localisation, la date et le budget." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://www.example.com/" />
+        <meta property="og:image" content="/images/og-image.png" />
+
+        <!-- Twitter -->
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="PhotoMatch — Trouvez et réservez un photographe professionnel" />
+        <meta name="twitter:description" content="Plateforme pour trouver et réserver un photographe professionnel selon le type de mission, la localisation, la date et le budget." />
+        <meta name="twitter:image" content="/images/og-image.png" />
+
+        <!-- Structured data (JSON-LD) -->
+        <script type="application/ld+json">
+            {
+                "@context": "https://schema.org",
+                "@type": "WebSite",
+                "name": "PhotoMatch",
+                "url": "https://www.example.com/",
+                "potentialAction": {
+                    "@type": "SearchAction",
+                    "target": "https://www.example.com/rechercher?q={search_term_string}",
+                    "query-input": "required name=search_term_string"
+                }
+            }
+        </script>
+
+        <script type="application/ld+json">
+            {
+                "@context": "https://schema.org",
+                "@type": "Organization",
+                "name": "PhotoMatch",
+                "url": "https://www.example.com/",
+                "logo": "https://www.example.com/images/logo.png",
+                "sameAs": []
+            }
+        </script>
+
+        <style>
+            :root{
+                font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+                color-scheme: light
+            }
+
+            body{
+                margin: 0;
+                background: #fff;
+                color: #111;
+                line-height: 1.6
+            }
+
+            .container{
+                max-width: 1100px;
+                margin: 3rem auto;
+                padding: 0 1rem
+            }
+
+            header{
+                display: flex;
+                align-items: center;
+                gap: 1rem
+            }
+
+            .logo{
+                width: 64px;
+                height: 64px;
+                flex: 0 0 64px;
+                color: #0f172a
+            }
+
+            h1{
+                font-size: 1.75rem;
+                margin: 0
+            }
+
+            .tagline{
+                color: #374151;
+                margin-top: .25rem
+            }
+
+            nav{
+                margin-left: auto
+            }
+
+            nav a{
+                color: #0f172a;
+                text-decoration: none;
+                margin-left: 1rem
+            }
+
+            main{
+                margin-top: 2rem
+            }
+
+            .features{
+                display: grid;
+                grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));
+                gap: 1rem
+            }
+
+            .card{
+                border: 1px solid #e5e7eb;
+                padding: 1rem;
+                border-radius: 8px;
+                background: #fff
+            }
+
+            footer{
+                margin-top: 3rem;
+                padding-top: 1rem;
+                border-top: 1px solid #e5e7eb;
+                color: #6b7280;
+                font-size: .95rem
+            }
+
+            @media (prefers-color-scheme: dark){
+                body{
+                    background: #0b1220;
+                    color: #e6eef8
+                }
+
+                .card{
+                    background: #07101a;
+                    border-color: #0f172a
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <header>
+                <div class="logo" role="img" aria-label="Logo PhotoMatch">
+                    <!-- Logo SVG inlined for crisp rendering and crawlability -->
+                    <svg viewBox="0 0 48 48" role="img" aria-label="Logo PhotoMatch">
+                        <title>PhotoMatch — logo</title>
+                        <rect x="6" y="14" width="36" height="22" rx="4" stroke="currentColor" stroke-width="2.5" />
+                        <rect x="16" y="10" width="16" height="6" rx="2" stroke="currentColor" stroke-width="2" />
+                        <circle cx="24" cy="25" r="8" stroke="currentColor" stroke-width="2.5" />
+                        <circle cx="24" cy="25" r="3" fill="currentColor" />
+                        <circle cx="12" cy="20" r="2.5" fill="currentColor" />
+                        <path d="M9 26 C9 23, 15 23, 15 26" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                        <circle cx="36" cy="20" r="2.5" fill="currentColor" />
+                        <path d="M33 26 C33 23, 39 23, 39 26" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    </svg>
+                </div>
+
+                <div>
+                    <h1>PhotoMatch</h1>
+                    <div class="tagline">Trouvez et réservez le photographe adapté à votre projet</div>
+                </div>
+
+                <nav aria-label="Navigation principale">
+                    <a href="/">Accueil</a>
+                    <a href="/photographes">Photographes</a>
+                    <a href="/rechercher">Rechercher</a>
+                    <a href="/connexion">Connexion</a>
+                </nav>
+            </header>
+
+            <main>
+                <section aria-labelledby="why">
+                    <h2 id="why">Pourquoi PhotoMatch ?</h2>
+                    <p>PhotoMatch est une plateforme qui permet aux particuliers et aux entreprises de trouver, comparer et réserver un photographe professionnel selon leur projet : type de mission, localisation, date et budget.</p>
+                </section>
+
+                <section aria-labelledby="features" style="margin-top:1.5rem">
+                    <h2 id="features">Fonctionnalités principales</h2>
+                    <div class="features">
+                        <article class="card" aria-labelledby="f1">
+                            <h3 id="f1">Recherche par besoin</h3>
+                            <p>Filtrez par type de mission (mariage, portrait, produit, immobilier), localisation, disponibilité et budget.</p>
+                        </article>
+
+                        <article class="card" aria-labelledby="f2">
+                            <h3 id="f2">Profils vérifiés & portfolio</h3>
+                            <p>Fiches de photographes avec portfolio, avis clients, expériences et tarifs renseignés.</p>
+                        </article>
+
+                        <article class="card" aria-labelledby="f3">
+                            <h3 id="f3">Réservation & gestion</h3>
+                            <p>Réservez en ligne, gérez le calendrier, recevez des devis et payez en toute sécurité.</p>
+                        </article>
+                    </div>
+                </section>
+
+                <section aria-labelledby="cta" style="margin-top:1.5rem">
+                    <h2 id="cta">Commencez maintenant</h2>
+                    <p>Décrivez votre projet et trouvez rapidement le photographe qui correspond à vos besoins.</p>
+                    <p><a href="/rechercher" style="background:#0f172a;color:#fff;padding:.6rem 1rem;border-radius:6px;text-decoration:none;display:inline-block">Rechercher un photographe</a></p>
+                </section>
+
+            </main>
+
+            <footer>
+                <p>&copy; <span id="year"></span> PhotoMatch — Tous droits réservés.</p>
+                <p><a href="sitemap.xml">Plan du site</a> • <a href="/privacy">Politique de confidentialité</a> • <a href="/contact">Contact</a></p>
+            </footer>
+        </div>
+
+        <script>
+            // Inject current year
+            document.getElementById('year').textContent = new Date().getFullYear();
+
+            // Performance: Defer non-critical scripts here
+        </script>
+    </body>
+</html>
+

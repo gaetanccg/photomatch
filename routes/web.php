@@ -15,8 +15,15 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// Redirect to role-specific page
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    $user = auth()->user();
+
+    return match ($user->role) {
+        'photographer' => redirect()->route('photographer.dashboard'),
+        'client' => redirect()->route('search.index'), // Clients go to photographer search
+        default => view('dashboard'), // Admin fallback
+    };
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -76,3 +83,17 @@ Route::middleware(['auth', 'role:photographer'])->prefix('photographer')->name('
 });
 
 require __DIR__.'/auth.php';
+
+// Fallback route for 404 - redirect to home or appropriate page
+Route::fallback(function () {
+    if (auth()->check()) {
+        $user = auth()->user();
+        return match ($user->role) {
+            'photographer' => redirect()->route('photographer.dashboard')->with('error', 'Page non trouvee.'),
+            'client' => redirect()->route('search.index')->with('error', 'Page non trouvee.'),
+            default => redirect('/')->with('error', 'Page non trouvee.'),
+        };
+    }
+
+    return redirect('/')->with('error', 'Page non trouvee.');
+});
