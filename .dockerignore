@@ -1,0 +1,50 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+docker-compose.override.yml
+
+# Documentation
+*.md
+!README.md
+
+# Logs
+*.log
+storage/logs/*
+
+# Cache
+bootstrap/cache/*
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+
+# Testing
+.phpunit.result.cache
+coverage/
+
+# Node
+node_modules
+
+# Vendor (will be installed in container)
+vendor
+
+# Environment
+.env
+.env.backup
+.env.*.local
+
+# Build artifacts
+public/build
+public/hot
