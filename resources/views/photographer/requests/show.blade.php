@@ -226,6 +226,23 @@
                             </div>
                         @endif
                     </div>
+
+                    @if($bookingRequest->status === 'pending')
+                        <div class="px-6 pb-6">
+                            <form action="{{ route('photographer.requests.destroy', $bookingRequest) }}" method="POST"
+                                  onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette demande ? Le client sera notifié.');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit"
+                                    class="w-full inline-flex items-center justify-center px-4 py-2 border border-red-300 rounded-lg shadow-sm text-sm font-medium text-red-700 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                    </svg>
+                                    Supprimer la demande
+                                </button>
+                            </form>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

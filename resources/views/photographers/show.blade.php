@@ -78,11 +78,88 @@
                                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
                                     </svg>
-                                    Voir le portfolio
+                                    Voir le portfolio externe
                                 </a>
                             </div>
                         @endif
                     </div>
+
+                    <!-- Portfolio Gallery -->
+                    @if($photographer->portfolioImages->count() > 0)
+                        <div class="bg-white rounded-xl shadow-sm p-6">
+                            <h2 class="text-lg font-semibold text-gray-900 mb-4">Portfolio</h2>
+
+                            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                @foreach($photographer->portfolioImages->take(9) as $image)
+                                    <div class="relative group cursor-pointer" onclick="openLightbox('{{ $image->url }}', '{{ $image->caption ?? '' }}')">
+                                        <div class="aspect-square overflow-hidden rounded-lg bg-gray-100">
+                                            <img src="{{ $image->thumbnail_url }}"
+                                                 alt="{{ $image->caption ?? 'Photo portfolio' }}"
+                                                 class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                                                 loading="lazy">
+                                        </div>
+                                        <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 rounded-lg flex items-center justify-center">
+                                            <svg class="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path>
+                                            </svg>
+                                        </div>
+                                        @if($image->caption)
+                                            <div class="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/60 to-transparent rounded-b-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                                <p class="text-white text-xs truncate">{{ $image->caption }}</p>
+                                            </div>
+                                        @endif
+                                    </div>
+                                @endforeach
+                            </div>
+
+                            @if($photographer->portfolioImages->count() > 9)
+                                <p class="mt-4 text-sm text-gray-500 text-center">
+                                    + {{ $photographer->portfolioImages->count() - 9 }} autres photos
+                                </p>
+                            @endif
+                        </div>
+
+                        <!-- Lightbox Modal -->
+                        <div id="lightbox" class="fixed inset-0 z-50 hidden bg-black bg-opacity-90 flex items-center justify-center" onclick="closeLightbox()">
+                            <button onclick="closeLightbox()" class="absolute top-4 right-4 text-white hover:text-gray-300">
+                                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                            <div class="max-w-4xl max-h-[90vh] p-4" onclick="event.stopPropagation()">
+                                <img id="lightbox-image" src="" alt="" class="max-w-full max-h-[80vh] object-contain rounded-lg">
+                                <p id="lightbox-caption" class="text-white text-center mt-4"></p>
+                            </div>
+                        </div>
+
+                        @push('scripts')
+                        <script>
+                            function openLightbox(imageUrl, caption) {
+                                const lightbox = document.getElementById('lightbox');
+                                const lightboxImage = document.getElementById('lightbox-image');
+                                const lightboxCaption = document.getElementById('lightbox-caption');
+
+                                lightboxImage.src = imageUrl;
+                                lightboxCaption.textContent = caption;
+                                lightbox.classList.remove('hidden');
+                                document.body.style.overflow = 'hidden';
+                            }
+
+                            function closeLightbox() {
+                                const lightbox = document.getElementById('lightbox');
+                                lightbox.classList.add('hidden');
+                                document.body.style.overflow = '';
+                            }
+
+                            // Close lightbox on escape key
+                            document.addEventListener('keydown', function(e) {
+                                if (e.key === 'Escape') {
+                                    closeLightbox();
+                                }
+                            });
+                        </script>
+                        @endpush
+                    @endif
 
                     <!-- Availabilities Calendar -->
                     <div class="bg-white rounded-xl shadow-sm p-6">

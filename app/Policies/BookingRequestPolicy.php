@@ -44,9 +44,19 @@ class BookingRequestPolicy
 
     public function delete(User $user, BookingRequest $bookingRequest): bool
     {
-        // Client can cancel pending requests
+        // Only pending requests can be deleted
+        if ($bookingRequest->status !== 'pending') {
+            return false;
+        }
+
+        // Client can cancel pending requests for their projects
         if ($user->isClient() && $bookingRequest->project->client_id === $user->id) {
-            return $bookingRequest->status === 'pending';
+            return true;
+        }
+
+        // Photographer can cancel pending requests they received
+        if ($user->isPhotographer() && $user->photographer?->id === $bookingRequest->photographer_id) {
+            return true;
         }
 
         return false;

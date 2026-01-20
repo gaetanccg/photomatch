@@ -68,6 +68,7 @@ Route::middleware(['auth', 'role:client'])->prefix('client')->name('client.')->g
     // Booking requests
     Route::get('/requests', [ClientController::class, 'requests'])->name('requests.index');
     Route::get('/requests/{bookingRequest}', [ClientController::class, 'showRequest'])->name('requests.show');
+    Route::delete('/requests/{bookingRequest}', [BookingRequestController::class, 'destroy'])->name('requests.destroy');
 
     // Reviews
     Route::get('/requests/{bookingRequest}/review', [ReviewController::class, 'create'])->name('reviews.create');
@@ -108,6 +109,7 @@ Route::middleware(['auth', 'role:photographer'])->prefix('photographer')->name('
     Route::get('/requests', [BookingRequestController::class, 'index'])->name('requests.index');
     Route::get('/requests/{bookingRequest}', [BookingRequestController::class, 'show'])->name('requests.show');
     Route::put('/requests/{bookingRequest}', [BookingRequestController::class, 'update'])->name('requests.update');
+    Route::delete('/requests/{bookingRequest}', [BookingRequestController::class, 'destroy'])->name('requests.destroy');
 
     // Mission History
     Route::get('/history', [BookingRequestController::class, 'history'])->name('history.index');

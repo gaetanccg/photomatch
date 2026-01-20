@@ -9,6 +9,7 @@ use App\Http\Requests\UpdateBookingRequestRequest;
 use App\Models\BookingRequest;
 use App\Models\PhotoProject;
 use App\Models\Photographer;
+use App\Notifications\BookingRequestCancelled;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Gate;
@@ -167,5 +168,36 @@ class BookingRequestController extends Controller
             : 'Demande déclinée.';
 
         return redirect()->route('photographer.requests.index')->with('success', $message);
+    }
+
+    /**
+     * Delete a booking request and notify the other party.
+     */
+    public function destroy(BookingRequest $bookingRequest): RedirectResponse
+    {
+        Gate::authorize('delete', $bookingRequest);
+
+        $user = auth()->user();
+        $isClient = $user->isClient();
+        $cancelledBy = $isClient ? 'client' : 'photographer';
+
+        // Determine who to notify
+        if ($isClient) {
+            // Client cancels: notify the photographer
+            $notifiable = $bookingRequest->photographer->user;
+            $redirectRoute = 'client.requests.index';
+        } else {
+            // Photographer cancels: notify the client
+            $notifiable = $bookingRequest->project->client;
+            $redirectRoute = 'photographer.requests.index';
+        }
+
+        // Send notification before deleting
+        $notifiable->notify(new BookingRequestCancelled($bookingRequest, $cancelledBy));
+
+        // Delete the request
+        $bookingRequest->delete();
+
+        return redirect()->route($redirectRoute)->with('success', 'La demande a été supprimée avec succès.');
     }
 }

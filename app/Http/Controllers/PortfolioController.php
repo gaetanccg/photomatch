@@ -52,7 +52,7 @@ class PortfolioController extends Controller
 
         foreach ($request->file('images') as $index => $image) {
             $filename = uniqid() . '_' . time() . '.' . $image->getClientOriginalExtension();
-            $path = $image->storeAs('portfolios/' . $photographer->id, $filename, 'public');
+            $path = $image->storeAs('portfolios/' . $photographer->id, $filename, 's3');
 
             PortfolioImage::create([
                 'photographer_id' => $photographer->id,

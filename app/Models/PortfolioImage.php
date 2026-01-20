@@ -40,12 +40,12 @@ class PortfolioImage extends Model
 
     public function getUrlAttribute(): string
     {
-        return Storage::url($this->path);
+        return Storage::disk('s3')->url($this->path);
     }
 
     public function getThumbnailUrlAttribute(): ?string
     {
-        return $this->thumbnail_path ? Storage::url($this->thumbnail_path) : $this->url;
+        return $this->thumbnail_path ? Storage::disk('s3')->url($this->thumbnail_path) : $this->url;
     }
 
     public function scopeFeatured($query)
@@ -63,12 +63,12 @@ class PortfolioImage extends Model
         parent::boot();
 
         static::deleting(function ($image) {
-            // Delete files when model is deleted
+            // Delete files from S3 when model is deleted
             if ($image->path) {
-                Storage::delete($image->path);
+                Storage::disk('s3')->delete($image->path);
             }
             if ($image->thumbnail_path) {
-                Storage::delete($image->thumbnail_path);
+                Storage::disk('s3')->delete($image->thumbnail_path);
             }
         });
     }
