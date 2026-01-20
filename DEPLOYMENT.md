@@ -94,6 +94,41 @@ Clique sur **"New Variable"** pour chaque variable :
 | `MAIL_FROM_ADDRESS` | `contact@trouvetonphotographe.fr` |
 | `MAIL_FROM_NAME` | `Trouve Ton Photographe` |
 
+### Variables Stockage S3 - Cloudflare R2 (OBLIGATOIRE)
+
+Les photos sont stockees sur Cloudflare R2 (compatible S3, 10GB gratuit).
+
+**Configuration de Cloudflare R2 :**
+
+1. Cree un compte sur **https://dash.cloudflare.com** (gratuit)
+2. Va dans **R2 Object Storage** dans le menu de gauche
+3. Clique sur **"Create bucket"**
+4. Nomme ton bucket `photomatch`
+5. Cree une **API Token** :
+   - Va dans **Manage R2 API Tokens**
+   - Clique **"Create API token"**
+   - Permissions : **Object Read & Write**
+   - Scope : **Apply to specific bucket(s) only** → `photomatch`
+   - Note l'**Access Key ID** et le **Secret Access Key**
+6. Configure l'acces public :
+   - Clique sur ton bucket `photomatch`
+   - Va dans l'onglet **"Settings"**
+   - Section **"Public access"** → Active **"r2.dev subdomain"**
+   - Note l'URL publique : `https://pub-XXXXX.r2.dev`
+
+| Variable | Valeur |
+|----------|--------|
+| `FILESYSTEM_DISK` | `s3` |
+| `AWS_ACCESS_KEY_ID` | `ton_access_key_r2` |
+| `AWS_SECRET_ACCESS_KEY` | `ton_secret_key_r2` |
+| `AWS_DEFAULT_REGION` | `auto` |
+| `AWS_BUCKET` | `photomatch` |
+| `AWS_ENDPOINT` | `https://ACCOUNT_ID.r2.cloudflarestorage.com` |
+| `AWS_URL` | `https://pub-XXXXX.r2.dev` |
+| `AWS_USE_PATH_STYLE_ENDPOINT` | `true` |
+
+**Important :** Remplace `ACCOUNT_ID` par ton Account ID Cloudflare (visible dans l'URL du dashboard) et `pub-XXXXX` par ton sous-domaine R2 public.
+
 ---
 
 ## Etape 5 : Deployer
@@ -150,23 +185,19 @@ Attends la propagation DNS (quelques minutes a quelques heures).
 3. Teste la connexion
 4. Verifie que les emails arrivent (regarde les spams)
 
-### Creer un compte admin (optionnel)
+### Creer un compte admin
 
-Dans Railway, va dans ton service → onglet **"Shell"** :
+Dans Railway, va dans ton service → onglet **"Shell"** et execute :
 
 ```bash
-php artisan tinker
+# Mode interactif (recommande)
+php artisan make:admin
+
+# Ou mode direct avec les options
+php artisan make:admin --email=admin@example.com --name="Admin" --password=mot_de_passe_securise
 ```
 
-Puis :
-```php
-App\Models\User::create([
-    'name' => 'Admin',
-    'email' => 'ton@email.com',
-    'password' => bcrypt('ton_mot_de_passe'),
-    'role' => 'admin'
-]);
-```
+L'admin peut ensuite se connecter sur `/login` et acceder au panel admin sur `/admin`.
 
 ### Verifier les logs
 
