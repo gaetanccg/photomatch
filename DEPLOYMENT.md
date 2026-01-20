@@ -73,12 +73,16 @@ Dans ton Web Service, va dans **"Environment"** → **"Add Environment Variable"
 
 ### Variables Base de donnees (Supabase)
 
-| Variable        | Valeur                                                                                     |
-|-----------------|--------------------------------------------------------------------------------------------|
-| `DB_CONNECTION` | `pgsql`                                                                                    |
-| `DATABASE_URL`  | `postgresql://postgres.[REF]:[PASSWORD]@aws-0-eu-west-3.pooler.supabase.com:6543/postgres` |
+| Variable        | Valeur                                    |
+|-----------------|-------------------------------------------|
+| `DB_CONNECTION` | `pgsql`                                   |
+| `DB_HOST`       | `db.xxxxx.supabase.co`                    |
+| `DB_PORT`       | `5432`                                    |
+| `DB_DATABASE`   | `postgres`                                |
+| `DB_USERNAME`   | `postgres`                                |
+| `DB_PASSWORD`   | `ton_mot_de_passe_supabase`               |
 
-**Note :** Remplace l'URL par celle copiee depuis Supabase (avec ton mot de passe).
+**Note :** Recupere le host dans Supabase → Project Settings → Database → Host.
 
 ### Variables Session/Cache/Queue
 

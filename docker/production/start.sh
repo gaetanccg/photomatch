@@ -19,15 +19,18 @@ echo "Checking database connection..."
 max_attempts=30
 attempt=0
 
-# Extract host and port from DATABASE_URL if present
-if [ -n "$DATABASE_URL" ]; then
+# Determine database host and port
+if [ -n "$DB_HOST" ]; then
+    DB_HOST_CHECK="$DB_HOST"
+    DB_PORT_CHECK="${DB_PORT:-5432}"
+elif [ -n "$MYSQL_HOST" ]; then
+    DB_HOST_CHECK="$MYSQL_HOST"
+    DB_PORT_CHECK="${MYSQL_PORT:-3306}"
+elif [ -n "$DATABASE_URL" ]; then
     # Parse DATABASE_URL: postgresql://user:pass@host:port/db
     DB_HOST_CHECK=$(echo "$DATABASE_URL" | sed -n 's|.*@\([^:]*\):.*|\1|p')
     DB_PORT_CHECK=$(echo "$DATABASE_URL" | sed -n 's|.*:\([0-9]*\)/.*|\1|p')
     DB_PORT_CHECK="${DB_PORT_CHECK:-5432}"
-elif [ -n "$MYSQL_HOST" ] || [ -n "$DB_HOST" ]; then
-    DB_HOST_CHECK="${MYSQL_HOST:-$DB_HOST}"
-    DB_PORT_CHECK="${MYSQL_PORT:-${DB_PORT:-3306}}"
 fi
 
 if [ -n "$DB_HOST_CHECK" ]; then
