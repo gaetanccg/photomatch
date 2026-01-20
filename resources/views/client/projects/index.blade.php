@@ -52,8 +52,18 @@
                                     <div class="text-sm text-gray-500">{{ Str::limit($project->description, 50) }}</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
+                                    @php
+                                        $projectTypes = [
+                                            'event' => 'Événement',
+                                            'product' => 'Produit',
+                                            'real_estate' => 'Immobilier',
+                                            'corporate' => 'Corporate',
+                                            'portrait' => 'Portrait',
+                                            'other' => 'Autre',
+                                        ];
+                                    @endphp
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
-                                        {{ __('projects.types.' . $project->project_type, [], 'fr') }}
+                                        {{ $projectTypes[$project->project_type] ?? $project->project_type }}
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">

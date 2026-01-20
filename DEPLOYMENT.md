@@ -1,233 +1,260 @@
-# PhotoMatch - Guide de Déploiement en Production
+# Deploiement sur Railway - Trouve Ton Photographe
 
-Ce guide détaille les étapes pour déployer PhotoMatch en production.
-
-## Table des matières
-
-1. [Vue d'ensemble](#vue-densemble)
-2. [Option 1: Render (Recommandé)](#option-1-render-recommandé)
-3. [Option 2: Railway (Alternative)](#option-2-railway-alternative)
-4. [Configuration commune](#configuration-commune)
-5. [Post-déploiement](#post-déploiement)
-6. [Troubleshooting](#troubleshooting)
+Guide pas-a-pas pour deployer l'application sur Railway.
 
 ---
 
-## Vue d'ensemble
+## Pre-requis
 
-### Stack technique
-
-- **Backend:** Laravel 11 (PHP 8.2)
-- **Base de données:** MySQL 8.0
-- **Frontend:** Vite + Tailwind CSS + Alpine.js
-- **Serveur web:** Nginx + PHP-FPM
-
-### Composants nécessaires en production
-
-| Composant          | Description                                          |
-|--------------------|------------------------------------------------------|
-| Web Service        | Application Laravel                                  |
-| Base de données    | MySQL ou PostgreSQL                                  |
-| Storage            | Pour les fichiers uploadés (S3, Cloudflare R2, etc.) |
-| Worker (optionnel) | Pour les queues Laravel                              |
+- [ ] Compte GitHub avec le code source pousse
+- [ ] Compte Railway (https://railway.app) - connecte avec GitHub
 
 ---
 
-## Railway (Alternative)
+## Etape 1 : Creer le projet Railway
 
-Railway est plus simple que Render pour Laravel et offre MySQL natif.
+1. Va sur **https://railway.app**
+2. Clique sur **"New Project"**
+3. Selectionne **"Deploy from GitHub repo"**
+4. Autorise Railway a acceder a ton repo si necessaire
+5. Selectionne le repo **photomatch**
 
-### Étape 1: Configurer Railway
-
-1. Va sur [railway.app](https://railway.app)
-2. Connecte-toi avec GitHub
-3. New Project → Deploy from GitHub repo
-
-### Étape 2: Ajouter MySQL
-
-1. Dans ton projet Railway → Add Service → Database → MySQL
-2. Railway configure automatiquement les variables d'environnement
-
-### Étape 3: Configurer le service Laravel
-
-Crée un fichier `railway.toml` à la racine:
-
-```toml
-[build]
-builder = "dockerfile"
-dockerfilePath = "Dockerfile.prod"
-
-[deploy]
-healthcheckPath = "/up"
-healthcheckTimeout = 300
-restartPolicyType = "on_failure"
-restartPolicyMaxRetries = 3
-```
-
-### Étape 4: Variables d'environnement
-
-Railway détecte automatiquement les variables MySQL. Ajoute manuellement:
-
-```
-APP_NAME=PhotoMatch
-APP_ENV=production
-APP_KEY=base64:...
-APP_DEBUG=false
-APP_URL=${{RAILWAY_PUBLIC_DOMAIN}}
-
-LOG_CHANNEL=stderr
-
-SESSION_DRIVER=database
-CACHE_STORE=database
-QUEUE_CONNECTION=database
-
-MAIL_MAILER=smtp
-MAIL_HOST=<your-smtp-host>
-MAIL_PORT=587
-MAIL_USERNAME=<username>
-MAIL_PASSWORD=<password>
-MAIL_ENCRYPTION=tls
-MAIL_FROM_ADDRESS=noreply@photomatch.com
-MAIL_FROM_NAME=PhotoMatch
-```
-
-Railway injecte automatiquement:
-
-- `MYSQL_HOST`, `MYSQL_PORT`, `MYSQL_DATABASE`, `MYSQL_USER`, `MYSQL_PASSWORD`
-
-Modifie `config/database.php` pour utiliser ces variables:
-
-```php
-'mysql' => [
-    'host' => env('MYSQL_HOST', env('DB_HOST', '127.0.0.1')),
-    'port' => env('MYSQL_PORT', env('DB_PORT', '3306')),
-    'database' => env('MYSQL_DATABASE', env('DB_DATABASE', 'laravel')),
-    'username' => env('MYSQL_USER', env('DB_USERNAME', 'root')),
-    'password' => env('MYSQL_PASSWORD', env('DB_PASSWORD', '')),
-    // ...
-],
-```
+Railway va detecter le `Dockerfile` et commencer le build (il va echouer car pas de base de donnees, c'est normal).
 
 ---
 
-## Configuration commune
+## Etape 2 : Ajouter MySQL
 
-### Storage des fichiers (S3/Cloudflare R2)
+1. Dans ton projet Railway, clique sur **"+ New"** (en haut a droite)
+2. Selectionne **"Database"** → **"MySQL"**
+3. Attends que MySQL soit provisionne (1-2 minutes)
 
-Pour stocker les fichiers uploadés en production, utilise un service de stockage cloud.
+Railway cree automatiquement les variables :
+- `MYSQL_HOST`
+- `MYSQL_PORT`
+- `MYSQL_DATABASE`
+- `MYSQL_USER`
+- `MYSQL_PASSWORD`
 
-#### Cloudflare R2 (recommandé, gratuit jusqu'à 10GB)
+---
 
-1. Crée un compte Cloudflare
-2. Dashboard → R2 → Create bucket
-3. Crée une API token avec permissions R2
+## Etape 3 : Lier MySQL a l'application
 
-Ajoute au `.env` de production:
+1. Clique sur ton service **photomatch** (pas MySQL)
+2. Va dans l'onglet **"Variables"**
+3. Clique sur **"Add Reference"** → **"Add Reference"**
+4. Tu verras les variables MySQL disponibles - clique sur chacune pour les ajouter :
+   - `MYSQL_HOST`
+   - `MYSQL_PORT`
+   - `MYSQL_DATABASE`
+   - `MYSQL_USER`
+   - `MYSQL_PASSWORD`
 
+---
+
+## Etape 4 : Configurer les variables d'environnement
+
+Dans l'onglet **"Variables"** de ton service, ajoute ces variables une par une.
+
+### Variables obligatoires
+
+Clique sur **"New Variable"** pour chaque variable :
+
+| Variable | Valeur |
+|----------|--------|
+| `APP_NAME` | `Trouve Ton Photographe` |
+| `APP_ENV` | `production` |
+| `APP_KEY` | `base64:QicYhkqQIE6ojpDVYLShO+FLE0jC+U0wCzNeudfhow4=` |
+| `APP_DEBUG` | `false` |
+| `APP_TIMEZONE` | `Europe/Paris` |
+| `APP_URL` | `https://${{RAILWAY_PUBLIC_DOMAIN}}` |
+| `APP_LOCALE` | `fr` |
+| `DB_CONNECTION` | `mysql` |
+| `SESSION_DRIVER` | `database` |
+| `CACHE_STORE` | `database` |
+| `QUEUE_CONNECTION` | `database` |
+| `LOG_CHANNEL` | `stderr` |
+| `LOG_LEVEL` | `warning` |
+| `BCRYPT_ROUNDS` | `12` |
+
+### Variables Email (Brevo - gratuit 300 emails/jour)
+
+1. Cree un compte sur **https://www.brevo.com** (gratuit)
+2. Va dans **Settings** → **SMTP & API** → **SMTP**
+3. Genere une cle SMTP
+
+| Variable | Valeur |
+|----------|--------|
+| `MAIL_MAILER` | `smtp` |
+| `MAIL_HOST` | `smtp-relay.brevo.com` |
+| `MAIL_PORT` | `587` |
+| `MAIL_USERNAME` | `ton-email@brevo.com` |
+| `MAIL_PASSWORD` | `ta-cle-smtp-brevo` |
+| `MAIL_ENCRYPTION` | `tls` |
+| `MAIL_FROM_ADDRESS` | `contact@trouvetonphotographe.fr` |
+| `MAIL_FROM_NAME` | `Trouve Ton Photographe` |
+
+---
+
+## Etape 5 : Deployer
+
+1. Une fois toutes les variables ajoutees, Railway redeploy automatiquement
+2. Ou clique sur **"Deploy"** → **"Trigger Deploy"**
+3. Suis les logs dans l'onglet **"Deployments"**
+
+Le build prend environ 3-5 minutes.
+
+---
+
+## Etape 6 : Obtenir l'URL publique
+
+1. Va dans l'onglet **"Settings"** de ton service
+2. Section **"Networking"** → **"Public Networking"**
+3. Clique sur **"Generate Domain"**
+4. Railway genere une URL du type : `photomatch-production.up.railway.app`
+
+Ton site est maintenant accessible !
+
+---
+
+## Etape 7 : Configurer le domaine personnalise
+
+1. Dans **Settings** → **Public Networking** → **Custom Domain**
+2. Entre : `trouvetonphotographe.fr`
+3. Railway te donne un enregistrement CNAME a ajouter
+
+Chez ton registrar DNS (OVH, Cloudflare, etc.) :
 ```
-FILESYSTEM_DISK=s3
-
-AWS_ACCESS_KEY_ID=<r2-access-key>
-AWS_SECRET_ACCESS_KEY=<r2-secret-key>
-AWS_DEFAULT_REGION=auto
-AWS_BUCKET=photomatch
-AWS_ENDPOINT=https://<account-id>.r2.cloudflarestorage.com
-AWS_USE_PATH_STYLE_ENDPOINT=true
+Type: CNAME
+Nom: @ (ou vide)
+Valeur: [la valeur donnee par Railway]
 ```
 
-Installe le package S3:
+Pour le www :
+```
+Type: CNAME
+Nom: www
+Valeur: [la valeur donnee par Railway]
+```
+
+Attends la propagation DNS (quelques minutes a quelques heures).
+
+---
+
+## Etape 8 : Verifications post-deploiement
+
+### Tester l'application
+
+1. Ouvre l'URL de ton site
+2. Teste l'inscription d'un utilisateur
+3. Teste la connexion
+4. Verifie que les emails arrivent (regarde les spams)
+
+### Creer un compte admin (optionnel)
+
+Dans Railway, va dans ton service → onglet **"Shell"** :
 
 ```bash
-composer require league/flysystem-aws-s3-v3 "^3.0"
-```
-
-### Service d'emails
-
-Options gratuites/pas chères:
-
-- **Mailgun:** 1000 emails/mois gratuit
-- **Resend:** 3000 emails/mois gratuit
-- **Postmark:** 100 emails/mois gratuit
-
----
-
-## Post-déploiement
-
-### Checklist
-
-- [ ] Vérifier que l'application démarre (`/up` endpoint)
-- [ ] Tester la connexion à la base de données
-- [ ] Tester l'inscription/connexion
-- [ ] Vérifier les logs pour les erreurs
-- [ ] Configurer un domaine personnalisé (optionnel)
-- [ ] Activer HTTPS (automatique sur Render/Railway)
-- [ ] Configurer les backups de la base de données
-
-### Commandes utiles post-déploiement
-
-Via la console Render/Railway ou SSH:
-
-```bash
-# Générer la clé d'application (si pas déjà fait)
-php artisan key:generate
-
-# Vérifier les migrations
-php artisan migrate:status
-
-# Créer un utilisateur admin
 php artisan tinker
-> User::create(['name' => 'Admin', 'email' => 'admin@example.com', 'password' => bcrypt('password'), 'role' => 'admin']);
+```
+
+Puis :
+```php
+App\Models\User::create([
+    'name' => 'Admin',
+    'email' => 'ton@email.com',
+    'password' => bcrypt('ton_mot_de_passe'),
+    'role' => 'admin'
+]);
+```
+
+### Verifier les logs
+
+En cas de probleme, consulte les logs dans :
+- Onglet **"Deployments"** → clique sur un deploiement → **"View Logs"**
+
+---
+
+## Cout estime
+
+| Service | Cout |
+|---------|------|
+| Railway Hobby | $5/mois (inclut $5 de credits) |
+| MySQL | ~$5-10/mois selon usage |
+| **Total** | ~$10-15/mois |
+
+Railway facture a l'usage. Le Hobby plan inclut $5 de credits/mois.
+
+---
+
+## Commandes utiles (via Shell Railway)
+
+```bash
+# Voir le statut des migrations
+php artisan migrate:status
 
 # Vider les caches
 php artisan optimize:clear
+
+# Relancer les caches
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+
+# Voir les logs Laravel
+tail -f storage/logs/laravel.log
 ```
-
-### Monitoring
-
-- **Render:** Dashboard intégré avec logs et métriques
-- **Railway:** Dashboard avec logs en temps réel
-- **Sentry** (optionnel): Pour le tracking d'erreurs
 
 ---
 
 ## Troubleshooting
 
-### Erreur 500 au démarrage
+### Erreur 500
 
-1. Vérifier que `APP_KEY` est défini
-2. Vérifier les permissions du dossier `storage/`
-3. Consulter les logs: `php artisan log:tail` ou dashboard
+1. Verifie que `APP_KEY` est defini
+2. Verifie les logs
+3. Verifie la connexion MySQL
 
-### Problèmes de base de données
+### Base de donnees non connectee
 
-1. Vérifier les credentials
-2. Tester la connexion: `php artisan tinker` puis `DB::connection()->getPdo();`
-3. S'assurer que les migrations ont tourné
+1. Verifie que MySQL est provisionne
+2. Verifie que les variables `MYSQL_*` sont bien referencees
+3. Dans les logs, cherche "Database not ready"
 
-### Assets CSS/JS non chargés
+### Assets CSS/JS non charges
 
-1. Vérifier que `npm run build` a réussi pendant le build
-2. Vérifier que `APP_URL` est correct
-3. Inspecter le HTML pour voir si les chemins sont corrects
+1. Verifie que le build a reussi (cherche "npm run build" dans les logs)
+2. Verifie que `APP_URL` est correct
 
-### Erreurs de permissions
+### Emails non recus
 
-```bash
-chmod -R 775 storage bootstrap/cache
-chown -R www-data:www-data storage bootstrap/cache
-```
+1. Verifie les credentials SMTP
+2. Regarde dans les spams
+3. Teste avec une autre adresse email
 
 ---
 
-## Comparatif des options
+## Backup de la base de donnees
 
-| Critère        | Render               | Railway        |
-|----------------|----------------------|----------------|
-| MySQL natif    | Non (PostgreSQL)     | Oui            |
-| Prix minimum   | ~$7/mois             | ~$5/mois       |
-| Simplicité     | Moyenne              | Haute          |
-| Docker support | Oui                  | Oui            |
-| Free tier      | Limité (90j pour DB) | $5 crédit/mois |
-| Région EU      | Oui (Frankfurt)      | Oui            |
+Railway ne fait pas de backups automatiques sur le plan Hobby.
 
-**Recommandation:** Railway si tu veux garder MySQL et une config simple. Render si tu préfères PostgreSQL ou si tu as besoin de plus de contrôle.
+Options :
+1. **Upgrade vers Pro** pour les backups automatiques
+2. **Backup manuel** via le Shell :
+   ```bash
+   mysqldump -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE > backup.sql
+   ```
+
+---
+
+## Mettre a jour l'application
+
+Chaque `git push` sur la branche main declenche automatiquement un nouveau deploiement.
+
+```bash
+git add .
+git commit -m "Update"
+git push origin main
+```
+
+Railway reconstruit et redeploy automatiquement.

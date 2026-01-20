@@ -1,4 +1,30 @@
 <x-app-layout>
+    @push('styles')
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <style>
+        .leaflet-popup-content-wrapper { border-radius: 12px; }
+        .leaflet-popup-content { margin: 0; }
+        .photographer-marker {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 3px solid #10b981;
+            background-size: cover;
+            background-position: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        .photographer-marker-default {
+            background-color: #10b981;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+    </style>
+    @endpush
+
     <div class="bg-gradient-to-b from-emerald-50 to-white">
         <!-- Hero Section -->
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -180,7 +206,7 @@
             </div>
 
             <!-- Results -->
-            <div class="flex-1">
+            <div class="flex-1" x-data="{ viewMode: 'grid' }">
                 <!-- Results Header -->
                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
                     <div>
@@ -197,11 +223,75 @@
                             </p>
                         @endif
                     </div>
+
+                    <div class="flex items-center gap-4">
+                        <!-- View Toggle -->
+                        <div class="flex items-center bg-gray-100 rounded-lg p-1">
+                            <button @click="viewMode = 'grid'"
+                                    :class="viewMode === 'grid' ? 'bg-white shadow-sm text-emerald-600' : 'text-gray-500 hover:text-gray-700'"
+                                    class="p-2 rounded-md transition">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+                                </svg>
+                            </button>
+                            <button @click="viewMode = 'map'; $nextTick(() => window.initPhotographerMap && window.initPhotographerMap())"
+                                    :class="viewMode === 'map' ? 'bg-white shadow-sm text-emerald-600' : 'text-gray-500 hover:text-gray-700'"
+                                    class="p-2 rounded-md transition">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
+                                </svg>
+                            </button>
+                        </div>
+
+                        @if(!$useMatching)
+                            <!-- Sort Options -->
+                            <div class="flex items-center gap-2">
+                                <label class="text-sm text-gray-600 hidden sm:inline">Trier par :</label>
+                                <form id="sortForm" class="flex items-center gap-2">
+                                    @foreach($filters as $key => $value)
+                                        @if(is_array($value))
+                                            @foreach($value as $v)
+                                                <input type="hidden" name="{{ $key }}[]" value="{{ $v }}">
+                                            @endforeach
+                                        @else
+                                            <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                                        @endif
+                                    @endforeach
+                                    <select name="sort" onchange="document.getElementById('sortForm').submit()"
+                                            class="rounded-lg border-gray-200 text-sm focus:border-emerald-500 focus:ring-emerald-500">
+                                        <option value="rating" {{ ($sortBy ?? 'rating') === 'rating' ? 'selected' : '' }}>Note</option>
+                                        <option value="hourly_rate" {{ ($sortBy ?? '') === 'hourly_rate' ? 'selected' : '' }}>Tarif horaire</option>
+                                        <option value="experience_years" {{ ($sortBy ?? '') === 'experience_years' ? 'selected' : '' }}>Experience</option>
+                                        <option value="total_missions" {{ ($sortBy ?? '') === 'total_missions' ? 'selected' : '' }}>Missions</option>
+                                    </select>
+                                    <select name="dir" onchange="document.getElementById('sortForm').submit()"
+                                            class="rounded-lg border-gray-200 text-sm focus:border-emerald-500 focus:ring-emerald-500">
+                                        <option value="desc" {{ ($sortDir ?? 'desc') === 'desc' ? 'selected' : '' }}>Decroissant</option>
+                                        <option value="asc" {{ ($sortDir ?? '') === 'asc' ? 'selected' : '' }}>Croissant</option>
+                                    </select>
+                                </form>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+
+                <!-- Map View -->
+                <div x-show="viewMode === 'map'" x-cloak class="mb-6">
+                    <div id="photographers-map" class="w-full h-[500px] rounded-2xl shadow-sm border border-gray-100 bg-gray-100"></div>
+                    @if(($mapPhotographers ?? collect())->isEmpty())
+                        <div class="mt-4 text-center text-sm text-gray-500">
+                            <svg class="w-6 h-6 mx-auto mb-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                            Aucun photographe avec coordonnees GPS sur cette page.
+                        </div>
+                    @endif
                 </div>
 
                 <!-- Results Grid -->
                 @if($photographers->count() > 0)
-                    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                    <div x-show="viewMode === 'grid'" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                         @foreach($photographers as $photographer)
                             <x-search-photographer-card
                                 :photographer="$photographer"
@@ -212,11 +302,13 @@
                     </div>
 
                     <!-- Pagination -->
-                    @if($photographers->hasPages())
-                        <div class="mt-8">
-                            {{ $photographers->links() }}
-                        </div>
-                    @endif
+                    <div x-show="viewMode === 'grid'">
+                        @if($photographers->hasPages())
+                            <div class="mt-8">
+                                {{ $photographers->links() }}
+                            </div>
+                        @endif
+                    </div>
                 @else
                     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-12 text-center">
                         <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -353,4 +445,91 @@
             </div>
         @endif
     @endauth
+
+    @push('scripts')
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script>
+        window.initPhotographerMap = function() {
+            const mapContainer = document.getElementById('photographers-map');
+            if (!mapContainer || mapContainer._leaflet_id) return;
+
+            const photographers = @json($mapPhotographers ?? []);
+            if (!photographers.length) return;
+
+            // Calculate center from photographers or default to France
+            const defaultCenter = [46.603354, 1.888334]; // France center
+            let center = defaultCenter;
+            let zoom = 6;
+
+            if (photographers.length > 0) {
+                const lats = photographers.map(p => p.lat);
+                const lngs = photographers.map(p => p.lng);
+                center = [
+                    (Math.min(...lats) + Math.max(...lats)) / 2,
+                    (Math.min(...lngs) + Math.max(...lngs)) / 2
+                ];
+                zoom = photographers.length === 1 ? 12 : 6;
+            }
+
+            const map = L.map('photographers-map').setView(center, zoom);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            }).addTo(map);
+
+            const bounds = [];
+
+            photographers.forEach(p => {
+                // Create custom marker icon
+                let iconHtml;
+                if (p.photo) {
+                    iconHtml = `<div class="photographer-marker" style="background-image: url('${p.photo}')"></div>`;
+                } else {
+                    const initials = p.name.split(' ').map(n => n[0]).join('').substring(0, 2);
+                    iconHtml = `<div class="photographer-marker photographer-marker-default">${initials}</div>`;
+                }
+
+                const icon = L.divIcon({
+                    html: iconHtml,
+                    className: 'custom-marker',
+                    iconSize: [40, 40],
+                    iconAnchor: [20, 40],
+                    popupAnchor: [0, -40]
+                });
+
+                const marker = L.marker([p.lat, p.lng], { icon }).addTo(map);
+                bounds.push([p.lat, p.lng]);
+
+                // Create popup content
+                const ratingStars = p.rating ? '★'.repeat(Math.round(parseFloat(p.rating))) + '☆'.repeat(5 - Math.round(parseFloat(p.rating))) : '';
+                const popupContent = `
+                    <div class="p-3 min-w-[200px]">
+                        <div class="flex items-center gap-3 mb-2">
+                            ${p.photo ? `<img src="${p.photo}" class="w-12 h-12 rounded-full object-cover">` : `<div class="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-bold">${p.name.split(' ').map(n => n[0]).join('').substring(0, 2)}</div>`}
+                            <div>
+                                <h4 class="font-bold text-gray-900">${p.name}</h4>
+                                <p class="text-xs text-gray-500">${p.location || ''}</p>
+                            </div>
+                        </div>
+                        ${p.rating ? `<p class="text-sm text-yellow-500 mb-1">${ratingStars} <span class="text-gray-600">(${p.rating})</span></p>` : ''}
+                        ${p.hourly_rate ? `<p class="text-sm text-gray-600 mb-3">${p.hourly_rate}€/h</p>` : ''}
+                        <a href="${p.url}" class="block w-full text-center px-3 py-1.5 bg-emerald-600 text-white text-sm rounded-lg hover:bg-emerald-700 transition">
+                            Voir le profil
+                        </a>
+                    </div>
+                `;
+
+                marker.bindPopup(popupContent, { maxWidth: 300 });
+            });
+
+            // Fit bounds if multiple markers
+            if (bounds.length > 1) {
+                map.fitBounds(bounds, { padding: [30, 30] });
+            }
+
+            // Force map resize
+            setTimeout(() => map.invalidateSize(), 100);
+        };
+    </script>
+    @endpush
 </x-app-layout>

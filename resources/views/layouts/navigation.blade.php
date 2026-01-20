@@ -16,6 +16,11 @@
                                 <x-application-logo class="h-8 w-8 text-emerald-600" />
                                 <span class="text-xl font-bold text-gray-900">PhotoMatch</span>
                             </a>
+                        @elseif(auth()->user()->isAdmin())
+                            <a href="{{ route('admin.dashboard') }}" class="flex items-center space-x-2">
+                                <x-application-logo class="h-8 w-8 text-indigo-600" />
+                                <span class="text-xl font-bold text-gray-900">PhotoMatch</span>
+                            </a>
                         @else
                             <a href="{{ route('dashboard') }}" class="flex items-center space-x-2">
                                 <x-application-logo class="h-8 w-8 text-emerald-600" />
@@ -70,7 +75,7 @@
 
                         {{-- Admin Navigation --}}
                         @elseif(auth()->user()->isAdmin())
-                            <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                            <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.*')">
                                 Administration
                             </x-nav-link>
                         @endif
@@ -245,7 +250,7 @@
 
                 {{-- Admin Mobile Navigation --}}
                 @elseif(auth()->user()->isAdmin())
-                    <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                    <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.*')">
                         Administration
                     </x-responsive-nav-link>
                 @endif

@@ -15,7 +15,7 @@ class PhotographerController extends Controller
     public function dashboard(): View
     {
         $user = auth()->user();
-        $photographer = $user->photographer()->with(['specialties', 'bookingRequests.project.client'])->firstOrFail();
+        $photographer = $user->photographer()->with(['specialties', 'bookingRequests.project.client', 'availabilities'])->firstOrFail();
 
         $pendingRequestsCount = $photographer->bookingRequests()->pending()->count();
 
@@ -31,11 +31,28 @@ class PhotographerController extends Controller
             ->take(5)
             ->get();
 
+        // Disponibilités pour les 28 prochains jours
+        $today = Carbon::today();
+        $calendarDays = collect();
+
+        // Index availabilities by date string for faster lookup
+        $availabilitiesIndexed = $photographer->availabilities->keyBy(fn($a) => $a->date->format('Y-m-d'));
+
+        for ($i = 0; $i < 28; $i++) {
+            $date = $today->copy()->addDays($i);
+            $dateKey = $date->format('Y-m-d');
+            $calendarDays->push([
+                'date' => $date,
+                'availability' => $availabilitiesIndexed->get($dateKey),
+            ]);
+        }
+
         return view('photographer.dashboard', compact(
             'photographer',
             'pendingRequestsCount',
             'acceptedThisMonth',
-            'latestRequests'
+            'latestRequests',
+            'calendarDays'
         ));
     }
 

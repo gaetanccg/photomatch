@@ -19,6 +19,7 @@ class RoleMiddleware
             $redirectRoute = match ($request->user()->role) {
                 'photographer' => 'photographer.dashboard',
                 'client' => 'search.index',
+                'admin' => 'admin.dashboard',
                 default => 'dashboard',
             };
 

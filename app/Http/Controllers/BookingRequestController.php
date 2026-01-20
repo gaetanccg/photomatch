@@ -77,6 +77,58 @@ class BookingRequestController extends Controller
         return view('photographer.requests.index', compact('requests'));
     }
 
+    public function history(): View
+    {
+        $photographer = auth()->user()->photographer;
+
+        // Get completed missions (accepted requests)
+        $query = $photographer->bookingRequests()
+            ->with(['project.client', 'review'])
+            ->where('status', 'accepted');
+
+        // Date range filter
+        if (request('from')) {
+            $query->whereDate('responded_at', '>=', request('from'));
+        }
+        if (request('to')) {
+            $query->whereDate('responded_at', '<=', request('to'));
+        }
+
+        // Year filter
+        if (request('year')) {
+            $query->whereYear('responded_at', request('year'));
+        }
+
+        $missions = $query->latest('responded_at')->paginate(15);
+
+        // Statistics
+        $totalMissions = $photographer->bookingRequests()->where('status', 'accepted')->count();
+        $totalEarnings = $photographer->bookingRequests()
+            ->where('status', 'accepted')
+            ->whereNotNull('proposed_price')
+            ->sum('proposed_price');
+        $avgRating = $photographer->reviews()->avg('rating');
+        $reviewCount = $photographer->reviews()->count();
+
+        // Get available years for filter
+        $years = $photographer->bookingRequests()
+            ->where('status', 'accepted')
+            ->whereNotNull('responded_at')
+            ->selectRaw('YEAR(responded_at) as year')
+            ->distinct()
+            ->orderByDesc('year')
+            ->pluck('year');
+
+        return view('photographer.history.index', compact(
+            'missions',
+            'totalMissions',
+            'totalEarnings',
+            'avgRating',
+            'reviewCount',
+            'years'
+        ));
+    }
+
     public function show(BookingRequest $bookingRequest): View
     {
         Gate::authorize('view', $bookingRequest);

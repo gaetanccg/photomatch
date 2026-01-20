@@ -60,6 +60,30 @@ class Photographer extends Model
         return $this->hasMany(BookingRequest::class);
     }
 
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    public function portfolioImages(): HasMany
+    {
+        return $this->hasMany(PortfolioImage::class);
+    }
+
+    public function completedMissions(): HasMany
+    {
+        return $this->hasMany(BookingRequest::class)->where('status', 'accepted');
+    }
+
+    public function updateRating(): void
+    {
+        $avgRating = $this->reviews()->avg('rating');
+        $this->update([
+            'rating' => $avgRating,
+            'total_missions' => $this->bookingRequests()->accepted()->count(),
+        ]);
+    }
+
     public function getRatingAttribute($value): ?string
     {
         return $value ? number_format($value, 1) : null;
@@ -91,5 +115,30 @@ class Photographer extends Model
     public function scopeNearLocation(Builder $query, string $location): Builder
     {
         return $query->where('location', 'like', "%{$location}%");
+    }
+
+    public function scopeAvailableOn(Builder $query, string $date): Builder
+    {
+        return $query->whereHas('availabilities', fn($aq) =>
+            $aq->where('date', $date)->where('is_available', true)
+        );
+    }
+
+    public function scopeMinRating(Builder $query, float $rating): Builder
+    {
+        return $query->where('rating', '>=', $rating);
+    }
+
+    public function scopeWithMinExperience(Builder $query, int $years): Builder
+    {
+        return $query->where('experience_years', '>=', $years);
+    }
+
+    public function scopeTopRated(Builder $query, int $limit = 10): Builder
+    {
+        return $query->whereNotNull('rating')
+            ->where('rating', '>', 0)
+            ->orderByDesc('rating')
+            ->limit($limit);
     }
 }

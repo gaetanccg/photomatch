@@ -7,6 +7,7 @@ use App\Models\Photographer;
 use App\Models\Specialty;
 use App\Services\PhotographerMatchingService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\View\View;
 
 class SearchController extends Controller
@@ -14,6 +15,11 @@ class SearchController extends Controller
     public function __construct(
         private PhotographerMatchingService $matchingService
     ) {}
+
+    private function getCachedSpecialties()
+    {
+        return Cache::remember('specialties:all', 86400, fn() => Specialty::all());
+    }
 
     public function index(Request $request): View
     {
@@ -25,6 +31,16 @@ class SearchController extends Controller
             'available_date',
             'min_rating'
         ]);
+
+        $sortBy = $request->get('sort', 'rating');
+        $sortDir = $request->get('dir', 'desc');
+
+        // Validate sort options
+        $allowedSorts = ['rating', 'hourly_rate', 'experience_years', 'total_missions'];
+        if (!in_array($sortBy, $allowedSorts)) {
+            $sortBy = 'rating';
+        }
+        $sortDir = $sortDir === 'asc' ? 'asc' : 'desc';
 
         $project = null;
         $useMatching = false;
@@ -43,12 +59,31 @@ class SearchController extends Controller
 
             $useMatching = true;
 
+            // Prepare map data for matching results
+            $mapPhotographers = $photographers->getCollection()
+                ->filter(fn($p) => $p->latitude && $p->longitude)
+                ->map(fn($p) => [
+                    'id' => $p->id,
+                    'name' => $p->user->name,
+                    'location' => $p->location,
+                    'lat' => (float) $p->latitude,
+                    'lng' => (float) $p->longitude,
+                    'rating' => $p->rating,
+                    'hourly_rate' => $p->hourly_rate,
+                    'photo' => $p->portfolioImages->first()?->url ?? $p->user->profile_photo_url ?? null,
+                    'url' => route('photographers.show', $p),
+                ])
+                ->values();
+
             return view('search.index', [
                 'photographers' => $photographers,
                 'project' => $project,
                 'filters' => $filters,
-                'specialties' => Specialty::all(),
+                'specialties' => $this->getCachedSpecialties(),
                 'useMatching' => $useMatching,
+                'sortBy' => $sortBy,
+                'sortDir' => $sortDir,
+                'mapPhotographers' => $mapPhotographers,
             ]);
         }
 
@@ -61,7 +96,7 @@ class SearchController extends Controller
                 $q->whereHas('specialties', fn($sq) => $sq->whereIn('specialties.id', $ids));
             })
             ->when($filters['location'] ?? null, function ($q, $location) {
-                $q->where('location', 'LIKE', "%{$location}%");
+                $q->nearLocation($location);
             })
             ->when($filters['max_budget'] ?? null, function ($q, $max) {
                 $q->where('hourly_rate', '<=', $max);
@@ -70,24 +105,42 @@ class SearchController extends Controller
                 $q->where('hourly_rate', '>=', $min);
             })
             ->when($filters['available_date'] ?? null, function ($q, $date) {
-                $q->whereHas('availabilities', fn($aq) =>
-                    $aq->where('date', $date)->where('is_available', true)
-                );
+                $q->availableOn($date);
             })
             ->when($filters['min_rating'] ?? null, function ($q, $rating) {
-                $q->where('rating', '>=', $rating);
+                $q->minRating($rating);
             })
-            ->with(['user', 'specialties'])
-            ->orderByDesc('rating')
+            ->with(['user', 'specialties', 'reviews', 'portfolioImages' => fn($q) => $q->featured()->limit(1)])
+            ->withCount('reviews')
+            ->orderBy($sortBy, $sortDir)
             ->paginate(12)
             ->withQueryString();
+
+        // Prepare map data
+        $mapPhotographers = $photographers->getCollection()
+            ->filter(fn($p) => $p->latitude && $p->longitude)
+            ->map(fn($p) => [
+                'id' => $p->id,
+                'name' => $p->user->name,
+                'location' => $p->location,
+                'lat' => (float) $p->latitude,
+                'lng' => (float) $p->longitude,
+                'rating' => $p->rating,
+                'hourly_rate' => $p->hourly_rate,
+                'photo' => $p->portfolioImages->first()?->url ?? $p->user->profile_photo_url ?? null,
+                'url' => route('photographers.show', $p),
+            ])
+            ->values();
 
         return view('search.index', [
             'photographers' => $photographers,
             'project' => $project,
             'filters' => $filters,
-            'specialties' => Specialty::all(),
+            'specialties' => $this->getCachedSpecialties(),
             'useMatching' => $useMatching,
+            'sortBy' => $sortBy,
+            'sortDir' => $sortDir,
+            'mapPhotographers' => $mapPhotographers,
         ]);
     }
 }

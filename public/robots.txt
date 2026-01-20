@@ -1,5 +1,14 @@
+# Robots.txt for Trouve Ton Photographe
+# https://trouvetonphotographe.fr
+
 User-agent: *
 Allow: /
 
-Sitemap: https://www.example.com/sitemap.xml
+# Disallow private areas
+Disallow: /client/
+Disallow: /photographer/
+Disallow: /profile
+Disallow: /notifications
 
+# Sitemap location
+Sitemap: https://trouvetonphotographe.fr/sitemap.xml

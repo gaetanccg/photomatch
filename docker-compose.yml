@@ -24,14 +24,14 @@ services:
       - DB_DATABASE=${DB_DATABASE:-photomatch}
       - DB_USERNAME=${DB_USERNAME:-photomatch}
       - DB_PASSWORD=${DB_PASSWORD:-secret}
-      - MAIL_MAILER=smtp
-      - MAIL_HOST=mailpit
-      - MAIL_PORT=1025
-      - MAIL_USERNAME=null
-      - MAIL_PASSWORD=null
-      - MAIL_ENCRYPTION=null
-      - MAIL_FROM_ADDRESS=noreply@photomatch.test
-      - MAIL_FROM_NAME=PhotoMatch
+      - MAIL_MAILER=${MAIL_MAILER:-smtp}
+      - MAIL_HOST=${MAIL_HOST:-mailpit}
+      - MAIL_PORT=${MAIL_PORT:-1025}
+      - MAIL_USERNAME=${MAIL_USERNAME:-null}
+      - MAIL_PASSWORD=${MAIL_PASSWORD:-null}
+      - MAIL_ENCRYPTION=${MAIL_ENCRYPTION:-null}
+      - MAIL_FROM_ADDRESS=${MAIL_FROM_ADDRESS:-noreply@photomatch.test}
+      - MAIL_FROM_NAME=${MAIL_FROM_NAME:-PhotoMatch}
     networks:
       - photomatch-network
     depends_on:
@@ -115,6 +115,45 @@ services:
       PMA_USER: ${DB_USERNAME:-photomatch}
       PMA_PASSWORD: ${DB_PASSWORD:-secret}
       UPLOAD_LIMIT: 64M
+    networks:
+      - photomatch-network
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  # Queue Worker Service
+  queue:
+    build:
+      context: ./docker/php
+      args:
+        UID: ${UID:-1000}
+        GID: ${GID:-1000}
+    container_name: photomatch-queue
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html
+      - vendor:/var/www/html/vendor
+    environment:
+      - APP_NAME=${APP_NAME:-PhotoMatch}
+      - APP_ENV=${APP_ENV:-local}
+      - APP_DEBUG=${APP_DEBUG:-true}
+      - APP_URL=${APP_URL:-http://localhost:8080}
+      - DB_CONNECTION=mysql
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_DATABASE=${DB_DATABASE:-photomatch}
+      - DB_USERNAME=${DB_USERNAME:-photomatch}
+      - DB_PASSWORD=${DB_PASSWORD:-secret}
+      - MAIL_MAILER=${MAIL_MAILER:-smtp}
+      - MAIL_HOST=${MAIL_HOST:-mailpit}
+      - MAIL_PORT=${MAIL_PORT:-1025}
+      - MAIL_USERNAME=${MAIL_USERNAME:-null}
+      - MAIL_PASSWORD=${MAIL_PASSWORD:-null}
+      - MAIL_ENCRYPTION=${MAIL_ENCRYPTION:-null}
+      - MAIL_FROM_ADDRESS=${MAIL_FROM_ADDRESS:-noreply@photomatch.test}
+      - MAIL_FROM_NAME=${MAIL_FROM_NAME:-PhotoMatch}
+    command: php artisan queue:work --sleep=3 --tries=3
     networks:
       - photomatch-network
     depends_on:

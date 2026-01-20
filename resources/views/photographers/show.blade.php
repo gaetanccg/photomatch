@@ -1,3 +1,8 @@
+@php
+    $metaTitle = $photographer->user->name . ' - Photographe ' . ($photographer->location ? 'a ' . $photographer->location : '') . ' | Trouve Ton Photographe';
+    $metaDescription = Str::limit($photographer->bio ?? 'Photographe professionnel specialise en ' . $photographer->specialties->pluck('name')->join(', '), 160);
+@endphp
+
 <x-app-layout>
     <x-slot name="header">
         <div class="flex items-center justify-between">

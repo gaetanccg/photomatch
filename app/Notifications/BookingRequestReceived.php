@@ -35,24 +35,14 @@ class BookingRequestReceived extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         $project = $this->bookingRequest->project;
-        $client = $project->client;
 
         return (new MailMessage)
             ->subject('Nouvelle demande de réservation - ' . $project->title)
-            ->greeting('Bonjour ' . $notifiable->name . ',')
-            ->line('Vous avez reçu une nouvelle demande de réservation pour le projet "' . $project->title . '".')
-            ->line('**Client :** ' . $client->name)
-            ->line('**Type de projet :** ' . $this->getProjectTypeLabel($project->project_type))
-            ->line('**Localisation :** ' . $project->location)
-            ->when($this->bookingRequest->client_message, function ($message) {
-                return $message->line('**Message du client :** ' . $this->bookingRequest->client_message);
-            })
-            ->when($this->bookingRequest->proposed_price, function ($message) {
-                return $message->line('**Prix proposé :** ' . number_format($this->bookingRequest->proposed_price, 0, ',', ' ') . '€');
-            })
-            ->action('Voir la demande', url('/photographer/requests/' . $this->bookingRequest->id))
-            ->line('Connectez-vous pour accepter ou décliner cette demande.')
-            ->salutation('L\'équipe PhotoMatch');
+            ->view('emails.booking-request-received', [
+                'bookingRequest' => $this->bookingRequest,
+                'photographer' => $this->bookingRequest->photographer,
+                'projectTypeLabel' => $this->getProjectTypeLabel($project->project_type),
+            ]);
     }
 
     /**

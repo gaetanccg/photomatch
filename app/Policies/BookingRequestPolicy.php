@@ -7,6 +7,11 @@ use App\Models\User;
 
 class BookingRequestPolicy
 {
+    public function viewAny(User $user): bool
+    {
+        return $user->isPhotographer() || $user->isClient();
+    }
+
     public function view(User $user, BookingRequest $bookingRequest): bool
     {
         // Photographer can view their own requests
@@ -22,9 +27,28 @@ class BookingRequestPolicy
         return false;
     }
 
+    public function create(User $user): bool
+    {
+        return $user->isClient();
+    }
+
     public function update(User $user, BookingRequest $bookingRequest): bool
     {
-        // Only the photographer can respond to requests
+        // Only the photographer can respond to pending requests
+        if ($bookingRequest->status !== 'pending') {
+            return false;
+        }
+
         return $user->photographer?->id === $bookingRequest->photographer_id;
+    }
+
+    public function delete(User $user, BookingRequest $bookingRequest): bool
+    {
+        // Client can cancel pending requests
+        if ($user->isClient() && $bookingRequest->project->client_id === $user->id) {
+            return $bookingRequest->status === 'pending';
+        }
+
+        return false;
     }
 }

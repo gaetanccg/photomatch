@@ -35,26 +35,14 @@ class BookingRequestAccepted extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         $project = $this->bookingRequest->project;
-        $photographer = $this->bookingRequest->photographer;
-        $photographerUser = $photographer->user;
 
         return (new MailMessage)
             ->subject('Bonne nouvelle ! Votre demande a été acceptée')
-            ->greeting('Bonjour ' . $notifiable->name . ',')
-            ->line('Excellente nouvelle ! Votre demande pour le projet "' . $project->title . '" a été acceptée.')
-            ->line('**Photographe :** ' . $photographerUser->name)
-            ->when($photographerUser->phone, function ($message) use ($photographerUser) {
-                return $message->line('**Téléphone :** ' . $photographerUser->phone);
-            })
-            ->when($this->bookingRequest->proposed_price, function ($message) {
-                return $message->line('**Tarif convenu :** ' . number_format($this->bookingRequest->proposed_price, 0, ',', ' ') . '€');
-            })
-            ->when($this->bookingRequest->photographer_response, function ($message) {
-                return $message->line('**Message du photographe :** ' . $this->bookingRequest->photographer_response);
-            })
-            ->action('Voir les détails', url('/client/requests/' . $this->bookingRequest->id))
-            ->line('Vous pouvez maintenant prendre contact avec le photographe pour finaliser les détails de votre projet.')
-            ->salutation('L\'équipe PhotoMatch');
+            ->view('emails.booking-request-accepted', [
+                'bookingRequest' => $this->bookingRequest,
+                'photographer' => $this->bookingRequest->photographer,
+                'client' => $project->client,
+            ]);
     }
 
     /**

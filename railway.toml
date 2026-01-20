@@ -1,0 +1,19 @@
+# =============================================================================
+# Railway Configuration - Trouve Ton Photographe
+# =============================================================================
+
+[build]
+# Use the Dockerfile at the root
+builder = "dockerfile"
+dockerfilePath = "Dockerfile"
+
+[deploy]
+# Health check endpoint (Laravel default)
+healthcheckPath = "/up"
+healthcheckTimeout = 300
+
+# Restart policy
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 5
+
+# Start command is handled by Dockerfile CMD

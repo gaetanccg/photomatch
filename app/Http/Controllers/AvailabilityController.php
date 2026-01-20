@@ -17,30 +17,59 @@ class AvailabilityController extends Controller
     {
         $photographer = auth()->user()->photographer;
 
+        // Get availabilities for the next 90 days
         $availabilities = $photographer->availabilities()
-            ->whereBetween('date', [Carbon::today(), Carbon::today()->addDays(60)])
+            ->whereBetween('date', [Carbon::today(), Carbon::today()->addDays(90)])
             ->orderBy('date')
-            ->get()
-            ->groupBy(fn ($item) => $item->date->format('Y-m'));
+            ->get();
 
-        return view('photographer.availabilities.index', compact('availabilities', 'photographer'));
+        // Prepare data for JavaScript calendar (keyed by date)
+        $availabilitiesData = $availabilities->mapWithKeys(fn($a) => [
+            $a->date->format('Y-m-d') => [
+                'is_available' => $a->is_available,
+                'note' => $a->note,
+            ]
+        ]);
+
+        // Get accepted bookings to show on calendar
+        $bookings = $photographer->bookingRequests()
+            ->with(['project.client'])
+            ->where('status', 'accepted')
+            ->whereHas('project', fn($q) => $q->whereNotNull('event_date'))
+            ->get();
+
+        $bookingsData = $bookings
+            ->filter(fn($b) => $b->project && $b->project->event_date)
+            ->mapWithKeys(fn($b) => [
+                $b->project->event_date->format('Y-m-d') => [
+                    'client' => $b->project->client->name ?? 'Client',
+                    'project' => $b->project->title,
+                    'url' => route('photographer.requests.show', $b),
+                ]
+            ]);
+
+        return view('photographer.availabilities.index', compact(
+            'availabilities',
+            'availabilitiesData',
+            'bookingsData',
+            'photographer'
+        ));
     }
 
     public function store(StoreAvailabilityRequest $request): RedirectResponse
     {
         $photographer = auth()->user()->photographer;
 
-        $exists = $photographer->availabilities()
-            ->whereDate('date', $request->date)
-            ->exists();
+        // Use updateOrCreate to allow updating existing availability
+        $photographer->availabilities()->updateOrCreate(
+            ['date' => $request->date],
+            [
+                'is_available' => $request->is_available,
+                'note' => $request->note,
+            ]
+        );
 
-        if ($exists) {
-            return back()->withErrors(['date' => 'Une disponibilité existe déjà pour cette date.']);
-        }
-
-        $photographer->availabilities()->create($request->validated());
-
-        return back()->with('success', 'Disponibilité ajoutée avec succès.');
+        return back()->with('success', 'Disponibilité enregistrée.');
     }
 
     public function update(UpdateAvailabilityRequest $request, Availability $availability): RedirectResponse

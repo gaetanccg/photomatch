@@ -29,7 +29,7 @@ class PhotographerMatchingService
     ): LengthAwarePaginator {
         $query = Photographer::query()
             ->whereHas('user')
-            ->with(['user', 'specialties']);
+            ->with(['user', 'specialties', 'portfolioImages' => fn($q) => $q->featured()->limit(1)]);
 
         // Apply strict filters
         $this->applyStrictFilters($query, $project, $filters);

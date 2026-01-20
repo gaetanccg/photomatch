@@ -35,22 +35,14 @@ class BookingRequestDeclined extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         $project = $this->bookingRequest->project;
-        $photographer = $this->bookingRequest->photographer;
 
-        $message = (new MailMessage)
+        return (new MailMessage)
             ->subject('Votre demande a été déclinée')
-            ->greeting('Bonjour ' . $notifiable->name . ',')
-            ->line('Nous sommes désolés de vous informer que votre demande pour le projet "' . $project->title . '" a été déclinée par ' . $photographer->user->name . '.');
-
-        if ($this->bookingRequest->photographer_response) {
-            $message->line('**Raison indiquée :** ' . $this->bookingRequest->photographer_response);
-        }
-
-        return $message
-            ->line('Ne vous découragez pas ! Notre plateforme compte de nombreux photographes talentueux.')
-            ->action('Rechercher d\'autres photographes', url('/search-photographers?project_id=' . $project->id))
-            ->line('Continuez à chercher le photographe idéal pour votre projet.')
-            ->salutation('L\'équipe PhotoMatch');
+            ->view('emails.booking-request-declined', [
+                'bookingRequest' => $this->bookingRequest,
+                'photographer' => $this->bookingRequest->photographer,
+                'client' => $project->client,
+            ]);
     }
 
     /**

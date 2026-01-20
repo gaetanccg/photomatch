@@ -59,6 +59,62 @@
             </div>
         </div>
 
+        <!-- Mini Calendrier des disponibilités -->
+        <div class="bg-white rounded-xl shadow-sm p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-lg font-semibold text-gray-900">Mes disponibilités</h2>
+                <a href="{{ route('photographer.availabilities.index') }}" class="text-sm text-indigo-600 hover:text-indigo-700">Gérer</a>
+            </div>
+
+            <!-- Légende -->
+            <div class="flex items-center gap-4 mb-4 text-xs">
+                <div class="flex items-center gap-1">
+                    <div class="w-3 h-3 rounded bg-green-500"></div>
+                    <span class="text-gray-600">Disponible</span>
+                </div>
+                <div class="flex items-center gap-1">
+                    <div class="w-3 h-3 rounded bg-red-500"></div>
+                    <span class="text-gray-600">Indisponible</span>
+                </div>
+                <div class="flex items-center gap-1">
+                    <div class="w-3 h-3 rounded bg-gray-200"></div>
+                    <span class="text-gray-600">Non défini</span>
+                </div>
+            </div>
+
+            <!-- Jours de la semaine -->
+            <div class="grid grid-cols-7 gap-1 mb-1">
+                @foreach(['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'] as $day)
+                    <div class="text-center text-xs font-medium text-gray-500 py-1">{{ $day }}</div>
+                @endforeach
+            </div>
+
+            <!-- Calendrier -->
+            @php
+                $firstDate = $calendarDays->first()['date'];
+                $startDayOfWeek = $firstDate->dayOfWeekIso; // 1 = Lundi, 7 = Dimanche
+            @endphp
+            <div class="grid grid-cols-7 gap-1">
+                @for($i = 1; $i < $startDayOfWeek; $i++)
+                    <div></div>
+                @endfor
+                @foreach($calendarDays as $day)
+                    @php
+                        $isToday = $day['date']->isToday();
+                        $availability = $day['availability'];
+                        $bgClass = 'bg-gray-100';
+                        if ($availability) {
+                            $bgClass = $availability->is_available ? 'bg-green-500 text-white' : 'bg-red-500 text-white';
+                        }
+                    @endphp
+                    <div class="relative aspect-square flex items-center justify-center rounded text-xs font-medium {{ $bgClass }} {{ $isToday ? 'ring-2 ring-indigo-500' : '' }}"
+                         title="{{ $day['date']->translatedFormat('l d F') }}{{ $availability ? ($availability->is_available ? ' - Disponible' : ' - Indisponible') : '' }}">
+                        {{ $day['date']->format('d') }}
+                    </div>
+                @endforeach
+            </div>
+        </div>
+
         <!-- Latest Requests -->
         <div class="bg-white rounded-xl shadow-sm">
             <div class="px-6 py-4 border-b border-gray-200">

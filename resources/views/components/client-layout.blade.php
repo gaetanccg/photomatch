@@ -13,6 +13,8 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+        @stack('styles')
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100">
@@ -47,27 +49,28 @@
                                 </svg>
                                 Mes demandes envoyees
                             </a>
+
+                            <a href="{{ route('client.history.index') }}"
+                               class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg {{ request()->routeIs('client.history.*') ? 'bg-emerald-50 text-emerald-700' : 'text-gray-700 hover:bg-gray-50' }}">
+                                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+                                </svg>
+                                Historique missions
+                            </a>
                         </div>
                     </nav>
                 </aside>
 
                 <!-- Main Content -->
                 <main class="flex-1 p-8">
-                    @if(session('success'))
-                        <div class="mb-4 rounded-lg bg-green-50 p-4 text-sm text-green-800">
-                            {{ session('success') }}
-                        </div>
-                    @endif
-
-                    @if(session('error'))
-                        <div class="mb-4 rounded-lg bg-red-50 p-4 text-sm text-red-800">
-                            {{ session('error') }}
-                        </div>
-                    @endif
-
                     {{ $slot }}
                 </main>
             </div>
+
+            {{-- Toast notifications --}}
+            <x-toast-container />
         </div>
+
+        @stack('scripts')
     </body>
 </html>
