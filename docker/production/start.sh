@@ -19,11 +19,18 @@ echo "Checking database connection..."
 max_attempts=30
 attempt=0
 
-# Check if we have database credentials
-if [ -n "$MYSQL_HOST" ] || [ -n "$DB_HOST" ]; then
+# Extract host and port from DATABASE_URL if present
+if [ -n "$DATABASE_URL" ]; then
+    # Parse DATABASE_URL: postgresql://user:pass@host:port/db
+    DB_HOST_CHECK=$(echo "$DATABASE_URL" | sed -n 's|.*@\([^:]*\):.*|\1|p')
+    DB_PORT_CHECK=$(echo "$DATABASE_URL" | sed -n 's|.*:\([0-9]*\)/.*|\1|p')
+    DB_PORT_CHECK="${DB_PORT_CHECK:-5432}"
+elif [ -n "$MYSQL_HOST" ] || [ -n "$DB_HOST" ]; then
     DB_HOST_CHECK="${MYSQL_HOST:-$DB_HOST}"
     DB_PORT_CHECK="${MYSQL_PORT:-${DB_PORT:-3306}}"
+fi
 
+if [ -n "$DB_HOST_CHECK" ]; then
     until nc -z "$DB_HOST_CHECK" "$DB_PORT_CHECK" 2>/dev/null || [ $attempt -ge $max_attempts ]; do
         attempt=$((attempt + 1))
         echo "  Attempt $attempt/$max_attempts - Waiting for database at $DB_HOST_CHECK:$DB_PORT_CHECK..."

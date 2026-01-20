@@ -1,6 +1,6 @@
 # =============================================================================
 # Dockerfile de Production - Trouve Ton Photographe
-# Optimise pour Railway
+# Compatible Render, Railway, et autres PaaS
 # =============================================================================
 
 FROM php:8.2-fpm-alpine AS base
@@ -18,6 +18,7 @@ RUN apk add --no-cache \
     icu-dev \
     oniguruma-dev \
     libxml2-dev \
+    postgresql-dev \
     nginx \
     supervisor \
     bash \
@@ -28,6 +29,7 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) \
         pdo \
         pdo_mysql \
+        pdo_pgsql \
         mbstring \
         exif \
         pcntl \
