@@ -8,6 +8,12 @@
         <form method="POST" action="{{ route('register') }}">
             @csrf
 
+            <!-- Honeypot anti-spam fields -->
+            <div style="position: absolute; left: -9999px;" aria-hidden="true">
+                <input type="text" name="website_url" tabindex="-1" autocomplete="off">
+            </div>
+            <input type="hidden" name="_honeypot_time" value="{{ time() }}">
+
             <!-- Role Selection -->
             <div class="mb-6">
                 <x-input-label :value="__('Je suis')" class="text-gray-700 mb-3" />
@@ -43,6 +49,21 @@
                     </label>
                 </div>
                 <x-input-error :messages="$errors->get('role')" class="mt-2" />
+            </div>
+
+            <!-- SIRET (Photographers only) -->
+            <div id="siret-field" class="mb-6 hidden">
+                <x-input-label for="siret" :value="__('Numero SIRET')" class="text-gray-700" />
+                <x-text-input id="siret"
+                    class="block mt-1 w-full rounded-lg border-gray-200 focus:border-emerald-500 focus:ring-emerald-500"
+                    type="text"
+                    name="siret"
+                    :value="old('siret')"
+                    maxlength="14"
+                    pattern="[0-9]{14}"
+                    placeholder="12345678901234" />
+                <p class="mt-1 text-xs text-gray-500">14 chiffres - Obligatoire pour les photographes professionnels</p>
+                <x-input-error :messages="$errors->get('siret')" class="mt-2" />
             </div>
 
             <!-- Name -->
@@ -128,4 +149,30 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const roleInputs = document.querySelectorAll('input[name="role"]');
+            const siretField = document.getElementById('siret-field');
+            const siretInput = document.getElementById('siret');
+
+            function toggleSiretField() {
+                const selectedRole = document.querySelector('input[name="role"]:checked');
+                if (selectedRole && selectedRole.value === 'photographer') {
+                    siretField.classList.remove('hidden');
+                    siretInput.setAttribute('required', 'required');
+                } else {
+                    siretField.classList.add('hidden');
+                    siretInput.removeAttribute('required');
+                }
+            }
+
+            roleInputs.forEach(input => {
+                input.addEventListener('change', toggleSiretField);
+            });
+
+            // Initial state
+            toggleSiretField();
+        });
+    </script>
 </x-guest-layout>

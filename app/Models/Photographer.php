@@ -15,6 +15,7 @@ class Photographer extends Model
 
     protected $fillable = [
         'user_id',
+        'siret',
         'bio',
         'keywords',
         'experience_years',

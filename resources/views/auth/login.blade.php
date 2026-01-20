@@ -11,6 +11,12 @@
         <form method="POST" action="{{ route('login') }}">
             @csrf
 
+            <!-- Honeypot anti-spam fields -->
+            <div style="position: absolute; left: -9999px;" aria-hidden="true">
+                <input type="text" name="website_url" tabindex="-1" autocomplete="off">
+            </div>
+            <input type="hidden" name="_honeypot_time" value="{{ time() }}">
+
             <!-- Email Address -->
             <div>
                 <x-input-label for="email" :value="__('Adresse email')" class="text-gray-700" />

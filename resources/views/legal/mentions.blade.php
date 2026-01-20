@@ -12,11 +12,9 @@
                     <ul class="list-none mt-4 space-y-2 text-gray-700">
                         <li><strong>Raison sociale :</strong> {{ config('seo.legal.company_name') }}</li>
                         <li><strong>Forme juridique :</strong> {{ config('seo.legal.company_type') }}</li>
-                        <li><strong>Capital social :</strong> {{ config('seo.legal.company_capital') }} euros</li>
                         <li><strong>Siege social :</strong> {{ config('seo.legal.address') }}</li>
                         <li><strong>SIRET :</strong> {{ config('seo.legal.siret') }}</li>
                         <li><strong>RCS :</strong> {{ config('seo.legal.rcs') }}</li>
-                        <li><strong>Numero de TVA intracommunautaire :</strong> {{ config('seo.legal.vat_number') }}</li>
                         <li><strong>Directeur de la publication :</strong> {{ config('seo.legal.director') }}</li>
                         <li><strong>Email :</strong> <a href="mailto:{{ config('seo.legal.email') }}" class="text-emerald-600 hover:underline">{{ config('seo.legal.email') }}</a></li>
                         <li><strong>Telephone :</strong> {{ config('seo.legal.phone') }}</li>

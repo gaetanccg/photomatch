@@ -79,19 +79,17 @@ return [
     |--------------------------------------------------------------------------
     */
     'legal' => [
-        'company_name' => 'Trouve Ton Photographe',
-        'company_type' => 'SAS', // A adapter selon votre structure
-        'company_capital' => '1 000', // Capital social
+        'company_name' => 'Gaëtan Chollet Dev',
+        'company_type' => 'EI', // A adapter selon votre structure
         'siret' => 'XXX XXX XXX XXXXX', // A completer
-        'rcs' => 'Paris', // Ville RCS
-        'vat_number' => 'FR XX XXX XXX XXX', // Numero TVA
-        'address' => '123 Rue Example, 75001 Paris, France', // A completer
-        'email' => 'contact@trouvetonphotographe.fr',
+        'rcs' => 'Saint-Etienne', // Ville RCS
+        'address' => '42800 Rive de Gier, France', // A completer
+        'email' => 'gaetancholletdev@gmail.com',
         'phone' => '+33 1 XX XX XX XX', // A completer
-        'director' => 'Nom du dirigeant', // A completer
-        'host_name' => 'OVH SAS', // Hebergeur
-        'host_address' => '2 rue Kellermann, 59100 Roubaix, France',
-        'dpo_email' => 'dpo@trouvetonphotographe.fr', // Data Protection Officer
+        'director' => 'Gaëtan Chollet', // A completer
+        'host_name' => 'Render', // Hebergeur
+        'host_address' => '',
+        'dpo_email' => 'gaetancholletdev@gmail.com', // Data Protection Officer
     ],
 
     /*
@@ -113,7 +111,7 @@ return [
             'contactPoint' => [
                 '@type' => 'ContactPoint',
                 'contactType' => 'customer service',
-                'email' => 'contact@trouvetonphotographe.fr',
+                'email' => 'gaetancholletdev@gmail.com',
                 'availableLanguage' => 'French',
             ],
         ],
