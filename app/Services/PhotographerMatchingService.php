@@ -11,10 +11,11 @@ use Illuminate\Support\Collection;
 class PhotographerMatchingService
 {
     // Pondérations des critères (total = 100)
-    private const WEIGHT_SPECIALTY = 30;
-    private const WEIGHT_DISTANCE = 20;
+    private const WEIGHT_SPECIALTY = 25;
+    private const WEIGHT_KEYWORDS = 15;
+    private const WEIGHT_DISTANCE = 15;
     private const WEIGHT_RATING = 20;
-    private const WEIGHT_EXPERIENCE = 15;
+    private const WEIGHT_EXPERIENCE = 10;
     private const WEIGHT_PRICE = 15;
 
     private const MAX_DISTANCE_KM = 50; // Distance max pour le scoring
@@ -24,12 +25,12 @@ class PhotographerMatchingService
      */
     public function findMatchingPhotographers(
         PhotoProject $project,
-        array $filters = [],
-        int $perPage = 12
+        array        $filters = [],
+        int          $perPage = 12
     ): LengthAwarePaginator {
         $query = Photographer::query()
-            ->whereHas('user')
-            ->with(['user', 'specialties', 'portfolioImages' => fn($q) => $q->featured()->limit(1)]);
+                             ->whereHas('user')
+                             ->with(['user', 'specialties', 'portfolioImages' => fn($q) => $q->featured()->limit(1)]);
 
         // Apply strict filters
         $this->applyStrictFilters($query, $project, $filters);
@@ -40,6 +41,7 @@ class PhotographerMatchingService
         // Calculate scores for each photographer
         $scoredPhotographers = $photographers->map(function ($photographer) use ($project) {
             $photographer->matching_score = $this->calculateScore($photographer, $project);
+
             return $photographer;
         });
 
@@ -91,7 +93,7 @@ class PhotographerMatchingService
         // Additional filters from user
         if (!empty($filters['specialty_ids'])) {
             $query->whereHas('specialties', function ($sq) use ($filters) {
-                $sq->whereIn('specialties.id', (array) $filters['specialty_ids']);
+                $sq->whereIn('specialties.id', (array)$filters['specialty_ids']);
             });
         }
 
@@ -115,7 +117,7 @@ class PhotographerMatchingService
         }
 
         if (!empty($filters['location'])) {
-            $query->where('location', 'LIKE', '%' . $filters['location'] . '%');
+            $query->where('location', 'LIKE', '%'.$filters['location'].'%');
         }
     }
 
@@ -125,20 +127,22 @@ class PhotographerMatchingService
     public function calculateScore(Photographer $photographer, PhotoProject $project): array
     {
         $specialtyScore = $this->calculateSpecialtyScore($photographer, $project);
+        $keywordScore = $this->calculateKeywordScore($photographer, $project);
         $distanceScore = $this->calculateDistanceScore($photographer, $project);
         $ratingScore = $this->calculateRatingScore($photographer);
         $experienceScore = $this->calculateExperienceScore($photographer);
         $priceScore = $this->calculatePriceScore($photographer, $project);
 
         return [
-            'total' => round($specialtyScore + $distanceScore + $ratingScore + $experienceScore + $priceScore, 1),
+            'total' => round($specialtyScore + $keywordScore + $distanceScore + $ratingScore + $experienceScore + $priceScore, 1),
             'breakdown' => [
                 'specialty' => round($specialtyScore, 1),
+                'keywords' => round($keywordScore, 1),
                 'distance' => round($distanceScore, 1),
                 'rating' => round($ratingScore, 1),
                 'experience' => round($experienceScore, 1),
                 'price' => round($priceScore, 1),
-            ]
+            ],
         ];
     }
 
@@ -169,6 +173,30 @@ class PhotographerMatchingService
     }
 
     /**
+     * Calculate keyword match score.
+     */
+    public function calculateKeywordScore(Photographer $photographer, PhotoProject $project): float
+    {
+        if (!$photographer->keywords || !$project->description) {
+            return self::WEIGHT_KEYWORDS * 0.5; // Score neutre si pas de mots-clés ou pas de description
+        }
+
+        $keywords = array_map('trim', explode(',', strtolower($photographer->keywords)));
+        $description = strtolower($project->description.' '.$project->title);
+
+        $matches = 0;
+        foreach ($keywords as $keyword) {
+            if (!empty($keyword) && str_contains($description, $keyword)) {
+                $matches++;
+            }
+        }
+
+        $matchRatio = min($matches / max(count($keywords), 1), 1);
+
+        return $matchRatio * self::WEIGHT_KEYWORDS;
+    }
+
+    /**
      * Calculate distance score using Haversine formula.
      */
     public function calculateDistanceScore(Photographer $photographer, PhotoProject $project): float
@@ -191,16 +219,31 @@ class PhotographerMatchingService
     }
 
     /**
-     * Calculate rating score.
+     * Calculate rating score using Wilson Score approach.
+     * Takes into account both rating quality AND quantity of reviews.
      */
     public function calculateRatingScore(Photographer $photographer): float
     {
-        if (!$photographer->rating) {
-            return self::WEIGHT_RATING * 0.5; // No rating = average score
+        $reviewsCount = $photographer->reviews()->count();
+        $avgRating = $photographer->getRawOriginal('rating');
+
+        if ($reviewsCount === 0 || !$avgRating) {
+            return self::WEIGHT_RATING * 0.3; // Pénalité pour nouveaux photographes
         }
 
-        // Rating is on 5, scale to weight
-        return ($photographer->rating / 5) * self::WEIGHT_RATING;
+        // Wilson Score simplifié
+        // Plus d'avis = plus de confiance dans la note
+        $confidence = 1 - (1 / (1 + $reviewsCount * 0.1)); // 0→1 selon nb avis
+
+        // Score de base (note sur 5)
+        $ratingScore = $avgRating / 5;
+
+        // Combinaison : note × confiance, avec bonus pour volume
+        $volumeBonus = min($reviewsCount / 20, 0.2); // Max 20% bonus à 20+ avis
+
+        $finalScore = ($ratingScore * $confidence + $volumeBonus) * self::WEIGHT_RATING;
+
+        return min($finalScore, self::WEIGHT_RATING); // Cap au max
     }
 
     /**
@@ -247,8 +290,8 @@ class PhotographerMatchingService
         $dLon = deg2rad($lon2 - $lon1);
 
         $a = sin($dLat / 2) * sin($dLat / 2) +
-             cos(deg2rad($lat1)) * cos(deg2rad($lat2)) *
-             sin($dLon / 2) * sin($dLon / 2);
+            cos(deg2rad($lat1)) * cos(deg2rad($lat2)) *
+            sin($dLon / 2) * sin($dLon / 2);
 
         $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
 

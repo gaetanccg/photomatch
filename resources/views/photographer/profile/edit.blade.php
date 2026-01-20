@@ -28,6 +28,18 @@
                         @enderror
                     </div>
 
+                    <!-- Keywords -->
+                    <div>
+                        <label for="keywords" class="block text-sm font-medium text-gray-700">Mots-clés</label>
+                        <textarea id="keywords" name="keywords" rows="2"
+                            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                            placeholder="mariage, reportage corporate, portrait studio, événementiel...">{{ old('keywords', $photographer->keywords) }}</textarea>
+                        <p class="mt-1 text-sm text-gray-500">Séparez vos mots-clés par des virgules. Ces mots-clés ne sont pas visibles publiquement mais améliorent la correspondance avec les projets des clients.</p>
+                        @error('keywords')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
                     <!-- Experience & Phone -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
