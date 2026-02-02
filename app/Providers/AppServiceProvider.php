@@ -6,6 +6,10 @@ use App\Events\BookingRequestCreated;
 use App\Events\BookingRequestResponded;
 use App\Listeners\SendBookingRequestNotificationToPhotographer;
 use App\Listeners\SendBookingResponseNotificationToClient;
+use App\Models\PortfolioImage;
+use App\Models\Review;
+use App\Observers\PortfolioImageObserver;
+use App\Observers\ReviewObserver;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 
@@ -24,6 +28,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Register observers
+        PortfolioImage::observe(PortfolioImageObserver::class);
+        Review::observe(ReviewObserver::class);
+
         // Register event listeners
         Event::listen(
             BookingRequestCreated::class,

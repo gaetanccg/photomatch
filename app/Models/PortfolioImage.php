@@ -57,19 +57,4 @@ class PortfolioImage extends Model
     {
         return $query->orderBy('sort_order')->orderByDesc('created_at');
     }
-
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::deleting(function ($image) {
-            // Delete files from S3 when model is deleted
-            if ($image->path) {
-                Storage::disk('s3')->delete($image->path);
-            }
-            if ($image->thumbnail_path) {
-                Storage::disk('s3')->delete($image->thumbnail_path);
-            }
-        });
-    }
 }

@@ -77,6 +77,9 @@ class Photographer extends Model
         return $this->hasMany(BookingRequest::class)->where('status', 'accepted');
     }
 
+    /**
+     * @deprecated Use ReviewObserver instead. This method is kept for backwards compatibility.
+     */
     public function updateRating(): void
     {
         $avgRating = $this->reviews()->avg('rating');

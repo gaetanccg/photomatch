@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\ProjectType;
 use App\Http\Requests\StorePhotoProjectRequest;
 use App\Http\Requests\UpdatePhotoProjectRequest;
 use App\Models\PhotoProject;
@@ -29,7 +30,7 @@ class PhotoProjectController extends Controller
         $this->authorize('create', PhotoProject::class);
 
         $specialties = Specialty::all();
-        $projectTypes = $this->getProjectTypes();
+        $projectTypes = ProjectType::options();
 
         return view('client.projects.create', compact('specialties', 'projectTypes'));
     }
@@ -59,7 +60,6 @@ class PhotoProjectController extends Controller
             },
         ]);
 
-        // Get top matching photographers for this project
         $matchingPhotographers = collect();
         if ($project->status === 'published') {
             $matchingPhotographers = $this->getTopMatchingPhotographers($project, $matchingService, 6);
@@ -68,30 +68,22 @@ class PhotoProjectController extends Controller
         return view('client.projects.show', compact('project', 'matchingPhotographers'));
     }
 
-    /**
-     * Get top matching photographers for a project.
-     */
     private function getTopMatchingPhotographers(PhotoProject $project, PhotographerMatchingService $matchingService, int $limit = 6)
     {
-        // Get all verified photographers with matching specialty
         $query = Photographer::query()
                              ->whereHas('user')
                              ->with(['user', 'specialties']);
 
-        // Must be verified
         $query->verified();
 
-        // Get all photographers
         $photographers = $query->get();
 
-        // Calculate scores and sort
         $scoredPhotographers = $photographers->map(function ($photographer) use ($project, $matchingService) {
             $photographer->matching_score = $matchingService->calculateScore($photographer, $project);
 
             return $photographer;
         });
 
-        // Sort by score and take top N
         return $scoredPhotographers
             ->sortByDesc(fn($p) => $p->matching_score['total'])
             ->take($limit)
@@ -102,7 +94,6 @@ class PhotoProjectController extends Controller
     {
         $this->authorize('update', $project);
 
-        // Can only edit if draft or published
         if (!in_array($project->status, ['draft', 'published'])) {
             return redirect()
                 ->route('client.projects.show', $project)
@@ -110,7 +101,7 @@ class PhotoProjectController extends Controller
         }
 
         $specialties = Specialty::all();
-        $projectTypes = $this->getProjectTypes();
+        $projectTypes = ProjectType::options();
 
         return view('client.projects.edit', compact('project', 'specialties', 'projectTypes'));
     }
@@ -119,7 +110,6 @@ class PhotoProjectController extends Controller
     {
         $this->authorize('update', $project);
 
-        // Can only update if draft or published
         if (!in_array($project->status, ['draft', 'published'])) {
             return redirect()
                 ->route('client.projects.show', $project)
@@ -137,7 +127,6 @@ class PhotoProjectController extends Controller
     {
         $this->authorize('delete', $project);
 
-        // Cannot delete if has accepted requests
         $hasAcceptedRequests = $project->bookingRequests()
                                        ->where('status', 'accepted')
                                        ->exists();
@@ -153,17 +142,5 @@ class PhotoProjectController extends Controller
         return redirect()
             ->route('client.projects.index')
             ->with('success', 'Projet supprimé avec succès.');
-    }
-
-    private function getProjectTypes(): array
-    {
-        return [
-            'event' => 'Événement',
-            'product' => 'Produit',
-            'real_estate' => 'Immobilier',
-            'corporate' => 'Corporate',
-            'portrait' => 'Portrait',
-            'other' => 'Autre',
-        ];
     }
 }
