@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Photographe - Wireframe PhotoMatch</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: system-ui, -apple-system, sans-serif; background: #f5f5f5; }
+        .wireframe { max-width: 1200px; margin: 0 auto; background: white; border: 2px solid #333; }
+        .annotation { background: #fff3cd; border-left: 4px solid #ffc107; padding: 8px 12px; margin: 15px; font-size: 0.85rem; }
+        a.back { display: inline-block; margin: 20px; color: #333; }
+
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 2px solid #333; }
+        .logo { font-size: 1.25rem; font-weight: bold; }
+        .nav { display: flex; gap: 15px; align-items: center; }
+        .nav a { text-decoration: none; color: #333; font-size: 0.9rem; }
+        .btn { border: 2px solid #333; padding: 8px 16px; background: white; text-decoration: none; color: #333; display: inline-block; }
+        .btn-primary { background: #333; color: white; }
+        .btn-sm { padding: 6px 12px; font-size: 0.85rem; }
+        .avatar { width: 36px; height: 36px; border: 2px solid #333; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: bold; background: #f5f5f5; }
+
+        .layout { display: flex; min-height: 600px; }
+        .sidebar {
+            width: 250px;
+            border-right: 2px solid #333;
+            background: #fafafa;
+        }
+        .sidebar-header { padding: 20px; border-bottom: 2px solid #333; }
+        .sidebar-nav { padding: 10px 0; }
+        .sidebar-nav a {
+            display: block;
+            padding: 12px 20px;
+            text-decoration: none;
+            color: #333;
+            font-size: 0.9rem;
+            border-left: 3px solid transparent;
+        }
+        .sidebar-nav a:hover { background: #f0f0f0; }
+        .sidebar-nav a.active { background: #e9e9e9; border-left-color: #333; font-weight: 600; }
+        .sidebar-section { padding: 10px 20px 5px; font-size: 0.75rem; text-transform: uppercase; color: #666; }
+        .badge-count { background: #dc3545; color: white; padding: 2px 8px; border-radius: 10px; font-size: 0.75rem; margin-left: 5px; }
+
+        .main-content { flex: 1; padding: 30px; }
+        .page-title { margin-bottom: 30px; }
+        .page-title h1 { font-size: 1.5rem; margin-bottom: 5px; }
+        .page-title p { color: #666; }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .stat-card { border: 2px solid #333; padding: 20px; text-align: center; }
+        .stat-card .value { font-size: 2rem; font-weight: bold; }
+        .stat-card .label { font-size: 0.85rem; color: #666; margin-top: 5px; }
+        .stat-card .trend { font-size: 0.8rem; margin-top: 5px; }
+        .trend-up { color: #28a745; }
+        .trend-down { color: #dc3545; }
+
+        .section { margin-bottom: 30px; }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .section-header h2 { font-size: 1.1rem; }
+
+        .card { border: 2px solid #333; }
+        .card-body { padding: 15px; }
+
+        .request-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+        .request-item:hover { background: #f9f9f9; }
+        .request-item:last-child { border-bottom: none; }
+        .request-info h4 { margin-bottom: 3px; }
+        .request-meta { font-size: 0.85rem; color: #666; }
+        .badge { padding: 4px 10px; font-size: 0.75rem; border: 1px solid; }
+        .badge-pending { background: #fff3cd; border-color: #ffc107; color: #856404; }
+        .badge-new { background: #cce5ff; border-color: #007bff; color: #004085; }
+
+        .stars { color: #ffc107; }
+
+        .review-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        .review-item:last-child { border-bottom: none; }
+        .review-header { display: flex; justify-content: space-between; margin-bottom: 5px; }
+        .review-content { font-size: 0.9rem; color: #555; }
+
+        .empty-state { text-align: center; padding: 30px; color: #666; }
+
+        .alert { padding: 15px; border: 2px solid; margin-bottom: 20px; }
+        .alert-warning { background: #fff3cd; border-color: #ffc107; color: #856404; }
+        .alert-info { background: #cce5ff; border-color: #007bff; color: #004085; }
+    </style>
+</head>
+<body>
+    <a href="../index.html" class="back">&larr; Retour index</a>
+
+    <div class="wireframe">
+        <header class="header">
+            <div class="logo">PhotoMatch</div>
+            <nav class="nav">
+                <a href="../public/photographer-profile.html">Voir mon profil public</a>
+                <div class="avatar">PM</div>
+            </nav>
+        </header>
+
+        <div class="annotation">
+            <strong>Route :</strong> GET route('photographer.dashboard')<br>
+            <strong>Controller :</strong> PhotographerController@dashboard<br>
+            <strong>Middleware :</strong> auth, role:photographer
+        </div>
+
+        <div class="layout">
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <strong>[user.name]</strong>
+                    <div style="font-size: 0.85rem; color: #666;">Photographe</div>
+                </div>
+                <nav class="sidebar-nav">
+                    <div class="sidebar-section">Général</div>
+                    <a href="#" class="active">Tableau de bord</a>
+                    <a href="profile/edit.html">Mon profil</a>
+                    <a href="portfolio/index.html">Portfolio</a>
+
+                    <div class="sidebar-section">Planning</div>
+                    <a href="availability/calendar.html">Disponibilités</a>
+
+                    <div class="sidebar-section">Activité</div>
+                    <a href="requests/index.html">Demandes <span class="badge-count">[X]</span></a>
+                    <a href="reviews/index.html">Mes avis</a>
+                    <a href="history.html">Historique</a>
+                </nav>
+            </aside>
+
+            <main class="main-content">
+                <!-- Profile incomplete alert -->
+                <div class="alert alert-warning" style="display: none;">
+                    ⚠️ Votre profil est incomplet. <a href="profile/edit.html">Complétez-le</a> pour apparaître dans les recherches.
+                </div>
+
+                <!-- Verification pending alert -->
+                <div class="alert alert-info" style="display: none;">
+                    Votre profil est en attente de vérification par notre équipe.
+                </div>
+
+                <div class="page-title">
+                    <h1>Bonjour, [user.name] !</h1>
+                    <p>Voici un résumé de votre activité</p>
+                </div>
+
+                <!-- Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="value">[X]</div>
+                        <div class="label">Demandes en attente</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="value">[X]</div>
+                        <div class="label">Missions ce mois</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="value">[rating]</div>
+                        <div class="label">Note moyenne</div>
+                        <div class="trend trend-up">+0.2 ce mois</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="value">[X]€</div>
+                        <div class="label">Revenus ce mois</div>
+                        <div class="trend trend-up">+15%</div>
+                    </div>
+                </div>
+
+                <div class="annotation">
+                    <strong>Stats calculées :</strong><br>
+                    - Demandes en attente : COUNT(booking_requests WHERE photographer_id AND status='pending')<br>
+                    - Missions ce mois : COUNT(booking_requests WHERE status='accepted' AND this month)<br>
+                    - Note moyenne : photographers.rating<br>
+                    - Revenus : SUM(proposed_price) des missions acceptées ce mois
+                </div>
+
+                <!-- Pending Requests -->
+                <div class="section">
+                    <div class="section-header">
+                        <h2>Demandes en attente</h2>
+                        <a href="requests/index.html" class="btn btn-sm" style="border-style: dashed;">Voir tout</a>
+                    </div>
+
+                    <div class="card">
+                        <div class="request-item" style="border-style: dashed;">
+                            <div class="request-info">
+                                <h4>[client.name] - [project.title]</h4>
+                                <div class="request-meta">[project.location] • [project.event_date] • Budget: [budget]€</div>
+                            </div>
+                            <div>
+                                <span class="badge badge-new">Nouveau</span>
+                            </div>
+                        </div>
+                        <div class="request-item" style="border-style: dashed;">
+                            <div class="request-info">
+                                <h4>[client.name] - [project.title]</h4>
+                                <div class="request-meta">[project.location] • [project.event_date]</div>
+                            </div>
+                            <div>
+                                <span class="badge badge-pending">En attente</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="empty-state" style="display: none;">
+                        <p>Aucune demande en attente</p>
+                    </div>
+                </div>
+
+                <div class="annotation">
+                    <strong>Données :</strong> 5 dernières booking_requests WHERE photographer_id AND status='pending' ORDER BY sent_at DESC<br>
+                    <strong>Badge "Nouveau" :</strong> si sent_at < 24h<br>
+                    <strong>Action clic :</strong> route('photographer.requests.show', $bookingRequest)
+                </div>
+
+                <!-- Recent Reviews -->
+                <div class="section">
+                    <div class="section-header">
+                        <h2>Derniers avis</h2>
+                        <a href="reviews/index.html" class="btn btn-sm" style="border-style: dashed;">Voir tout</a>
+                    </div>
+
+                    <div class="card">
+                        <div class="review-item">
+                            <div class="review-header">
+                                <strong>[client.name]</strong>
+                                <span class="stars">★★★★★</span>
+                            </div>
+                            <p class="review-content">"[review.comment tronqué...]"</p>
+                        </div>
+                        <div class="review-item">
+                            <div class="review-header">
+                                <strong>[client.name]</strong>
+                                <span class="stars">★★★★☆</span>
+                            </div>
+                            <p class="review-content">"[review.comment tronqué...]"</p>
+                        </div>
+                    </div>
+
+                    <div class="empty-state" style="display: none;">
+                        <p>Aucun avis pour le moment</p>
+                    </div>
+                </div>
+
+                <div class="annotation">
+                    <strong>Données :</strong> 3 derniers reviews WHERE photographer_id ORDER BY created_at DESC
+                </div>
+            </main>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil photographe - Wireframe PhotoMatch</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: system-ui, -apple-system, sans-serif; background: #f5f5f5; }
+        .wireframe { max-width: 1200px; margin: 0 auto; background: white; border: 2px solid #333; }
+        .annotation { background: #fff3cd; border-left: 4px solid #ffc107; padding: 8px 12px; margin: 15px; font-size: 0.85rem; }
+        .missing { color: #dc3545; font-weight: 500; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 2px solid #333; }
+        .logo { font-size: 1.25rem; font-weight: bold; }
+        .nav { display: flex; gap: 15px; align-items: center; }
+        .nav a { text-decoration: none; color: #333; font-size: 0.9rem; }
+        .btn { border: 2px solid #333; padding: 10px 20px; background: white; text-decoration: none; color: #333; display: inline-block; cursor: pointer; }
+        .btn-primary { background: #333; color: white; }
+        .btn-lg { padding: 14px 28px; font-size: 1rem; }
+        .btn-sm { padding: 6px 12px; font-size: 0.85rem; }
+        a.back { display: inline-block; margin: 20px; color: #333; }
+
+        /* Breadcrumb */
+        .breadcrumb {
+            padding: 15px 20px;
+            font-size: 0.9rem;
+            color: #666;
+            border-bottom: 1px solid #eee;
+        }
+        .breadcrumb a { color: #333; text-decoration: none; }
+
+        /* Hero Section */
+        .profile-hero {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 30px;
+            padding: 30px;
+            border-bottom: 2px solid #333;
+        }
+        .profile-main {
+            display: flex;
+            gap: 25px;
+        }
+        .profile-avatar {
+            width: 150px;
+            height: 150px;
+            border: 2px solid #333;
+            border-radius: 50%;
+            background: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: #666;
+            flex-shrink: 0;
+        }
+        .profile-info h1 {
+            font-size: 1.75rem;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .verified-badge {
+            padding: 4px 10px;
+            font-size: 0.75rem;
+            background: #cce5ff;
+            border: 1px solid #007bff;
+            color: #004085;
+        }
+        .profile-location {
+            color: #666;
+            margin-bottom: 10px;
+        }
+        .profile-rating {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .stars { color: #ffc107; font-size: 1.1rem; }
+        .rating-text { color: #666; }
+        .profile-specialties {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+        .specialty-tag {
+            padding: 5px 12px;
+            background: #f5f5f5;
+            border: 2px solid #333;
+            font-size: 0.85rem;
+        }
+        .profile-bio {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        /* Contact Card */
+        .contact-card {
+            border: 2px solid #333;
+            padding: 25px;
+            background: #fafafa;
+            height: fit-content;
+        }
+        .contact-card h3 { margin-bottom: 15px; }
+        .price-display {
+            margin-bottom: 20px;
+        }
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+        }
+        .price-row:last-child { border-bottom: none; }
+        .price-label { color: #666; }
+        .price-value { font-weight: 600; font-size: 1.1rem; }
+        .contact-btn {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .stats-mini {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #333;
+        }
+        .stat-mini {
+            text-align: center;
+        }
+        .stat-mini-value {
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+        .stat-mini-label {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        /* Tabs */
+        .tabs-container { border-bottom: 2px solid #333; }
+        .tabs {
+            display: flex;
+            padding: 0 20px;
+        }
+        .tab {
+            padding: 15px 25px;
+            border: 2px solid transparent;
+            border-bottom: none;
+            margin-bottom: -2px;
+            cursor: pointer;
+            background: transparent;
+            font-size: 0.95rem;
+        }
+        .tab:hover { background: #f5f5f5; }
+        .tab.active {
+            border-color: #333;
+            background: white;
+        }
+
+        /* Tab Content */
+        .tab-content { padding: 30px; }
+
+        /* Portfolio Grid */
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        .portfolio-item {
+            aspect-ratio: 1;
+            border: 2px solid #333;
+            background: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            cursor: pointer;
+            position: relative;
+        }
+        .portfolio-item:hover::after {
+            content: '🔍 Agrandir';
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        .portfolio-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 8px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            font-size: 0.8rem;
+        }
+
+        /* Reviews */
+        .reviews-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        .reviews-summary {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .reviews-score {
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+        .review-card {
+            border: 2px solid #333;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .review-author {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .review-avatar {
+            width: 40px;
+            height: 40px;
+            border: 2px solid #333;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+            background: #f5f5f5;
+        }
+        .review-date { color: #666; font-size: 0.85rem; }
+        .review-rating { margin-bottom: 10px; }
+        .review-content { color: #555; line-height: 1.6; }
+        .review-response {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f5f5f5;
+            border-left: 3px solid #333;
+        }
+        .review-response-header {
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        /* Availability Calendar */
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .calendar-nav {
+            display: flex;
+            gap: 10px;
+        }
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+        }
+        .calendar-day-header {
+            text-align: center;
+            padding: 10px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #666;
+        }
+        .calendar-day {
+            aspect-ratio: 1;
+            border: 2px solid #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+        }
+        .calendar-day.available { background: #d4edda; cursor: pointer; }
+        .calendar-day.unavailable { background: #f8d7da; }
+        .calendar-day.empty { border-color: transparent; }
+        .calendar-day.today { border-width: 3px; font-weight: bold; }
+        .calendar-legend {
+            display: flex;
+            gap: 20px;
+            margin-top: 15px;
+            font-size: 0.85rem;
+        }
+        .legend-item { display: flex; align-items: center; gap: 5px; }
+        .legend-dot {
+            width: 15px;
+            height: 15px;
+            border: 2px solid #333;
+        }
+        .legend-dot.available { background: #d4edda; }
+        .legend-dot.unavailable { background: #f8d7da; }
+
+        /* Request Modal */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 100;
+        }
+        .modal {
+            background: white;
+            border: 2px solid #333;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-header {
+            padding: 20px;
+            border-bottom: 2px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        .modal-body { padding: 20px; }
+        .modal-footer {
+            padding: 20px;
+            border-top: 2px solid #333;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        .form-group { margin-bottom: 20px; }
+        .form-label { display: block; margin-bottom: 8px; font-weight: 500; }
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            border: 2px solid #333;
+            padding: 12px;
+            font-size: 0.95rem;
+        }
+        .form-textarea { min-height: 120px; resize: vertical; }
+
+        @media (max-width: 768px) {
+            .profile-hero { grid-template-columns: 1fr; }
+            .profile-main { flex-direction: column; align-items: center; text-align: center; }
+            .profile-specialties { justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+    <a href="../index.html" class="back">&larr; Retour index</a>
+
+    <div class="wireframe">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">PhotoMatch</div>
+            <nav class="nav">
+                <a href="search.html">Rechercher</a>
+                <a href="../shared/login.html" class="btn btn-sm">Connexion</a>
+            </nav>
+        </header>
+
+        <div class="annotation">
+            <strong>Route :</strong> GET route('photographers.show', $photographer)<br>
+            <strong>Controller :</strong> PublicPhotographerController@show
+        </div>
+
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb">
+            <a href="home.html">Accueil</a> /
+            <a href="search.html">Photographes</a> /
+            <span>[user.name]</span>
+        </nav>
+
+        <!-- Profile Hero -->
+        <section class="profile-hero">
+            <div class="profile-main">
+                <div class="profile-avatar" style="border-style: dashed;">
+                    [Avatar]
+                </div>
+                <div class="profile-info">
+                    <h1>
+                        [user.name]
+                        <span class="verified-badge">✓ Vérifié</span>
+                    </h1>
+                    <div class="profile-location">📍 [photographers.location]</div>
+                    <div class="profile-rating">
+                        <span class="stars">★★★★★</span>
+                        <span class="rating-text">[photographers.rating] ([X] avis)</span>
+                    </div>
+                    <div class="profile-specialties">
+                        <span class="specialty-tag">[Spécialité 1]</span>
+                        <span class="specialty-tag">[Spécialité 2]</span>
+                        <span class="specialty-tag">[Spécialité 3]</span>
+                    </div>
+                    <p class="profile-bio">
+                        [photographers.bio]<br><br>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                    </p>
+                </div>
+            </div>
+
+            <div class="contact-card">
+                <h3>Réserver ce photographe</h3>
+                <div class="price-display">
+                    <div class="price-row">
+                        <span class="price-label">Tarif horaire</span>
+                        <span class="price-value">[hourly_rate]€/h</span>
+                    </div>
+                    <div class="price-row">
+                        <span class="price-label">Tarif journalier</span>
+                        <span class="price-value">[daily_rate]€/jour</span>
+                    </div>
+                </div>
+                <button class="btn btn-primary btn-lg contact-btn" style="border-style: dashed;">
+                    Envoyer une demande
+                </button>
+                <div class="stats-mini">
+                    <div class="stat-mini">
+                        <div class="stat-mini-value">[experience_years]</div>
+                        <div class="stat-mini-label">ans d'expérience</div>
+                    </div>
+                    <div class="stat-mini">
+                        <div class="stat-mini-value">[total_missions]</div>
+                        <div class="stat-mini-label">missions réalisées</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="annotation">
+            <strong>Action "Envoyer une demande" :</strong><br>
+            - Si non connecté → redirect vers login avec ?intended=photographers/{id}<br>
+            - Si connecté client → ouvre modal de demande<br>
+            - Si connecté photographe → bouton masqué ou désactivé
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs-container">
+            <div class="tabs">
+                <div class="tab active" style="border-style: dashed;">Portfolio</div>
+                <div class="tab" style="border-style: dashed;">Avis ([X])</div>
+                <div class="tab" style="border-style: dashed;">Disponibilités</div>
+            </div>
+        </div>
+
+        <!-- Tab Content: Portfolio -->
+        <div class="tab-content">
+            <h2 style="margin-bottom: 20px;">Portfolio</h2>
+
+            <div class="portfolio-grid">
+                <div class="portfolio-item" style="border-style: dashed;">
+                    [Image 1]
+                    <span class="portfolio-caption">[caption]</span>
+                </div>
+                <div class="portfolio-item" style="border-style: dashed;">[Image 2]</div>
+                <div class="portfolio-item" style="border-style: dashed;">[Image 3]</div>
+                <div class="portfolio-item" style="border-style: dashed;">[Image 4]</div>
+                <div class="portfolio-item" style="border-style: dashed;">[Image 5]</div>
+                <div class="portfolio-item" style="border-style: dashed;">[Image 6]</div>
+            </div>
+
+            <div class="annotation">
+                <strong>Données :</strong> portfolio_images WHERE photographer_id = ? ORDER BY sort_order<br>
+                <strong>Affichage :</strong> is_featured = true en premier<br>
+                <strong>Action clic :</strong> Lightbox / galerie plein écran<br>
+                <strong>Champs :</strong> path (URL S3), caption, specialty_id
+            </div>
+        </div>
+
+        <!-- Tab Content: Reviews (hidden by default, shown when tab clicked) -->
+        <div class="tab-content" style="display: none;">
+            <div class="reviews-header">
+                <div class="reviews-summary">
+                    <div class="reviews-score">[rating]</div>
+                    <div>
+                        <div class="stars">★★★★★</div>
+                        <div style="color: #666; font-size: 0.9rem;">[X] avis</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="review-card">
+                <div class="review-header">
+                    <div class="review-author">
+                        <div class="review-avatar">MC</div>
+                        <div>
+                            <strong>[client.name]</strong>
+                            <div class="review-date">[created_at]</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="review-rating">
+                    <span class="stars">★★★★★</span>
+                </div>
+                <p class="review-content">[reviews.comment]</p>
+
+                <!-- Photographer response -->
+                <div class="review-response">
+                    <div class="review-response-header">Réponse du photographe</div>
+                    <p>[reviews.photographer_response]</p>
+                </div>
+            </div>
+
+            <div class="annotation">
+                <strong>Données :</strong> reviews WHERE photographer_id = ? ORDER BY created_at DESC<br>
+                <strong>Champs :</strong> rating (1-5), comment, photographer_response, responded_at<br>
+                <strong>Join :</strong> users (client) pour le nom
+            </div>
+        </div>
+
+        <!-- Tab Content: Availability Calendar -->
+        <div class="tab-content" style="display: none;">
+            <div class="calendar-header">
+                <h2>Février 2026</h2>
+                <div class="calendar-nav">
+                    <button class="btn btn-sm" style="border-style: dashed;">&larr; Mois précédent</button>
+                    <button class="btn btn-sm" style="border-style: dashed;">Mois suivant &rarr;</button>
+                </div>
+            </div>
+
+            <div class="calendar-grid">
+                <div class="calendar-day-header">Lun</div>
+                <div class="calendar-day-header">Mar</div>
+                <div class="calendar-day-header">Mer</div>
+                <div class="calendar-day-header">Jeu</div>
+                <div class="calendar-day-header">Ven</div>
+                <div class="calendar-day-header">Sam</div>
+                <div class="calendar-day-header">Dim</div>
+
+                <div class="calendar-day empty"></div>
+                <div class="calendar-day empty"></div>
+                <div class="calendar-day empty"></div>
+                <div class="calendar-day empty"></div>
+                <div class="calendar-day empty"></div>
+                <div class="calendar-day available">1</div>
+                <div class="calendar-day available today">2</div>
+                <div class="calendar-day available">3</div>
+                <div class="calendar-day unavailable">4</div>
+                <div class="calendar-day available">5</div>
+                <div class="calendar-day available">6</div>
+                <div class="calendar-day unavailable">7</div>
+                <div class="calendar-day unavailable">8</div>
+                <div class="calendar-day available">9</div>
+                <div class="calendar-day available">10</div>
+                <div class="calendar-day available">11</div>
+                <div class="calendar-day available">12</div>
+                <div class="calendar-day available">13</div>
+                <div class="calendar-day unavailable">14</div>
+                <div class="calendar-day unavailable">15</div>
+                <div class="calendar-day available">16</div>
+                <!-- ... more days -->
+            </div>
+
+            <div class="calendar-legend">
+                <div class="legend-item">
+                    <div class="legend-dot available"></div>
+                    <span>Disponible</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot unavailable"></div>
+                    <span>Indisponible</span>
+                </div>
+            </div>
+
+            <div class="annotation">
+                <strong>Données :</strong> availabilities WHERE photographer_id = ? AND date >= CURDATE()<br>
+                <strong>Logique :</strong><br>
+                - Vert (available) : is_available = true OU pas d'entrée pour cette date<br>
+                - Rouge (unavailable) : is_available = false<br>
+                <strong>Action clic sur jour disponible :</strong> Pré-remplit la date dans le modal de demande
+            </div>
+        </div>
+
+        <!-- Modal: Booking Request (overlay example) -->
+        <div class="modal-backdrop" style="display: none;">
+            <div class="modal">
+                <div class="modal-header">
+                    <h3>Envoyer une demande à [photographe]</h3>
+                    <button class="modal-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="annotation" style="margin: 0 0 20px 0;">
+                        <strong>Prérequis :</strong> Le client doit avoir au moins un projet<br>
+                        <strong>Route :</strong> POST route('booking-requests.store')
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Projet associé *</label>
+                        <select class="form-select" style="border-style: dashed;">
+                            <option>Sélectionner un projet...</option>
+                            <option>[Projet 1 - Date]</option>
+                            <option>[Projet 2 - Date]</option>
+                        </select>
+                    </div>
+
+                    <div class="annotation" style="margin: 0 0 20px 0;">
+                        <strong>Champ :</strong> booking_requests.project_id<br>
+                        <strong>Source :</strong> photo_projects WHERE client_id = auth()->id() AND status IN ('draft', 'published')
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Message au photographe</label>
+                        <textarea class="form-textarea" style="border-style: dashed;" placeholder="Décrivez votre projet, vos attentes..."></textarea>
+                    </div>
+
+                    <div class="annotation" style="margin: 0 0 20px 0;">
+                        <strong>Champ :</strong> booking_requests.client_message<br>
+                        <strong>Validation :</strong> nullable, string
+                    </div>
+
+                    <p style="font-size: 0.85rem; color: #666;">
+                        Le photographe recevra une notification et pourra accepter, refuser ou proposer un tarif pour votre projet.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn">Annuler</button>
+                    <button class="btn btn-primary" style="border-style: dashed;">Envoyer la demande</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="annotation">
+            <strong>Après soumission :</strong><br>
+            - Création booking_request (status: pending, sent_at: now())<br>
+            - Notification au photographe<br>
+            - Email au photographe<br>
+            - Redirect vers route('client.requests.index') avec flash success
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Créer un projet - Wireframe PhotoMatch</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: system-ui, -apple-system, sans-serif; background: #f5f5f5; }
+        .wireframe { max-width: 900px; margin: 0 auto; background: white; border: 2px solid #333; }
+        .annotation { background: #fff3cd; border-left: 4px solid #ffc107; padding: 8px 12px; margin: 15px; font-size: 0.85rem; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 2px solid #333; }
+        .logo { font-size: 1.25rem; font-weight: bold; }
+        .btn { border: 2px solid #333; padding: 10px 20px; background: white; text-decoration: none; color: #333; display: inline-block; cursor: pointer; }
+        .btn-primary { background: #333; color: white; }
+        .btn-lg { padding: 14px 28px; }
+        a.back { display: inline-block; margin: 20px; color: #333; }
+
+        .content { padding: 30px; }
+        .page-title { margin-bottom: 30px; }
+        .page-title h1 { font-size: 1.5rem; margin-bottom: 5px; }
+        .page-title p { color: #666; }
+
+        .form-section {
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid #eee;
+        }
+        .form-section:last-of-type { border-bottom: none; }
+        .form-section h2 {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #333;
+        }
+
+        .form-group { margin-bottom: 20px; }
+        .form-label { display: block; margin-bottom: 8px; font-weight: 500; }
+        .form-label .required { color: #dc3545; }
+        .form-hint { font-size: 0.85rem; color: #666; margin-top: 5px; }
+        .form-input {
+            width: 100%;
+            border: 2px solid #333;
+            padding: 12px;
+            font-size: 0.95rem;
+        }
+        .form-input:focus { outline: none; border-color: #007bff; }
+        .form-select {
+            width: 100%;
+            border: 2px solid #333;
+            padding: 12px;
+            font-size: 0.95rem;
+            background: white;
+        }
+        .form-textarea {
+            width: 100%;
+            border: 2px solid #333;
+            padding: 12px;
+            font-size: 0.95rem;
+            min-height: 150px;
+            resize: vertical;
+        }
+        .form-error { color: #dc3545; font-size: 0.85rem; margin-top: 5px; }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .radio-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+        }
+        .radio-option {
+            border: 2px solid #333;
+            padding: 15px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        .radio-option:hover { background: #f5f5f5; }
+        .radio-option.selected { background: #333; color: white; }
+        .radio-option input { display: none; }
+        .radio-icon { font-size: 1.5rem; margin-bottom: 5px; display: block; }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: space-between;
+            padding-top: 20px;
+        }
+        .form-actions-right { display: flex; gap: 15px; }
+    </style>
+</head>
+<body>
+    <a href="../../index.html" class="back">&larr; Retour index</a>
+
+    <div class="wireframe">
+        <header class="header">
+            <div class="logo">PhotoMatch</div>
+            <a href="index.html" class="btn" style="border-style: dashed;">Annuler</a>
+        </header>
+
+        <div class="annotation">
+            <strong>Route :</strong> GET route('client.projects.create')<br>
+            <strong>Action :</strong> POST route('client.projects.store')<br>
+            <strong>Controller :</strong> PhotoProjectController@create / store
+        </div>
+
+        <div class="content">
+            <div class="page-title">
+                <h1>Créer un nouveau projet</h1>
+                <p>Décrivez votre projet photo pour trouver le photographe idéal</p>
+            </div>
+
+            <form>
+                <!-- Section: Informations générales -->
+                <div class="form-section">
+                    <h2>Informations générales</h2>
+
+                    <div class="form-group">
+                        <label class="form-label">Titre du projet <span class="required">*</span></label>
+                        <input type="text" class="form-input" style="border-style: dashed;" placeholder="Ex: Mariage de Sophie et Pierre" name="title" required>
+                        <p class="form-error" style="display: none;">Le titre est requis</p>
+                    </div>
+
+                    <div class="annotation" style="margin: 0 0 20px 0;">
+                        <strong>Champ :</strong> photo_projects.title<br>
+                        <strong>Validation :</strong> required, string, max:255
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Type de projet <span class="required">*</span></label>
+                        <div class="radio-group">
+                            <label class="radio-option" style="border-style: dashed;">
+                                <input type="radio" name="project_type" value="event">
+                                <span class="radio-icon">🎉</span>
+                                Événement
+                            </label>
+                            <label class="radio-option" style="border-style: dashed;">
+                                <input type="radio" name="project_type" value="portrait">
+                                <span class="radio-icon">👤</span>
+                                Portrait
+                            </label>
+                            <label class="radio-option" style="border-style: dashed;">
+                                <input type="radio" name="project_type" value="corporate">
+                                <span class="radio-icon">🏢</span>
+                                Corporate
+                            </label>
+                            <label class="radio-option" style="border-style: dashed;">
+                                <input type="radio" name="project_type" value="product">
+                                <span class="radio-icon">📦</span>
+                                Produit
+                            </label>
+                            <label class="radio-option" style="border-style: dashed;">
+                                <input type="radio" name="project_type" value="real_estate">
+                                <span class="radio-icon">🏠</span>
+                                Immobilier
+                            </label>
+                            <label class="radio-option" style="border-style: dashed;">
+                                <input type="radio" name="project_type" value="other">
+                                <span class="radio-icon">📷</span>
+                                Autre
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="annotation" style="margin: 0 0 20px 0;">
+                        <strong>Champ :</strong> photo_projects.project_type<br>
+                        <strong>Valeurs enum :</strong> event, product, real_estate, corporate, portrait, other
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Description <span class="required">*</span></label>
+                        <textarea class="form-textarea" style="border-style: dashed;" name="description" placeholder="Décrivez votre projet en détail : contexte, attentes, style souhaité..." required></textarea>
+                        <p class="form-hint">Soyez précis pour attirer les photographes adaptés à votre projet</p>
+                    </div>
+
+                    <div class="annotation" style="margin: 0 0 20px 0;">
+                        <strong>Champ :</strong> photo_projects.description<br>
+                        <strong>Validation :</strong> required, string
+                    </div>
+                </div>
+
+                <!-- Section: Date et lieu -->
+                <div class="form-section">
+                    <h2>Date et lieu</h2>
+
+                    <div class="form-group">
+                        <label class="form-label">Date de l'événement</label>
+                        <input type="date" class="form-input" style="border-style: dashed;" name="event_date">
+                        <p class="form-hint">Pour un événement ponctuel (mariage, anniversaire...)</p>
+                    </div>
+
+                    <div class="annotation" style="margin: 0 0 20px 0;">
+                        <strong>Champ :</strong> photo_projects.event_date<br>
+                        <strong>Validation :</strong> nullable, date, after_or_equal:today
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Date de début</label>
+                            <input type="date" class="form-input" style="border-style: dashed;" name="date_start">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Date de fin</label>
+                            <input type="date" class="form-input" style="border-style: dashed;" name="date_end">
+                        </div>
+                    </div>
+                    <p class="form-hint" style="margin-top: -10px;">Pour un projet sur plusieurs jours ou une période flexible</p>
+
+                    <div class="annotation" style="margin: 0 0 20px 0;">
+                        <strong>Champs :</strong> photo_projects.date_start, date_end<br>
+                        <strong>Validation :</strong> nullable, date, date_end after_or_equal date_start
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Lieu <span class="required">*</span></label>
+                        <input type="text" class="form-input" style="border-style: dashed;" name="location" placeholder="Adresse, ville ou région" required>
+                    </div>
+
+                    <div class="annotation" style="margin: 0 0 20px 0;">
+                        <strong>Champs :</strong> photo_projects.location, latitude, longitude<br>
+                        <strong>Note :</strong> Géocodage automatique via API (Google/Mapbox) pour stocker lat/lng<br>
+                        <strong>Validation :</strong> required, string
+                    </div>
+                </div>
+
+                <!-- Section: Budget et durée -->
+                <div class="form-section">
+                    <h2>Budget et durée</h2>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Budget minimum (€)</label>
+                            <input type="number" class="form-input" style="border-style: dashed;" name="budget_min" placeholder="500">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Budget maximum (€)</label>
+                            <input type="number" class="form-input" style="border-style: dashed;" name="budget_max" placeholder="1500">
+                        </div>
+                    </div>
+
+                    <div class="annotation" style="margin: 0 0 20px 0;">
+                        <strong>Champs :</strong> photo_projects.budget_min, budget_max<br>
+                        <strong>Validation :</strong> nullable, numeric, min:0, budget_max >= budget_min
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Durée estimée (heures)</label>
+                        <input type="number" class="form-input" style="border-style: dashed; max-width: 200px;" name="estimated_duration" placeholder="4">
+                        <p class="form-hint">Estimation du temps de shooting nécessaire</p>
+                    </div>
+
+                    <div class="annotation" style="margin: 0 0 20px 0;">
+                        <strong>Champ :</strong> photo_projects.estimated_duration<br>
+                        <strong>Validation :</strong> nullable, integer, min:1
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <a href="index.html" class="btn">Annuler</a>
+                    <div class="form-actions-right">
+                        <button type="submit" name="status" value="draft" class="btn" style="border-style: dashed;">
+                            Enregistrer en brouillon
+                        </button>
+                        <button type="submit" name="status" value="published" class="btn btn-primary btn-lg" style="border-style: dashed;">
+                            Publier le projet
+                        </button>
+                    </div>
+                </div>
+
+                <div class="annotation">
+                    <strong>Statuts possibles :</strong><br>
+                    - "Enregistrer en brouillon" → status = 'draft' (projet visible uniquement par le client)<br>
+                    - "Publier" → status = 'published' (projet peut recevoir des demandes)<br>
+                    <strong>Après soumission :</strong> redirect vers route('client.projects.show', $project)
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

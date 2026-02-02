@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mes avis - Wireframe PhotoMatch</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: system-ui, -apple-system, sans-serif; background: #f5f5f5; }
+        .wireframe { max-width: 1200px; margin: 0 auto; background: white; border: 2px solid #333; }
+        .annotation { background: #fff3cd; border-left: 4px solid #ffc107; padding: 8px 12px; margin: 15px; font-size: 0.85rem; }
+        a.back { display: inline-block; margin: 20px; color: #333; }
+
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 2px solid #333; }
+        .logo { font-size: 1.25rem; font-weight: bold; }
+        .btn { border: 2px solid #333; padding: 8px 16px; background: white; text-decoration: none; color: #333; display: inline-block; cursor: pointer; }
+        .btn-sm { padding: 6px 12px; font-size: 0.85rem; }
+
+        .layout { display: flex; min-height: 600px; }
+        .sidebar { width: 250px; border-right: 2px solid #333; background: #fafafa; }
+        .sidebar-header { padding: 20px; border-bottom: 2px solid #333; }
+        .sidebar-nav { padding: 10px 0; }
+        .sidebar-nav a { display: block; padding: 12px 20px; text-decoration: none; color: #333; font-size: 0.9rem; border-left: 3px solid transparent; }
+        .sidebar-nav a:hover { background: #f0f0f0; }
+        .sidebar-nav a.active { background: #e9e9e9; border-left-color: #333; font-weight: 600; }
+        .sidebar-section { padding: 10px 20px 5px; font-size: 0.75rem; text-transform: uppercase; color: #666; }
+
+        .main-content { flex: 1; padding: 30px; }
+        .page-header { margin-bottom: 30px; }
+        .page-header h1 { font-size: 1.5rem; margin-bottom: 5px; }
+
+        .stats-row { display: flex; gap: 30px; margin-bottom: 30px; padding: 25px; border: 2px solid #333; background: #fafafa; }
+        .stat-big { text-align: center; }
+        .stat-big .value { font-size: 3rem; font-weight: bold; }
+        .stat-big .label { font-size: 0.9rem; color: #666; }
+        .stars { color: #ffc107; font-size: 1.5rem; }
+        .rating-breakdown { flex: 1; }
+        .rating-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+        .rating-bar-label { width: 50px; font-size: 0.9rem; }
+        .rating-bar-track { flex: 1; height: 10px; background: #eee; border: 1px solid #ddd; }
+        .rating-bar-fill { height: 100%; background: #ffc107; }
+        .rating-bar-count { width: 30px; font-size: 0.85rem; color: #666; }
+
+        .review-card { border: 2px solid #333; margin-bottom: 20px; }
+        .review-card-header { padding: 15px 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        .review-author { display: flex; align-items: center; gap: 15px; }
+        .review-avatar { width: 50px; height: 50px; border: 2px solid #333; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; background: #f5f5f5; }
+        .review-author-info h4 { margin-bottom: 3px; }
+        .review-date { font-size: 0.85rem; color: #666; }
+        .review-rating { font-size: 1.1rem; }
+        .review-card-body { padding: 20px; }
+        .review-content { line-height: 1.6; color: #444; margin-bottom: 15px; }
+        .review-project { font-size: 0.85rem; color: #666; }
+        .review-response { margin-top: 15px; padding: 15px; background: #f5f5f5; border-left: 3px solid #333; }
+        .review-response-header { font-weight: 600; margin-bottom: 8px; font-size: 0.9rem; }
+        .review-card-footer { padding: 15px 20px; border-top: 1px solid #eee; background: #fafafa; }
+
+        .empty-state { text-align: center; padding: 60px 20px; color: #666; }
+        .empty-state h3 { margin-bottom: 10px; color: #333; }
+    </style>
+</head>
+<body>
+    <a href="../../index.html" class="back">&larr; Retour index</a>
+
+    <div class="wireframe">
+        <header class="header">
+            <div class="logo">PhotoMatch</div>
+            <a href="../../public/photographer-profile.html" class="btn">Voir mon profil public</a>
+        </header>
+
+        <div class="annotation">
+            <strong>Route :</strong> GET route('photographer.reviews.index')<br>
+            <strong>Controller :</strong> ReviewController@photographerIndex
+        </div>
+
+        <div class="layout">
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <strong>[user.name]</strong>
+                    <div style="font-size: 0.85rem; color: #666;">Photographe</div>
+                </div>
+                <nav class="sidebar-nav">
+                    <div class="sidebar-section">Général</div>
+                    <a href="../dashboard.html">Tableau de bord</a>
+                    <a href="../profile/edit.html">Mon profil</a>
+                    <a href="../portfolio/index.html">Portfolio</a>
+                    <div class="sidebar-section">Planning</div>
+                    <a href="../availability/calendar.html">Disponibilités</a>
+                    <div class="sidebar-section">Activité</div>
+                    <a href="../requests/index.html">Demandes</a>
+                    <a href="#" class="active">Mes avis</a>
+                    <a href="../history.html">Historique</a>
+                </nav>
+            </aside>
+
+            <main class="main-content">
+                <div class="page-header">
+                    <h1>Mes avis clients</h1>
+                </div>
+
+                <!-- Stats Summary -->
+                <div class="stats-row">
+                    <div class="stat-big">
+                        <div class="value">[rating]</div>
+                        <div class="stars">★★★★★</div>
+                        <div class="label">[X] avis</div>
+                    </div>
+                    <div class="rating-breakdown">
+                        <div class="rating-bar">
+                            <div class="rating-bar-label">5 ★</div>
+                            <div class="rating-bar-track"><div class="rating-bar-fill" style="width: 70%;"></div></div>
+                            <div class="rating-bar-count">[X]</div>
+                        </div>
+                        <div class="rating-bar">
+                            <div class="rating-bar-label">4 ★</div>
+                            <div class="rating-bar-track"><div class="rating-bar-fill" style="width: 20%;"></div></div>
+                            <div class="rating-bar-count">[X]</div>
+                        </div>
+                        <div class="rating-bar">
+                            <div class="rating-bar-label">3 ★</div>
+                            <div class="rating-bar-track"><div class="rating-bar-fill" style="width: 10%;"></div></div>
+                            <div class="rating-bar-count">[X]</div>
+                        </div>
+                        <div class="rating-bar">
+                            <div class="rating-bar-label">2 ★</div>
+                            <div class="rating-bar-track"><div class="rating-bar-fill" style="width: 0%;"></div></div>
+                            <div class="rating-bar-count">0</div>
+                        </div>
+                        <div class="rating-bar">
+                            <div class="rating-bar-label">1 ★</div>
+                            <div class="rating-bar-track"><div class="rating-bar-fill" style="width: 0%;"></div></div>
+                            <div class="rating-bar-count">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="annotation">
+                    <strong>Stats :</strong> photographers.rating + COUNT/GROUP BY rating
+                </div>
+
+                <!-- Reviews List -->
+                <div class="review-card">
+                    <div class="review-card-header">
+                        <div class="review-author">
+                            <div class="review-avatar">[Init]</div>
+                            <div class="review-author-info">
+                                <h4>[client.name]</h4>
+                                <div class="review-date">[created_at]</div>
+                            </div>
+                        </div>
+                        <div class="review-rating">
+                            <span class="stars">★★★★★</span>
+                        </div>
+                    </div>
+                    <div class="review-card-body">
+                        <p class="review-content">[reviews.comment]</p>
+                        <div class="review-project">Mission : [photo_project.title] - [event_date]</div>
+
+                        <!-- Response if exists -->
+                        <div class="review-response">
+                            <div class="review-response-header">Votre réponse</div>
+                            <p>[reviews.photographer_response]</p>
+                        </div>
+                    </div>
+                    <div class="review-card-footer" style="display: none;">
+                        <a href="respond.html" class="btn btn-sm" style="border-style: dashed;">Répondre à cet avis</a>
+                    </div>
+                </div>
+
+                <div class="review-card">
+                    <div class="review-card-header">
+                        <div class="review-author">
+                            <div class="review-avatar">[Init]</div>
+                            <div class="review-author-info">
+                                <h4>[client.name]</h4>
+                                <div class="review-date">[created_at]</div>
+                            </div>
+                        </div>
+                        <div class="review-rating">
+                            <span class="stars">★★★★☆</span>
+                        </div>
+                    </div>
+                    <div class="review-card-body">
+                        <p class="review-content">[reviews.comment]</p>
+                        <div class="review-project">Mission : [photo_project.title]</div>
+                    </div>
+                    <div class="review-card-footer">
+                        <a href="respond.html" class="btn btn-sm" style="border-style: dashed;">Répondre à cet avis</a>
+                    </div>
+                </div>
+
+                <div class="annotation">
+                    <strong>Données :</strong> reviews WHERE photographer_id ORDER BY created_at DESC<br>
+                    <strong>Bouton "Répondre" :</strong> affiché si photographer_response IS NULL<br>
+                    <strong>Action :</strong> route('photographer.reviews.respond', $review)
+                </div>
+
+                <div class="empty-state" style="display: none;">
+                    <div style="font-size: 3rem; margin-bottom: 15px;">⭐</div>
+                    <h3>Aucun avis</h3>
+                    <p>Vos avis clients apparaîtront ici après vos missions.</p>
+                </div>
+            </main>
+        </div>
+    </div>
+</body>
+</html>

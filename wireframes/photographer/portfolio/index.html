@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon portfolio - Wireframe PhotoMatch</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: system-ui, -apple-system, sans-serif; background: #f5f5f5; }
+        .wireframe { max-width: 1200px; margin: 0 auto; background: white; border: 2px solid #333; }
+        .annotation { background: #fff3cd; border-left: 4px solid #ffc107; padding: 8px 12px; margin: 15px; font-size: 0.85rem; }
+        a.back { display: inline-block; margin: 20px; color: #333; }
+
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 2px solid #333; }
+        .logo { font-size: 1.25rem; font-weight: bold; }
+        .btn { border: 2px solid #333; padding: 8px 16px; background: white; text-decoration: none; color: #333; display: inline-block; cursor: pointer; }
+        .btn-primary { background: #333; color: white; }
+        .btn-sm { padding: 6px 12px; font-size: 0.85rem; }
+        .btn-danger { color: #dc3545; border-color: #dc3545; }
+
+        .layout { display: flex; min-height: 600px; }
+        .sidebar { width: 250px; border-right: 2px solid #333; background: #fafafa; }
+        .sidebar-header { padding: 20px; border-bottom: 2px solid #333; }
+        .sidebar-nav { padding: 10px 0; }
+        .sidebar-nav a { display: block; padding: 12px 20px; text-decoration: none; color: #333; font-size: 0.9rem; border-left: 3px solid transparent; }
+        .sidebar-nav a:hover { background: #f0f0f0; }
+        .sidebar-nav a.active { background: #e9e9e9; border-left-color: #333; font-weight: 600; }
+        .sidebar-section { padding: 10px 20px 5px; font-size: 0.75rem; text-transform: uppercase; color: #666; }
+
+        .main-content { flex: 1; padding: 30px; }
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .page-header h1 { font-size: 1.5rem; }
+        .page-subtitle { color: #666; font-size: 0.9rem; }
+
+        .upload-zone {
+            border: 2px dashed #333;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 30px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .upload-zone:hover { background: #f9f9f9; border-color: #007bff; }
+        .upload-icon { font-size: 3rem; margin-bottom: 15px; }
+        .upload-text { color: #666; }
+        .upload-hint { font-size: 0.85rem; color: #999; margin-top: 10px; }
+
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        .portfolio-item {
+            position: relative;
+            aspect-ratio: 1;
+            border: 2px solid #333;
+            background: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            cursor: grab;
+        }
+        .portfolio-item:hover .portfolio-overlay { opacity: 1; }
+        .portfolio-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .portfolio-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 4px 8px;
+            background: #ffc107;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+        .portfolio-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 8px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            font-size: 0.8rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+        .empty-state h3 { margin-bottom: 10px; color: #333; }
+
+        /* Modal */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 100;
+        }
+        .modal {
+            background: white;
+            border: 2px solid #333;
+            max-width: 500px;
+            width: 100%;
+        }
+        .modal-header {
+            padding: 15px 20px;
+            border-bottom: 2px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-close { background: none; border: none; font-size: 1.5rem; cursor: pointer; }
+        .modal-body { padding: 20px; }
+        .modal-footer { padding: 15px 20px; border-top: 2px solid #333; display: flex; justify-content: space-between; }
+
+        .form-group { margin-bottom: 15px; }
+        .form-label { display: block; margin-bottom: 5px; font-weight: 500; }
+        .form-input, .form-select {
+            width: 100%;
+            border: 2px solid #333;
+            padding: 10px;
+            font-size: 0.9rem;
+        }
+        .form-checkbox { margin-right: 8px; }
+    </style>
+</head>
+<body>
+    <a href="../../index.html" class="back">&larr; Retour index</a>
+
+    <div class="wireframe">
+        <header class="header">
+            <div class="logo">PhotoMatch</div>
+            <a href="../../public/photographer-profile.html" class="btn">Voir mon profil public</a>
+        </header>
+
+        <div class="annotation">
+            <strong>Route :</strong> GET route('photographer.portfolio.index')<br>
+            <strong>Controller :</strong> PortfolioController@index
+        </div>
+
+        <div class="layout">
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <strong>[user.name]</strong>
+                    <div style="font-size: 0.85rem; color: #666;">Photographe</div>
+                </div>
+                <nav class="sidebar-nav">
+                    <div class="sidebar-section">Général</div>
+                    <a href="../dashboard.html">Tableau de bord</a>
+                    <a href="../profile/edit.html">Mon profil</a>
+                    <a href="#" class="active">Portfolio</a>
+                    <div class="sidebar-section">Planning</div>
+                    <a href="../availability/calendar.html">Disponibilités</a>
+                    <div class="sidebar-section">Activité</div>
+                    <a href="../requests/index.html">Demandes</a>
+                    <a href="../reviews/index.html">Mes avis</a>
+                </nav>
+            </aside>
+
+            <main class="main-content">
+                <div class="page-header">
+                    <div>
+                        <h1>Mon portfolio</h1>
+                        <div class="page-subtitle">[X]/50 images</div>
+                    </div>
+                </div>
+
+                <!-- Upload Zone -->
+                <div class="upload-zone" style="border-style: dashed;">
+                    <div class="upload-icon">📷</div>
+                    <div class="upload-text">Cliquez ou déposez vos images ici</div>
+                    <div class="upload-hint">JPEG, PNG, WEBP - Max 5 Mo par image - Max 10 images à la fois</div>
+                    <input type="file" multiple accept="image/*" style="display: none;">
+                </div>
+
+                <div class="annotation">
+                    <strong>Route :</strong> POST route('photographer.portfolio.store')<br>
+                    <strong>Validation :</strong> images.* = required, image, mimes:jpeg,png,jpg,webp, max:5120<br>
+                    <strong>Limite :</strong> Max 50 images au total, max 10 par upload<br>
+                    <strong>Stockage :</strong> S3 à portfolios/{photographer_id}/{filename}
+                </div>
+
+                <!-- Portfolio Grid -->
+                <p style="color: #666; margin-bottom: 15px; font-size: 0.9rem;">
+                    Glissez-déposez pour réorganiser • Cliquez pour modifier
+                </p>
+
+                <div class="portfolio-grid">
+                    <div class="portfolio-item" style="border-style: dashed;">
+                        <span class="portfolio-badge">Vedette</span>
+                        [Image 1]
+                        <span class="portfolio-caption">[caption]</span>
+                        <div class="portfolio-overlay">
+                            <button class="btn btn-sm" style="background: white;">Modifier</button>
+                            <button class="btn btn-sm btn-danger" style="background: white;">Supprimer</button>
+                        </div>
+                    </div>
+                    <div class="portfolio-item" style="border-style: dashed;">
+                        [Image 2]
+                        <div class="portfolio-overlay">
+                            <button class="btn btn-sm" style="background: white;">Modifier</button>
+                            <button class="btn btn-sm btn-danger" style="background: white;">Supprimer</button>
+                        </div>
+                    </div>
+                    <div class="portfolio-item" style="border-style: dashed;">
+                        [Image 3]
+                        <div class="portfolio-overlay">
+                            <button class="btn btn-sm" style="background: white;">Modifier</button>
+                            <button class="btn btn-sm btn-danger" style="background: white;">Supprimer</button>
+                        </div>
+                    </div>
+                    <div class="portfolio-item" style="border-style: dashed;">
+                        [Image 4]
+                        <div class="portfolio-overlay">
+                            <button class="btn btn-sm" style="background: white;">Modifier</button>
+                            <button class="btn btn-sm btn-danger" style="background: white;">Supprimer</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="annotation">
+                    <strong>Données :</strong> portfolio_images WHERE photographer_id ORDER BY sort_order<br>
+                    <strong>Champs :</strong> filename, path, caption, specialty_id, sort_order, is_featured<br>
+                    <strong>Drag & drop :</strong> POST route('photographer.portfolio.reorder') avec tableau d'IDs
+                </div>
+
+                <div class="empty-state" style="display: none;">
+                    <div style="font-size: 3rem; margin-bottom: 15px;">📷</div>
+                    <h3>Aucune photo</h3>
+                    <p>Commencez à construire votre portfolio en ajoutant des images.</p>
+                </div>
+            </main>
+        </div>
+
+        <!-- Edit Modal -->
+        <div class="modal-backdrop" style="display: none;">
+            <div class="modal">
+                <div class="modal-header">
+                    <h3>Modifier l'image</h3>
+                    <button class="modal-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div style="height: 150px; background: #ddd; margin-bottom: 15px; display: flex; align-items: center; justify-content: center;">[Aperçu image]</div>
+
+                    <div class="form-group">
+                        <label class="form-label">Légende</label>
+                        <input type="text" class="form-input" style="border-style: dashed;" name="caption" placeholder="Description de la photo...">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Spécialité</label>
+                        <select class="form-select" style="border-style: dashed;" name="specialty_id">
+                            <option value="">Aucune</option>
+                            <option value="1">Mariage</option>
+                            <option value="2">Portrait</option>
+                            <option value="3">Corporate</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" class="form-checkbox" name="is_featured">
+                            Photo vedette (affichée en priorité)
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger" style="border-style: dashed;">Supprimer</button>
+                    <button class="btn btn-primary" style="border-style: dashed;">Enregistrer</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="annotation">
+            <strong>Modifier :</strong> PUT route('photographer.portfolio.update', $portfolioImage)<br>
+            <strong>Supprimer :</strong> DELETE route('photographer.portfolio.destroy', $portfolioImage)<br>
+            <strong>Champs modifiables :</strong> caption, specialty_id, is_featured
+        </div>
+    </div>
+</body>
+</html>

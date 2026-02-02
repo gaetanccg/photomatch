@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhotoMatch - Index des Wireframes</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: system-ui, -apple-system, sans-serif; background: #f5f5f5; padding: 20px; line-height: 1.6; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { font-size: 2rem; margin-bottom: 10px; }
+        h2 { font-size: 1.5rem; margin: 30px 0 15px; padding-bottom: 10px; border-bottom: 2px solid #333; }
+        h3 { font-size: 1.1rem; margin: 20px 0 10px; color: #555; }
+        .header { background: white; padding: 30px; border: 2px solid #333; margin-bottom: 30px; }
+        .header p { color: #666; margin-top: 10px; }
+        .section { background: white; padding: 20px; border: 2px solid #333; margin-bottom: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; }
+        .card { border: 2px solid #333; padding: 15px; background: #fafafa; transition: all 0.2s; }
+        .card:hover { background: #333; color: white; }
+        .card:hover a { color: white; }
+        .card a { text-decoration: none; color: #333; display: block; }
+        .card h4 { margin-bottom: 5px; }
+        .card p { font-size: 0.85rem; color: #666; }
+        .card:hover p { color: #ccc; }
+        .legend { background: #fff3cd; border: 2px solid #ffc107; padding: 20px; margin-bottom: 30px; }
+        .legend h3 { margin-top: 0; color: #856404; }
+        .legend ul { margin-left: 20px; }
+        .legend li { margin: 5px 0; }
+        .flow { background: white; padding: 20px; border: 2px solid #333; }
+        .flow-step { display: inline-block; padding: 10px 20px; border: 2px solid #333; margin: 5px; background: #eee; }
+        .flow-arrow { display: inline-block; margin: 0 5px; font-size: 1.5rem; }
+        .badge { display: inline-block; padding: 2px 8px; font-size: 0.75rem; border: 1px solid; margin-left: 10px; }
+        .badge-client { background: #e3f2fd; border-color: #2196f3; color: #1565c0; }
+        .badge-photographer { background: #e8f5e9; border-color: #4caf50; color: #2e7d32; }
+        .badge-public { background: #f3e5f5; border-color: #9c27b0; color: #7b1fa2; }
+        .badge-admin { background: #ffebee; border-color: #f44336; color: #c62828; }
+        .status { margin-top: 30px; padding: 20px; background: #e8f5e9; border: 2px solid #4caf50; }
+        .status h3 { color: #2e7d32; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>PhotoMatch - Wireframes</h1>
+            <p>Documentation visuelle de toutes les interfaces de l'application de mise en relation clients-photographes</p>
+            <p><strong>Généré à partir de l'analyse du code :</strong> Routes, Contrôleurs, Modèles, Migrations</p>
+        </div>
+
+        <div class="legend">
+            <h3>Légende des conventions</h3>
+            <ul>
+                <li><strong>Bordures pointillées</strong> : zones cliquables / interactives</li>
+                <li><strong>Annotations jaunes</strong> : explications du comportement attendu</li>
+                <li><strong>Texte rouge</strong> : fonctionnalités manquantes ou à implémenter</li>
+                <li><strong>[Placeholder]</strong> : contenu dynamique provenant de la base de données</li>
+                <li><span class="badge badge-client">Client</span> Interface client</li>
+                <li><span class="badge badge-photographer">Photographe</span> Interface photographe</li>
+                <li><span class="badge badge-public">Public</span> Pages accessibles sans connexion</li>
+                <li><span class="badge badge-admin">Admin</span> Interface administration</li>
+            </ul>
+        </div>
+
+        <!-- PUBLIC -->
+        <div class="section">
+            <h2>Pages Publiques <span class="badge badge-public">Public</span></h2>
+            <div class="grid">
+                <div class="card">
+                    <a href="public/home.html">
+                        <h4>Accueil</h4>
+                        <p>Page d'accueil avec recherche et mise en avant</p>
+                    </a>
+                </div>
+                <div class="card">
+                    <a href="public/search.html">
+                        <h4>Recherche photographes</h4>
+                        <p>Recherche avec filtres (spécialité, lieu, prix, disponibilité)</p>
+                    </a>
+                </div>
+                <div class="card">
+                    <a href="public/photographer-profile.html">
+                        <h4>Profil photographe</h4>
+                        <p>Page publique avec portfolio, avis, disponibilités</p>
+                    </a>
+                </div>
+                <div class="card">
+                    <a href="public/photographers-list.html">
+                        <h4>Liste des photographes</h4>
+                        <p>Annuaire complet des photographes</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- AUTH -->
+        <div class="section">
+            <h2>Authentification <span class="badge badge-public">Public</span></h2>
+            <div class="grid">
+                <div class="card">
+                    <a href="shared/register.html">
+                        <h4>Inscription</h4>
+                        <p>Formulaire avec choix du rôle (client/photographe)</p>
+                    </a>
+                </div>
+                <div class="card">
+                    <a href="shared/login.html">
+                        <h4>Connexion</h4>
+                        <p>Formulaire de connexion</p>
+                    </a>
+                </div>
+                <div class="card">
+                    <a href="shared/forgot-password.html">
+                        <h4>Mot de passe oublié</h4>
+                        <p>Demande de réinitialisation</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- CLIENT -->
+        <div class="section">
+            <h2>Espace Client <span class="badge badge-client">Client</span></h2>
+            <h3>Dashboard & Projets</h3>
+            <div class="grid">
+                <div class="card">
+                    <a href="client/dashboard.html">
+                        <h4>Tableau de bord</h4>
+                        <p>Vue d'ensemble : projets actifs, demandes en cours</p>
+                    </a>
+                </div>
+                <div class="card">
+                    <a href="client/projects/index.html">
+                        <h4>Mes projets</h4>
+                        <p>Liste de tous les projets photo</p>
+                    </a>
+                </div>
+                <div class="card">
+                    <a href="client/projects/create.html">
+                        <h4>Créer un projet</h4>
+                        <p>Formulaire : titre, description, type, dates, lieu, budget</p>
+                    </a>
+                </div>
+                <div class="card">
+                    <a href="client/projects/show.html">
+                        <h4>Détail projet</h4>
+                        <p>Informations projet + demandes associées</p>
+                    </a>
+                </div>
+                <div class="card">
+                    <a href="client/projects/edit.html">
+                        <h4>Modifier projet</h4>
+                        <p>Édition des informations du projet</p>
+                    </a>
+                </div>
+            </div>
+
+            <h3>Demandes & Réservations</h3>
+            <div class="grid">
+                <div class="card">
+                    <a href="client/requests/index.html">
+                        <h4>Mes demandes</h4>
+                        <p>Liste des demandes envoyées aux photographes</p>
+                    </a>
+                </div>
+                <div class="card">
+                    <a href="client/requests/show.html">
+                        <h4>Détail demande</h4>
+                        <p>Statut, messages, prix proposé</p>
+                    </a>
+                </div>
+                <div class="card">
+                    <a href="client/requests/create.html">
+                        <h4>Envoyer une demande</h4>
+                        <p>Formulaire de contact photographe</p>
+                    </a>
+                </div>
+                <div class="card">
+                    <a href="client/reviews/create.html">
+                        <h4>Laisser un avis</h4>
+                        <p>Note (1-5) + commentaire après mission</p>
+                    </a>
+                </div>
+                <div class="card">
+                    <a href="client/history.html">
+                        <h4>Historique missions</h4>
+                        <p>Missions terminées</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- PHOTOGRAPHER -->
+        <div class="section">
+            <h2>Espace Photographe <span class="badge badge-photographer">Photographe</span></h2>
+            <h3>Dashboard & Profil</h3>
+            <div class="grid">
+                <div class="card">
+                    <a href="photographer/dashboard.html">
+                        <h4>Tableau de bord</h4>
+                        <p>Stats, demandes récentes, revenus</p>
+                    </a>
+                </div>
+                <div class="card">
+                    <a href="photographer/profile/edit.html">
+                        <h4>Mon profil</h4>
+                        <p>Bio, SIRET, tarifs, localisation, spécialités</p>
+                    </a>
+                </div>
+            </div>
+
+            <h3>Portfolio</h3>
+            <div class="grid">
+                <div class="card">
+                    <a href="photographer/portfolio/index.html">
+                        <h4>Mon portfolio</h4>
+                        <p>Gestion galerie photos (50 max)</p>
+                    </a>
+                </div>
+            </div>
+
+            <h3>Disponibilités</h3>
+            <div class="grid">
+                <div class="card">
+                    <a href="photographer/availability/calendar.html">
+                        <h4>Calendrier</h4>
+                        <p>Gestion des disponibilités par date</p>
+                    </a>
+                </div>
+            </div>
+
+            <h3>Demandes & Avis</h3>
+            <div class="grid">
+                <div class="card">
+                    <a href="photographer/requests/index.html">
+                        <h4>Demandes reçues</h4>
+                        <p>Liste des demandes clients</p>
+                    </a>
+                </div>
+                <div class="card">
+                    <a href="photographer/requests/show.html">
+                        <h4>Détail demande</h4>
+                        <p>Accepter/Refuser + proposer prix</p>
+                    </a>
+                </div>
+                <div class="card">
+                    <a href="photographer/reviews/index.html">
+                        <h4>Mes avis</h4>
+                        <p>Avis reçus des clients</p>
+                    </a>
+                </div>
+                <div class="card">
+                    <a href="photographer/reviews/respond.html">
+                        <h4>Répondre à un avis</h4>
+                        <p>Formulaire de réponse</p>
+                    </a>
+                </div>
+                <div class="card">
+                    <a href="photographer/history.html">
+                        <h4>Historique missions</h4>
+                        <p>Missions terminées</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ADMIN -->
+        <div class="section">
+            <h2>Administration <span class="badge badge-admin">Admin</span></h2>
+            <div class="grid">
+                <div class="card">
+                    <a href="admin/dashboard.html">
+                        <h4>Dashboard admin</h4>
+                        <p>Statistiques globales</p>
+                    </a>
+                </div>
+                <div class="card">
+                    <a href="admin/users.html">
+                        <h4>Gestion utilisateurs</h4>
+                        <p>Liste et gestion des comptes</p>
+                    </a>
+                </div>
+                <div class="card">
+                    <a href="admin/photographers.html">
+                        <h4>Gestion photographes</h4>
+                        <p>Vérification des profils</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- SHARED -->
+        <div class="section">
+            <h2>Composants partagés</h2>
+            <div class="grid">
+                <div class="card">
+                    <a href="shared/components.html">
+                        <h4>Bibliothèque de composants</h4>
+                        <p>Boutons, inputs, cards, badges, modals</p>
+                    </a>
+                </div>
+                <div class="card">
+                    <a href="shared/header.html">
+                        <h4>Headers & Navigation</h4>
+                        <p>Navigation par rôle</p>
+                    </a>
+                </div>
+                <div class="card">
+                    <a href="shared/notifications.html">
+                        <h4>Notifications</h4>
+                        <p>Centre de notifications</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- USER FLOW -->
+        <div class="flow">
+            <h2>User Flows</h2>
+
+            <h3>Flow Client : Trouver un photographe</h3>
+            <div>
+                <span class="flow-step">Accueil</span>
+                <span class="flow-arrow">→</span>
+                <span class="flow-step">Recherche</span>
+                <span class="flow-arrow">→</span>
+                <span class="flow-step">Profil photographe</span>
+                <span class="flow-arrow">→</span>
+                <span class="flow-step">Créer projet</span>
+                <span class="flow-arrow">→</span>
+                <span class="flow-step">Envoyer demande</span>
+                <span class="flow-arrow">→</span>
+                <span class="flow-step">Réponse acceptée</span>
+                <span class="flow-arrow">→</span>
+                <span class="flow-step">Mission</span>
+                <span class="flow-arrow">→</span>
+                <span class="flow-step">Laisser avis</span>
+            </div>
+
+            <h3>Flow Photographe : Recevoir une mission</h3>
+            <div>
+                <span class="flow-step">Dashboard</span>
+                <span class="flow-arrow">→</span>
+                <span class="flow-step">Notification demande</span>
+                <span class="flow-arrow">→</span>
+                <span class="flow-step">Voir détail</span>
+                <span class="flow-arrow">→</span>
+                <span class="flow-step">Accepter + Prix</span>
+                <span class="flow-arrow">→</span>
+                <span class="flow-step">Mission réalisée</span>
+                <span class="flow-arrow">→</span>
+                <span class="flow-step">Recevoir avis</span>
+            </div>
+        </div>
+
+        <div class="status">
+            <h3>Structure du projet</h3>
+            <pre>
+wireframes/
+├── index.html (cette page)
+├── public/
+│   ├── home.html
+│   ├── search.html
+│   ├── photographer-profile.html
+│   └── photographers-list.html
+├── client/
+│   ├── dashboard.html
+│   ├── history.html
+│   ├── projects/
+│   │   ├── index.html
+│   │   ├── create.html
+│   │   ├── show.html
+│   │   └── edit.html
+│   ├── requests/
+│   │   ├── index.html
+│   │   ├── show.html
+│   │   └── create.html
+│   └── reviews/
+│       └── create.html
+├── photographer/
+│   ├── dashboard.html
+│   ├── history.html
+│   ├── profile/
+│   │   └── edit.html
+│   ├── portfolio/
+│   │   └── index.html
+│   ├── availability/
+│   │   └── calendar.html
+│   ├── requests/
+│   │   ├── index.html
+│   │   └── show.html
+│   └── reviews/
+│       ├── index.html
+│       └── respond.html
+├── admin/
+│   ├── dashboard.html
+│   ├── users.html
+│   └── photographers.html
+└── shared/
+    ├── components.html
+    ├── header.html
+    ├── notifications.html
+    ├── register.html
+    ├── login.html
+    └── forgot-password.html
+            </pre>
+        </div>
+    </div>
+</body>
+</html>

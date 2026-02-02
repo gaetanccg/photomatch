@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des photographes - Wireframe PhotoMatch</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: system-ui, -apple-system, sans-serif; background: #f5f5f5; }
+        .wireframe { max-width: 1200px; margin: 0 auto; background: white; border: 2px solid #333; }
+        .annotation { background: #fff3cd; border-left: 4px solid #ffc107; padding: 8px 12px; margin: 15px; font-size: 0.85rem; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 2px solid #333; }
+        .logo { font-size: 1.25rem; font-weight: bold; }
+        .nav { display: flex; gap: 15px; align-items: center; }
+        .nav a { text-decoration: none; color: #333; font-size: 0.9rem; }
+        .btn { border: 2px solid #333; padding: 8px 16px; background: white; text-decoration: none; color: #333; }
+        a.back { display: inline-block; margin: 20px; color: #333; }
+
+        .page-header {
+            padding: 40px;
+            text-align: center;
+            border-bottom: 2px solid #333;
+            background: #fafafa;
+        }
+        .page-header h1 { margin-bottom: 10px; }
+        .page-header p { color: #666; max-width: 600px; margin: 0 auto; }
+
+        .content { padding: 30px; }
+
+        .photographers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .photographer-card {
+            border: 2px solid #333;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .photographer-card:hover { transform: translateY(-3px); }
+        .card-image {
+            height: 180px;
+            background: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            border-bottom: 2px solid #333;
+            position: relative;
+        }
+        .card-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 4px 10px;
+            font-size: 0.75rem;
+            background: #cce5ff;
+            border: 1px solid #007bff;
+            color: #004085;
+        }
+        .card-body { padding: 15px; }
+        .card-body h3 { margin-bottom: 5px; }
+        .card-meta { color: #666; font-size: 0.85rem; margin-bottom: 8px; }
+        .card-rating { margin-bottom: 10px; }
+        .stars { color: #ffc107; }
+        .card-specialties { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 10px; }
+        .tag { font-size: 0.75rem; padding: 3px 8px; background: #f5f5f5; border: 1px solid #ddd; }
+        .card-price { font-weight: 600; }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            margin-top: 30px;
+        }
+        .pagination a {
+            border: 2px solid #333;
+            padding: 8px 14px;
+            text-decoration: none;
+            color: #333;
+        }
+        .pagination a.active {
+            background: #333;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <a href="../index.html" class="back">&larr; Retour index</a>
+
+    <div class="wireframe">
+        <header class="header">
+            <div class="logo">PhotoMatch</div>
+            <nav class="nav">
+                <a href="search.html">Recherche avancée</a>
+                <a href="../shared/login.html" class="btn">Connexion</a>
+            </nav>
+        </header>
+
+        <div class="annotation">
+            <strong>Route :</strong> GET route('photographers.index')<br>
+            <strong>Controller :</strong> PublicPhotographerController@index<br>
+            <strong>Note :</strong> Page SEO pour liste complète des photographes (sans filtres)
+        </div>
+
+        <div class="page-header">
+            <h1>Nos photographes professionnels</h1>
+            <p>Découvrez tous les photographes disponibles sur PhotoMatch pour vos projets.</p>
+        </div>
+
+        <div class="content">
+            <div class="photographers-grid">
+                <div class="photographer-card" style="border-style: dashed;">
+                    <div class="card-image">
+                        [Photo]
+                        <span class="card-badge">Vérifié</span>
+                    </div>
+                    <div class="card-body">
+                        <h3>[user.name]</h3>
+                        <div class="card-meta">[location] • [experience_years] ans d'exp.</div>
+                        <div class="card-rating">
+                            <span class="stars">★★★★★</span>
+                            <span style="color: #666;">([rating])</span>
+                        </div>
+                        <div class="card-specialties">
+                            <span class="tag">[Spécialité]</span>
+                            <span class="tag">[Spécialité]</span>
+                        </div>
+                        <div class="card-price">À partir de [hourly_rate]€/h</div>
+                    </div>
+                </div>
+                <!-- Répéter pour chaque photographe -->
+            </div>
+
+            <div class="pagination">
+                <a href="#">&laquo;</a>
+                <a href="#" class="active">1</a>
+                <a href="#">2</a>
+                <a href="#">3</a>
+                <a href="#">&raquo;</a>
+            </div>
+        </div>
+
+        <div class="annotation">
+            <strong>Query :</strong> Photographer::with(['user', 'specialties', 'featuredImage'])<br>
+            ->where('is_verified', true)<br>
+            ->orderBy('rating', 'desc')<br>
+            ->paginate(12)<br>
+            <strong>SEO :</strong> Meta title, description, structured data (LocalBusiness)
+        </div>
+    </div>
+</body>
+</html>

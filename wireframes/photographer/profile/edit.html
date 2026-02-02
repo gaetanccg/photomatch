@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon profil - Wireframe PhotoMatch</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: system-ui, -apple-system, sans-serif; background: #f5f5f5; }
+        .wireframe { max-width: 1200px; margin: 0 auto; background: white; border: 2px solid #333; }
+        .annotation { background: #fff3cd; border-left: 4px solid #ffc107; padding: 8px 12px; margin: 15px; font-size: 0.85rem; }
+        a.back { display: inline-block; margin: 20px; color: #333; }
+
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 2px solid #333; }
+        .logo { font-size: 1.25rem; font-weight: bold; }
+        .btn { border: 2px solid #333; padding: 8px 16px; background: white; text-decoration: none; color: #333; display: inline-block; cursor: pointer; }
+        .btn-primary { background: #333; color: white; }
+        .btn-lg { padding: 12px 24px; }
+
+        .layout { display: flex; min-height: 600px; }
+        .sidebar { width: 250px; border-right: 2px solid #333; background: #fafafa; }
+        .sidebar-header { padding: 20px; border-bottom: 2px solid #333; }
+        .sidebar-nav { padding: 10px 0; }
+        .sidebar-nav a { display: block; padding: 12px 20px; text-decoration: none; color: #333; font-size: 0.9rem; border-left: 3px solid transparent; }
+        .sidebar-nav a:hover { background: #f0f0f0; }
+        .sidebar-nav a.active { background: #e9e9e9; border-left-color: #333; font-weight: 600; }
+        .sidebar-section { padding: 10px 20px 5px; font-size: 0.75rem; text-transform: uppercase; color: #666; }
+
+        .main-content { flex: 1; padding: 30px; }
+        .page-title { margin-bottom: 30px; }
+        .page-title h1 { font-size: 1.5rem; margin-bottom: 5px; }
+
+        .form-section { margin-bottom: 40px; }
+        .form-section h2 { font-size: 1.1rem; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #333; }
+
+        .form-group { margin-bottom: 20px; }
+        .form-label { display: block; margin-bottom: 8px; font-weight: 500; }
+        .form-label .required { color: #dc3545; }
+        .form-hint { font-size: 0.85rem; color: #666; margin-top: 5px; }
+        .form-input { width: 100%; border: 2px solid #333; padding: 12px; font-size: 0.95rem; }
+        .form-select { width: 100%; border: 2px solid #333; padding: 12px; font-size: 0.95rem; background: white; }
+        .form-textarea { width: 100%; border: 2px solid #333; padding: 12px; font-size: 0.95rem; min-height: 120px; resize: vertical; }
+
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+
+        .avatar-upload {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .avatar-preview {
+            width: 100px;
+            height: 100px;
+            border: 2px solid #333;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            background: #f5f5f5;
+        }
+
+        .specialties-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+        }
+        .specialty-checkbox {
+            border: 2px solid #333;
+            padding: 12px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        .specialty-checkbox:hover { background: #f5f5f5; }
+        .specialty-checkbox.selected { background: #333; color: white; }
+        .specialty-checkbox input { display: none; }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            padding-top: 20px;
+            border-top: 2px solid #333;
+        }
+
+        .verified-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 12px;
+            background: #d4edda;
+            border: 1px solid #28a745;
+            color: #155724;
+            font-size: 0.85rem;
+        }
+        .pending-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 12px;
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            color: #856404;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+    <a href="../../index.html" class="back">&larr; Retour index</a>
+
+    <div class="wireframe">
+        <header class="header">
+            <div class="logo">PhotoMatch</div>
+            <a href="../../public/photographer-profile.html" class="btn">Voir mon profil public</a>
+        </header>
+
+        <div class="annotation">
+            <strong>Route GET :</strong> route('photographer.profile.edit')<br>
+            <strong>Route PUT (principal) :</strong> route('photographer.profile.update')<br>
+            <strong>Route PUT (spécialités) :</strong> route('photographer.profile.specialties')<br>
+            <strong>Controller :</strong> PhotographerController@edit / update / updateSpecialties
+        </div>
+
+        <div class="layout">
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <strong>[user.name]</strong>
+                    <div style="font-size: 0.85rem; color: #666;">Photographe</div>
+                </div>
+                <nav class="sidebar-nav">
+                    <div class="sidebar-section">Général</div>
+                    <a href="../dashboard.html">Tableau de bord</a>
+                    <a href="#" class="active">Mon profil</a>
+                    <a href="../portfolio/index.html">Portfolio</a>
+                    <div class="sidebar-section">Planning</div>
+                    <a href="../availability/calendar.html">Disponibilités</a>
+                    <div class="sidebar-section">Activité</div>
+                    <a href="../requests/index.html">Demandes</a>
+                    <a href="../reviews/index.html">Mes avis</a>
+                </nav>
+            </aside>
+
+            <main class="main-content">
+                <div class="page-title">
+                    <h1>Mon profil</h1>
+                    <div style="margin-top: 10px;">
+                        <span class="verified-badge">✓ Profil vérifié</span>
+                        <!-- ou -->
+                        <span class="pending-badge" style="display: none;">⏳ En attente de vérification</span>
+                    </div>
+                </div>
+
+                <form>
+                    <!-- Informations personnelles -->
+                    <div class="form-section">
+                        <h2>Informations personnelles</h2>
+
+                        <div class="avatar-upload">
+                            <div class="avatar-preview" style="border-style: dashed;">[Photo]</div>
+                            <div>
+                                <button type="button" class="btn" style="border-style: dashed;">Changer la photo</button>
+                                <p class="form-hint">JPG, PNG. Max 2 Mo.</p>
+                            </div>
+                        </div>
+
+                        <div class="annotation" style="margin: 15px 0;">
+                            <strong>Champ :</strong> users.avatar<br>
+                            Stockage : S3 ou local
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Nom complet <span class="required">*</span></label>
+                                <input type="text" class="form-input" style="border-style: dashed;" name="name" value="[user.name]">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-input" value="[user.email]" disabled style="background: #f5f5f5;">
+                                <p class="form-hint">L'email ne peut pas être modifié ici</p>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Téléphone</label>
+                            <input type="tel" class="form-input" style="border-style: dashed;" name="phone" value="[user.phone]" placeholder="06 12 34 56 78">
+                        </div>
+
+                        <div class="annotation">
+                            <strong>Champs users :</strong> name, phone
+                        </div>
+                    </div>
+
+                    <!-- Informations professionnelles -->
+                    <div class="form-section">
+                        <h2>Informations professionnelles</h2>
+
+                        <div class="form-group">
+                            <label class="form-label">Numéro SIRET</label>
+                            <input type="text" class="form-input" style="border-style: dashed;" name="siret" value="[photographers.siret]" placeholder="123 456 789 00012" maxlength="14">
+                            <p class="form-hint">14 chiffres, requis pour être vérifié</p>
+                        </div>
+
+                        <div class="annotation" style="margin: 0 0 20px 0;">
+                            <strong>Champ :</strong> photographers.siret<br>
+                            <strong>Validation :</strong> nullable, string, max:14
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Biographie <span class="required">*</span></label>
+                            <textarea class="form-textarea" style="border-style: dashed;" name="bio" placeholder="Présentez-vous, votre parcours, votre style photographique...">[photographers.bio]</textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Mots-clés</label>
+                            <input type="text" class="form-input" style="border-style: dashed;" name="keywords" value="[photographers.keywords]" placeholder="mariage, portrait, lifestyle, studio...">
+                            <p class="form-hint">Séparez par des virgules. Aide au référencement.</p>
+                        </div>
+
+                        <div class="annotation" style="margin: 0 0 20px 0;">
+                            <strong>Champ :</strong> photographers.keywords (text)<br>
+                            Utilisé pour améliorer la recherche
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Années d'expérience</label>
+                            <input type="number" class="form-input" style="border-style: dashed; max-width: 150px;" name="experience_years" value="[photographers.experience_years]" min="0">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Lien portfolio externe</label>
+                            <input type="url" class="form-input" style="border-style: dashed;" name="portfolio_url" value="[photographers.portfolio_url]" placeholder="https://www.monsite.com">
+                        </div>
+                    </div>
+
+                    <!-- Localisation -->
+                    <div class="form-section">
+                        <h2>Localisation</h2>
+
+                        <div class="form-group">
+                            <label class="form-label">Ville / Zone d'intervention <span class="required">*</span></label>
+                            <input type="text" class="form-input" style="border-style: dashed;" name="location" value="[photographers.location]" placeholder="Paris, Île-de-France">
+                            <p class="form-hint">Les clients vous trouveront en cherchant dans cette zone</p>
+                        </div>
+
+                        <div class="annotation">
+                            <strong>Champs :</strong> photographers.location, latitude, longitude<br>
+                            Géocodage automatique pour stocker lat/lng
+                        </div>
+                    </div>
+
+                    <!-- Tarifs -->
+                    <div class="form-section">
+                        <h2>Tarifs</h2>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Tarif horaire (€) <span class="required">*</span></label>
+                                <input type="number" class="form-input" style="border-style: dashed;" name="hourly_rate" value="[photographers.hourly_rate]" min="0" step="0.01">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Tarif journalier (€)</label>
+                                <input type="number" class="form-input" style="border-style: dashed;" name="daily_rate" value="[photographers.daily_rate]" min="0" step="0.01">
+                            </div>
+                        </div>
+
+                        <div class="annotation">
+                            <strong>Champs :</strong> photographers.hourly_rate, daily_rate<br>
+                            <strong>Validation :</strong> numeric, min:0
+                        </div>
+                    </div>
+
+                    <!-- Spécialités -->
+                    <div class="form-section">
+                        <h2>Spécialités</h2>
+                        <p style="color: #666; margin-bottom: 15px;">Sélectionnez vos domaines d'expertise</p>
+
+                        <div class="specialties-grid">
+                            <label class="specialty-checkbox selected" style="border-style: dashed;">
+                                <input type="checkbox" name="specialties[]" value="1" checked>
+                                💒 Mariage
+                            </label>
+                            <label class="specialty-checkbox" style="border-style: dashed;">
+                                <input type="checkbox" name="specialties[]" value="2">
+                                👤 Portrait
+                            </label>
+                            <label class="specialty-checkbox selected" style="border-style: dashed;">
+                                <input type="checkbox" name="specialties[]" value="3" checked>
+                                🏢 Corporate
+                            </label>
+                            <label class="specialty-checkbox" style="border-style: dashed;">
+                                <input type="checkbox" name="specialties[]" value="4">
+                                🎉 Événement
+                            </label>
+                            <label class="specialty-checkbox" style="border-style: dashed;">
+                                <input type="checkbox" name="specialties[]" value="5">
+                                🏠 Immobilier
+                            </label>
+                            <label class="specialty-checkbox" style="border-style: dashed;">
+                                <input type="checkbox" name="specialties[]" value="6">
+                                📦 Produit
+                            </label>
+                        </div>
+
+                        <div class="annotation" style="margin-top: 15px;">
+                            <strong>Table :</strong> photographer_specialty (pivot)<br>
+                            <strong>Route :</strong> PUT route('photographer.profile.specialties')<br>
+                            <strong>Action :</strong> sync() les spécialités sélectionnées
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary btn-lg" style="border-style: dashed;">
+                            Enregistrer les modifications
+                        </button>
+                    </div>
+
+                    <div class="annotation">
+                        <strong>Après soumission :</strong> redirect vers la même page avec flash success
+                    </div>
+                </form>
+            </main>
+        </div>
+    </div>
+</body>
+</html>

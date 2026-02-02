@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Détail demande - Wireframe PhotoMatch</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: system-ui, -apple-system, sans-serif; background: #f5f5f5; }
+        .wireframe { max-width: 900px; margin: 0 auto; background: white; border: 2px solid #333; }
+        .annotation { background: #fff3cd; border-left: 4px solid #ffc107; padding: 8px 12px; margin: 15px; font-size: 0.85rem; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 2px solid #333; }
+        .logo { font-size: 1.25rem; font-weight: bold; }
+        .btn { border: 2px solid #333; padding: 8px 16px; background: white; text-decoration: none; color: #333; display: inline-block; cursor: pointer; }
+        .btn-primary { background: #333; color: white; }
+        .btn-success { background: #28a745; color: white; border-color: #28a745; }
+        .btn-danger { color: #dc3545; border-color: #dc3545; }
+        a.back { display: inline-block; margin: 20px; color: #333; }
+
+        .breadcrumb { padding: 15px 30px; font-size: 0.9rem; color: #666; border-bottom: 1px solid #eee; }
+        .breadcrumb a { color: #333; text-decoration: none; }
+
+        .content { padding: 30px; }
+
+        .request-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #333;
+        }
+        .request-title h1 { font-size: 1.5rem; margin-bottom: 5px; }
+        .request-subtitle { color: #666; }
+        .badge {
+            display: inline-block;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            border: 2px solid;
+        }
+        .badge-pending { background: #fff3cd; border-color: #ffc107; color: #856404; }
+        .badge-accepted { background: #d4edda; border-color: #28a745; color: #155724; }
+        .badge-declined { background: #f8d7da; border-color: #dc3545; color: #721c24; }
+        .badge-cancelled { background: #e2e3e5; border-color: #6c757d; color: #383d41; }
+
+        .section {
+            border: 2px solid #333;
+            margin-bottom: 20px;
+        }
+        .section-header {
+            padding: 15px 20px;
+            border-bottom: 2px solid #333;
+            font-weight: 600;
+            background: #fafafa;
+        }
+        .section-body { padding: 20px; }
+
+        .photographer-card {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        .photographer-avatar {
+            width: 80px;
+            height: 80px;
+            border: 2px solid #333;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: #f5f5f5;
+        }
+        .photographer-info h3 { margin-bottom: 5px; }
+        .photographer-meta { font-size: 0.9rem; color: #666; margin-bottom: 10px; }
+        .stars { color: #ffc107; }
+
+        .info-row {
+            display: flex;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .info-row:last-child { border-bottom: none; }
+        .info-label { width: 150px; color: #666; font-size: 0.9rem; }
+        .info-value { flex: 1; }
+
+        .message-box {
+            background: #f9f9f9;
+            border: 2px solid #eee;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        .message-header { font-weight: 600; margin-bottom: 10px; font-size: 0.9rem; }
+        .message-content { line-height: 1.6; color: #444; }
+
+        .response-box {
+            background: #e8f5e9;
+            border: 2px solid #28a745;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .price-highlight {
+            font-size: 2rem;
+            font-weight: bold;
+            text-align: center;
+            padding: 20px;
+            background: #f5f5f5;
+            border: 2px solid #333;
+            margin: 20px 0;
+        }
+
+        .actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #333;
+        }
+        .actions-left { flex: 1; }
+        .actions-right { display: flex; gap: 10px; }
+
+        .alert {
+            padding: 15px;
+            border: 2px solid;
+            margin-bottom: 20px;
+        }
+        .alert-success { background: #d4edda; border-color: #28a745; color: #155724; }
+        .alert-warning { background: #fff3cd; border-color: #ffc107; color: #856404; }
+        .alert-info { background: #cce5ff; border-color: #007bff; color: #004085; }
+    </style>
+</head>
+<body>
+    <a href="../../index.html" class="back">&larr; Retour index</a>
+
+    <div class="wireframe">
+        <header class="header">
+            <div class="logo">PhotoMatch</div>
+            <a href="index.html" class="btn">&larr; Retour aux demandes</a>
+        </header>
+
+        <div class="annotation">
+            <strong>Route :</strong> GET route('client.requests.show', $bookingRequest)<br>
+            <strong>Controller :</strong> ClientController@showRequest
+        </div>
+
+        <nav class="breadcrumb">
+            <a href="../dashboard.html">Dashboard</a> /
+            <a href="index.html">Mes demandes</a> /
+            <span>Demande #[id]</span>
+        </nav>
+
+        <div class="content">
+            <!-- Alert for accepted request -->
+            <div class="alert alert-success" style="display: none;">
+                Cette demande a été acceptée ! Vous pouvez maintenant contacter le photographe.
+            </div>
+
+            <div class="request-header">
+                <div class="request-title">
+                    <h1>Demande à [photographe.user.name]</h1>
+                    <div class="request-subtitle">Pour le projet : [photo_project.title]</div>
+                </div>
+                <span class="badge badge-pending">[status]</span>
+            </div>
+
+            <!-- Photographer Info -->
+            <div class="section">
+                <div class="section-header">Photographe</div>
+                <div class="section-body">
+                    <div class="photographer-card" style="cursor: pointer; border-style: dashed; padding: 10px; margin: -10px;">
+                        <div class="photographer-avatar">[Initiales]</div>
+                        <div class="photographer-info">
+                            <h3>[photographe.user.name]</h3>
+                            <div class="photographer-meta">
+                                [photographe.location] • <span class="stars">★★★★★</span> ([rating])
+                            </div>
+                            <a href="../../public/photographer-profile.html" style="font-size: 0.9rem;">Voir le profil →</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="annotation">
+                <strong>Action clic photographe :</strong> route('photographers.show', $photographer)
+            </div>
+
+            <!-- Project Summary -->
+            <div class="section">
+                <div class="section-header">Projet associé</div>
+                <div class="section-body">
+                    <div class="info-row">
+                        <div class="info-label">Titre</div>
+                        <div class="info-value"><a href="../projects/show.html">[photo_project.title]</a></div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Type</div>
+                        <div class="info-value">[project_type]</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Date</div>
+                        <div class="info-value">[event_date]</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Lieu</div>
+                        <div class="info-value">[location]</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Budget</div>
+                        <div class="info-value">[budget_min]€ - [budget_max]€</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Messages -->
+            <div class="section">
+                <div class="section-header">Échanges</div>
+                <div class="section-body">
+                    <!-- Client message -->
+                    <div class="message-box">
+                        <div class="message-header">Votre message (envoyé le [sent_at])</div>
+                        <div class="message-content">[client_message]</div>
+                    </div>
+
+                    <!-- Photographer response (if any) -->
+                    <div class="response-box" style="display: none;">
+                        <div class="message-header">Réponse du photographe (le [responded_at])</div>
+                        <div class="message-content">[photographer_response]</div>
+                    </div>
+
+                    <!-- No response yet -->
+                    <div class="alert alert-warning">
+                        Le photographe n'a pas encore répondu à votre demande.
+                    </div>
+                </div>
+            </div>
+
+            <div class="annotation">
+                <strong>Champs :</strong> client_message, photographer_response, sent_at, responded_at
+            </div>
+
+            <!-- Price (if accepted) -->
+            <div class="price-highlight" style="display: none;">
+                Prix proposé : [proposed_price]€
+            </div>
+
+            <div class="annotation">
+                <strong>Afficher prix si :</strong> status = 'accepted' ET proposed_price IS NOT NULL
+            </div>
+
+            <!-- Actions -->
+            <div class="actions">
+                <div class="actions-left">
+                    <!-- If pending, can cancel -->
+                    <button class="btn btn-danger" style="border-style: dashed;">
+                        Annuler la demande
+                    </button>
+                </div>
+                <div class="actions-right">
+                    <!-- If accepted, can leave review (after mission) -->
+                    <a href="../reviews/create.html" class="btn btn-success" style="border-style: dashed; display: none;">
+                        Laisser un avis
+                    </a>
+                    <a href="../../public/photographer-profile.html" class="btn">Voir le profil</a>
+                </div>
+            </div>
+
+            <div class="annotation">
+                <strong>Actions conditionnelles :</strong><br>
+                - Si status='pending' → bouton "Annuler" (DELETE route('client.requests.destroy', $bookingRequest))<br>
+                - Si status='accepted' ET projet terminé ET pas d'avis → bouton "Laisser un avis"<br>
+                <strong>Laisser un avis :</strong> route('client.reviews.create', $bookingRequest)
+            </div>
+        </div>
+    </div>
+</body>
+</html>

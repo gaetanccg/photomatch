@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion utilisateurs - Wireframe PhotoMatch</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: system-ui, -apple-system, sans-serif; background: #f5f5f5; }
+        .wireframe { max-width: 1200px; margin: 0 auto; background: white; border: 2px solid #333; }
+        .annotation { background: #fff3cd; border-left: 4px solid #ffc107; padding: 8px 12px; margin: 15px; font-size: 0.85rem; }
+        a.back { display: inline-block; margin: 20px; color: #333; }
+
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 2px solid #333; background: #333; }
+        .logo { font-size: 1.25rem; font-weight: bold; color: white; }
+
+        .layout { display: flex; min-height: 600px; }
+        .sidebar { width: 220px; background: #2d2d2d; }
+        .sidebar-nav { padding: 20px 0; }
+        .sidebar-nav a { display: block; padding: 12px 20px; text-decoration: none; color: #ccc; font-size: 0.9rem; border-left: 3px solid transparent; }
+        .sidebar-nav a:hover { background: #3d3d3d; color: white; }
+        .sidebar-nav a.active { background: #3d3d3d; border-left-color: white; color: white; font-weight: 600; }
+
+        .main-content { flex: 1; padding: 30px; }
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .page-header h1 { font-size: 1.5rem; }
+
+        .filters { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
+        .filter-input { border: 2px solid #333; padding: 8px 12px; font-size: 0.9rem; }
+        .filter-select { border: 2px solid #333; padding: 8px 12px; font-size: 0.9rem; background: white; }
+
+        .table { width: 100%; border-collapse: collapse; border: 2px solid #333; }
+        .table th, .table td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #eee; }
+        .table th { background: #fafafa; font-weight: 600; border-bottom: 2px solid #333; }
+        .table tr:hover td { background: #f9f9f9; }
+
+        .btn { border: 2px solid #333; padding: 6px 12px; background: white; text-decoration: none; color: #333; display: inline-block; font-size: 0.85rem; cursor: pointer; }
+        .btn-sm { padding: 4px 8px; font-size: 0.8rem; }
+        .btn-danger { color: #dc3545; border-color: #dc3545; }
+
+        .badge { display: inline-block; padding: 3px 8px; font-size: 0.75rem; border: 1px solid; }
+        .badge-client { background: #cce5ff; border-color: #007bff; color: #004085; }
+        .badge-photographer { background: #d4edda; border-color: #28a745; color: #155724; }
+        .badge-admin { background: #f8d7da; border-color: #dc3545; color: #721c24; }
+
+        .pagination { display: flex; justify-content: center; gap: 5px; margin-top: 20px; }
+        .pagination a { border: 2px solid #333; padding: 8px 12px; text-decoration: none; color: #333; }
+        .pagination a.active { background: #333; color: white; }
+    </style>
+</head>
+<body>
+    <a href="../index.html" class="back">&larr; Retour index</a>
+
+    <div class="wireframe">
+        <header class="header">
+            <div class="logo">PhotoMatch Admin</div>
+        </header>
+
+        <div class="annotation">
+            <strong>Route :</strong> GET route('admin.users.index')<br>
+            <strong>Controller :</strong> AdminController@users
+        </div>
+
+        <div class="layout">
+            <aside class="sidebar">
+                <nav class="sidebar-nav">
+                    <a href="dashboard.html">Dashboard</a>
+                    <a href="#" class="active">Utilisateurs</a>
+                    <a href="photographers.html">Photographes</a>
+                </nav>
+            </aside>
+
+            <main class="main-content">
+                <div class="page-header">
+                    <h1>Gestion des utilisateurs</h1>
+                </div>
+
+                <div class="filters">
+                    <input type="text" class="filter-input" style="border-style: dashed;" placeholder="Rechercher par nom ou email...">
+                    <select class="filter-select" style="border-style: dashed;">
+                        <option value="">Tous les rôles</option>
+                        <option value="client">Clients</option>
+                        <option value="photographer">Photographes</option>
+                        <option value="admin">Admins</option>
+                    </select>
+                    <button class="btn" style="border-style: dashed;">Filtrer</button>
+                </div>
+
+                <div class="annotation">
+                    <strong>Filtres :</strong> ?search=...&role=client|photographer|admin
+                </div>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nom</th>
+                            <th>Email</th>
+                            <th>Rôle</th>
+                            <th>Téléphone</th>
+                            <th>Inscrit le</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>[user.name]</td>
+                            <td>[user.email]</td>
+                            <td><span class="badge badge-client">Client</span></td>
+                            <td>[phone]</td>
+                            <td>[created_at]</td>
+                            <td>
+                                <button class="btn btn-sm" style="border-style: dashed;">Voir</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>[user.name]</td>
+                            <td>[user.email]</td>
+                            <td><span class="badge badge-photographer">Photographe</span></td>
+                            <td>[phone]</td>
+                            <td>[created_at]</td>
+                            <td>
+                                <button class="btn btn-sm" style="border-style: dashed;">Voir</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>[user.name]</td>
+                            <td>[user.email]</td>
+                            <td><span class="badge badge-admin">Admin</span></td>
+                            <td>[phone]</td>
+                            <td>[created_at]</td>
+                            <td>
+                                <button class="btn btn-sm" style="border-style: dashed;">Voir</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="pagination">
+                    <a href="#">&laquo;</a>
+                    <a href="#" class="active">1</a>
+                    <a href="#">2</a>
+                    <a href="#">3</a>
+                    <a href="#">&raquo;</a>
+                </div>
+
+                <div class="annotation">
+                    <strong>Données :</strong> users avec pagination<br>
+                    <strong>Note :</strong> Pas de suppression d'utilisateurs actuellement implémentée
+                </div>
+            </main>
+        </div>
+    </div>
+</body>
+</html>

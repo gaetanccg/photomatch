@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recherche photographes - Wireframe PhotoMatch</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: system-ui, -apple-system, sans-serif; background: #f5f5f5; }
+        .wireframe { max-width: 1400px; margin: 0 auto; background: white; border: 2px solid #333; }
+        .annotation { background: #fff3cd; border-left: 4px solid #ffc107; padding: 8px 12px; margin: 15px; font-size: 0.85rem; }
+        .missing { color: #dc3545; font-weight: 500; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 2px solid #333; }
+        .logo { font-size: 1.25rem; font-weight: bold; }
+        .nav { display: flex; gap: 15px; align-items: center; }
+        .nav a { text-decoration: none; color: #333; font-size: 0.9rem; }
+        .btn { border: 2px solid #333; padding: 8px 16px; background: white; text-decoration: none; color: #333; display: inline-block; }
+        .btn-primary { background: #333; color: white; }
+        .btn-sm { padding: 6px 12px; font-size: 0.85rem; }
+        a.back { display: inline-block; margin: 20px; color: #333; }
+
+        /* Layout */
+        .search-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 600px;
+        }
+
+        /* Filters Sidebar */
+        .filters {
+            border-right: 2px solid #333;
+            padding: 20px;
+            background: #fafafa;
+        }
+        .filters h2 { font-size: 1.1rem; margin-bottom: 20px; }
+        .filter-section { margin-bottom: 25px; }
+        .filter-section h3 { font-size: 0.9rem; margin-bottom: 10px; color: #333; }
+        .filter-input {
+            width: 100%;
+            border: 2px solid #333;
+            padding: 10px;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+        .filter-select {
+            width: 100%;
+            border: 2px solid #333;
+            padding: 10px;
+            font-size: 0.9rem;
+            background: white;
+        }
+        .checkbox-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+        .checkbox-group input { margin-right: 8px; }
+        .range-inputs {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .range-inputs input {
+            flex: 1;
+            border: 2px solid #333;
+            padding: 8px;
+            font-size: 0.9rem;
+        }
+
+        /* Results */
+        .results {
+            padding: 20px;
+        }
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+        .results-count { color: #666; }
+        .sort-select {
+            border: 2px solid #333;
+            padding: 8px 12px;
+            font-size: 0.9rem;
+            background: white;
+        }
+
+        /* Photographer Card */
+        .photographer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .photographer-card {
+            border: 2px solid #333;
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+        .photographer-card:hover { transform: translateY(-2px); }
+        .card-image {
+            height: 200px;
+            background: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            position: relative;
+            border-bottom: 2px solid #333;
+        }
+        .card-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 4px 10px;
+            font-size: 0.75rem;
+            background: #cce5ff;
+            border: 1px solid #007bff;
+            color: #004085;
+        }
+        .card-body { padding: 15px; }
+        .card-body h3 { margin-bottom: 5px; font-size: 1.1rem; }
+        .card-location { font-size: 0.85rem; color: #666; margin-bottom: 8px; }
+        .card-rating {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+        .stars { color: #ffc107; }
+        .rating-count { font-size: 0.85rem; color: #666; }
+        .card-specialties {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+        .specialty-tag {
+            font-size: 0.75rem;
+            padding: 3px 8px;
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+        }
+        .card-price {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        .card-availability {
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .dot-green {
+            width: 8px;
+            height: 8px;
+            background: #28a745;
+            border-radius: 50%;
+        }
+        .dot-red {
+            width: 8px;
+            height: 8px;
+            background: #dc3545;
+            border-radius: 50%;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+        .empty-state h3 { margin-bottom: 10px; color: #333; }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            margin-top: 30px;
+        }
+        .pagination a {
+            border: 2px solid #333;
+            padding: 8px 14px;
+            text-decoration: none;
+            color: #333;
+        }
+        .pagination a.active {
+            background: #333;
+            color: white;
+        }
+
+        /* Mobile filters toggle */
+        .filters-toggle {
+            display: none;
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #333;
+            background: white;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .search-layout { grid-template-columns: 1fr; }
+            .filters { display: none; }
+            .filters.open { display: block; }
+            .filters-toggle { display: block; }
+        }
+    </style>
+</head>
+<body>
+    <a href="../index.html" class="back">&larr; Retour index</a>
+
+    <div class="wireframe">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">PhotoMatch</div>
+            <nav class="nav">
+                <a href="#" style="font-weight: 600;">Rechercher</a>
+                <a href="../shared/login.html" class="btn btn-sm">Connexion</a>
+            </nav>
+        </header>
+
+        <div class="annotation">
+            <strong>Route :</strong> GET route('search.index')<br>
+            <strong>Controller :</strong> SearchController@index<br>
+            <strong>Note :</strong> Page par défaut pour les clients connectés
+        </div>
+
+        <div class="search-layout">
+            <!-- Filters Sidebar -->
+            <aside class="filters">
+                <h2>Filtres</h2>
+
+                <div class="filter-section">
+                    <h3>Localisation</h3>
+                    <input type="text" class="filter-input" placeholder="Ville, code postal..." style="border-style: dashed;">
+                </div>
+
+                <div class="annotation" style="margin: 0 0 15px 0; padding: 8px;">
+                    <strong>Paramètre :</strong> ?location=<br>
+                    Recherche sur photographers.location
+                </div>
+
+                <div class="filter-section">
+                    <h3>Spécialités</h3>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" style="border-style: dashed;"> Mariage</label>
+                        <label><input type="checkbox" style="border-style: dashed;"> Portrait</label>
+                        <label><input type="checkbox" style="border-style: dashed;"> Corporate</label>
+                        <label><input type="checkbox" style="border-style: dashed;"> Événement</label>
+                        <label><input type="checkbox" style="border-style: dashed;"> Immobilier</label>
+                        <label><input type="checkbox" style="border-style: dashed;"> Produit</label>
+                    </div>
+                </div>
+
+                <div class="annotation" style="margin: 0 0 15px 0; padding: 8px;">
+                    <strong>Paramètre :</strong> ?specialties[]=<br>
+                    JOIN photographer_specialty
+                </div>
+
+                <div class="filter-section">
+                    <h3>Budget (tarif horaire)</h3>
+                    <div class="range-inputs">
+                        <input type="number" placeholder="Min €" style="border-style: dashed;">
+                        <span>-</span>
+                        <input type="number" placeholder="Max €" style="border-style: dashed;">
+                    </div>
+                </div>
+
+                <div class="annotation" style="margin: 0 0 15px 0; padding: 8px;">
+                    <strong>Paramètres :</strong> ?price_min=&price_max=<br>
+                    Filtre sur photographers.hourly_rate
+                </div>
+
+                <div class="filter-section">
+                    <h3>Disponibilité</h3>
+                    <input type="date" class="filter-input" style="border-style: dashed;">
+                </div>
+
+                <div class="annotation" style="margin: 0 0 15px 0; padding: 8px;">
+                    <strong>Paramètre :</strong> ?date=<br>
+                    JOIN availabilities WHERE date = ? AND is_available = true
+                </div>
+
+                <div class="filter-section">
+                    <h3>Options</h3>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" style="border-style: dashed;"> Profils vérifiés uniquement</label>
+                        <label><input type="checkbox" style="border-style: dashed;"> Avec avis</label>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" style="width: 100%; border-style: dashed;">Appliquer les filtres</button>
+                <button class="btn" style="width: 100%; margin-top: 10px; border-style: dashed;">Réinitialiser</button>
+            </aside>
+
+            <!-- Results -->
+            <main class="results">
+                <button class="filters-toggle">Afficher les filtres</button>
+
+                <div class="results-header">
+                    <span class="results-count"><strong>[X]</strong> photographes trouvés</span>
+                    <select class="sort-select" style="border-style: dashed;">
+                        <option>Trier par : Pertinence</option>
+                        <option>Note (meilleure d'abord)</option>
+                        <option>Prix (croissant)</option>
+                        <option>Prix (décroissant)</option>
+                        <option>Expérience</option>
+                    </select>
+                </div>
+
+                <div class="annotation">
+                    <strong>Paramètre tri :</strong> ?sort=relevance|rating|price_asc|price_desc|experience
+                </div>
+
+                <div class="photographer-grid">
+                    <!-- Photographer Card 1 -->
+                    <div class="photographer-card" style="border-style: dashed;">
+                        <div class="card-image">
+                            [Photo portfolio vedette]
+                            <span class="card-badge">Vérifié</span>
+                        </div>
+                        <div class="card-body">
+                            <h3>[user.name]</h3>
+                            <div class="card-location">[photographers.location] • [experience_years] ans d'exp.</div>
+                            <div class="card-rating">
+                                <span class="stars">★★★★★</span>
+                                <span class="rating-count">([rating]) - [X] avis</span>
+                            </div>
+                            <div class="card-specialties">
+                                <span class="specialty-tag">[Spécialité 1]</span>
+                                <span class="specialty-tag">[Spécialité 2]</span>
+                            </div>
+                            <div class="card-price">À partir de [hourly_rate]€/h</div>
+                            <div class="card-availability">
+                                <span class="dot-green"></span>
+                                Disponible le [date demandée]
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Photographer Card 2 -->
+                    <div class="photographer-card" style="border-style: dashed;">
+                        <div class="card-image">
+                            [Photo portfolio vedette]
+                        </div>
+                        <div class="card-body">
+                            <h3>[user.name]</h3>
+                            <div class="card-location">[photographers.location] • [experience_years] ans d'exp.</div>
+                            <div class="card-rating">
+                                <span class="stars">★★★★☆</span>
+                                <span class="rating-count">([rating]) - [X] avis</span>
+                            </div>
+                            <div class="card-specialties">
+                                <span class="specialty-tag">[Spécialité]</span>
+                            </div>
+                            <div class="card-price">À partir de [hourly_rate]€/h</div>
+                            <div class="card-availability">
+                                <span class="dot-red"></span>
+                                Indisponible le [date demandée]
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Photographer Card 3 -->
+                    <div class="photographer-card" style="border-style: dashed;">
+                        <div class="card-image">
+                            [Photo portfolio vedette]
+                            <span class="card-badge">Vérifié</span>
+                        </div>
+                        <div class="card-body">
+                            <h3>[user.name]</h3>
+                            <div class="card-location">[photographers.location] • [experience_years] ans d'exp.</div>
+                            <div class="card-rating">
+                                <span class="stars">★★★★★</span>
+                                <span class="rating-count">([rating]) - [X] avis</span>
+                            </div>
+                            <div class="card-specialties">
+                                <span class="specialty-tag">[Spécialité 1]</span>
+                                <span class="specialty-tag">[Spécialité 2]</span>
+                                <span class="specialty-tag">[Spécialité 3]</span>
+                            </div>
+                            <div class="card-price">À partir de [hourly_rate]€/h</div>
+                        </div>
+                    </div>
+
+                    <!-- More cards... -->
+                </div>
+
+                <div class="annotation">
+                    <strong>Action clic card :</strong> route('photographers.show', $photographer)<br>
+                    <strong>Données affichées :</strong><br>
+                    - Photo : portfolio_images WHERE is_featured = true (1ère image)<br>
+                    - Badge vérifié : photographers.is_verified<br>
+                    - Nom : users.name<br>
+                    - Location : photographers.location<br>
+                    - Expérience : photographers.experience_years<br>
+                    - Rating : photographers.rating + COUNT(reviews)<br>
+                    - Spécialités : via photographer_specialty → specialties<br>
+                    - Prix : photographers.hourly_rate<br>
+                    - Disponibilité : JOIN availabilities si date filtrée
+                </div>
+
+                <!-- Empty State (quand aucun résultat) -->
+                <div class="empty-state" style="display: none;">
+                    <div style="font-size: 3rem; margin-bottom: 15px;">🔍</div>
+                    <h3>Aucun photographe trouvé</h3>
+                    <p>Essayez de modifier vos critères de recherche.</p>
+                    <button class="btn" style="margin-top: 15px;">Réinitialiser les filtres</button>
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination">
+                    <a href="#">&laquo;</a>
+                    <a href="#" class="active">1</a>
+                    <a href="#">2</a>
+                    <a href="#">3</a>
+                    <a href="#">...</a>
+                    <a href="#">10</a>
+                    <a href="#">&raquo;</a>
+                </div>
+
+                <div class="annotation">
+                    <strong>Pagination :</strong> Laravel paginate(), 12 résultats par page<br>
+                    <strong>Paramètre :</strong> ?page=X
+                </div>
+            </main>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion photographes - Wireframe PhotoMatch</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: system-ui, -apple-system, sans-serif; background: #f5f5f5; }
+        .wireframe { max-width: 1200px; margin: 0 auto; background: white; border: 2px solid #333; }
+        .annotation { background: #fff3cd; border-left: 4px solid #ffc107; padding: 8px 12px; margin: 15px; font-size: 0.85rem; }
+        a.back { display: inline-block; margin: 20px; color: #333; }
+
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 2px solid #333; background: #333; }
+        .logo { font-size: 1.25rem; font-weight: bold; color: white; }
+
+        .layout { display: flex; min-height: 600px; }
+        .sidebar { width: 220px; background: #2d2d2d; }
+        .sidebar-nav { padding: 20px 0; }
+        .sidebar-nav a { display: block; padding: 12px 20px; text-decoration: none; color: #ccc; font-size: 0.9rem; border-left: 3px solid transparent; }
+        .sidebar-nav a:hover { background: #3d3d3d; color: white; }
+        .sidebar-nav a.active { background: #3d3d3d; border-left-color: white; color: white; font-weight: 600; }
+
+        .main-content { flex: 1; padding: 30px; }
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .page-header h1 { font-size: 1.5rem; }
+
+        .tabs { display: flex; border-bottom: 2px solid #333; margin-bottom: 20px; }
+        .tab { padding: 12px 20px; cursor: pointer; border: 2px solid transparent; border-bottom: none; margin-bottom: -2px; }
+        .tab:hover { background: #f5f5f5; }
+        .tab.active { border-color: #333; background: white; }
+        .tab-count { background: #eee; padding: 2px 8px; border-radius: 10px; font-size: 0.8rem; margin-left: 5px; }
+        .tab-count.pending { background: #fff3cd; }
+
+        .table { width: 100%; border-collapse: collapse; border: 2px solid #333; }
+        .table th, .table td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #eee; }
+        .table th { background: #fafafa; font-weight: 600; border-bottom: 2px solid #333; }
+        .table tr:hover td { background: #f9f9f9; }
+
+        .btn { border: 2px solid #333; padding: 6px 12px; background: white; text-decoration: none; color: #333; display: inline-block; font-size: 0.85rem; cursor: pointer; }
+        .btn-sm { padding: 4px 8px; font-size: 0.8rem; }
+        .btn-success { background: #d4edda; border-color: #28a745; color: #155724; }
+        .btn-danger { background: #f8d7da; border-color: #dc3545; color: #721c24; }
+
+        .badge { display: inline-block; padding: 3px 8px; font-size: 0.75rem; border: 1px solid; }
+        .badge-verified { background: #d4edda; border-color: #28a745; color: #155724; }
+        .badge-pending { background: #fff3cd; border-color: #ffc107; color: #856404; }
+
+        .stars { color: #ffc107; }
+
+        .pagination { display: flex; justify-content: center; gap: 5px; margin-top: 20px; }
+        .pagination a { border: 2px solid #333; padding: 8px 12px; text-decoration: none; color: #333; }
+        .pagination a.active { background: #333; color: white; }
+    </style>
+</head>
+<body>
+    <a href="../index.html" class="back">&larr; Retour index</a>
+
+    <div class="wireframe">
+        <header class="header">
+            <div class="logo">PhotoMatch Admin</div>
+        </header>
+
+        <div class="annotation">
+            <strong>Route :</strong> GET route('admin.photographers.index')<br>
+            <strong>Controller :</strong> AdminController@photographers
+        </div>
+
+        <div class="layout">
+            <aside class="sidebar">
+                <nav class="sidebar-nav">
+                    <a href="dashboard.html">Dashboard</a>
+                    <a href="users.html">Utilisateurs</a>
+                    <a href="#" class="active">Photographes</a>
+                </nav>
+            </aside>
+
+            <main class="main-content">
+                <div class="page-header">
+                    <h1>Gestion des photographes</h1>
+                </div>
+
+                <div class="tabs">
+                    <div class="tab" style="border-style: dashed;">
+                        Tous <span class="tab-count">[X]</span>
+                    </div>
+                    <div class="tab active" style="border-style: dashed;">
+                        En attente <span class="tab-count pending">[X]</span>
+                    </div>
+                    <div class="tab" style="border-style: dashed;">
+                        Vérifiés <span class="tab-count">[X]</span>
+                    </div>
+                </div>
+
+                <div class="annotation">
+                    <strong>Filtres :</strong> ?status=all|pending|verified<br>
+                    - pending : is_verified = false<br>
+                    - verified : is_verified = true
+                </div>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Photographe</th>
+                            <th>SIRET</th>
+                            <th>Localisation</th>
+                            <th>Note</th>
+                            <th>Missions</th>
+                            <th>Statut</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <strong>[user.name]</strong><br>
+                                <span style="font-size: 0.85rem; color: #666;">[user.email]</span>
+                            </td>
+                            <td>[siret]</td>
+                            <td>[location]</td>
+                            <td><span class="stars">★★★★★</span> ([rating])</td>
+                            <td>[total_missions]</td>
+                            <td><span class="badge badge-pending">En attente</span></td>
+                            <td>
+                                <button class="btn btn-sm btn-success" style="border-style: dashed;">✓ Vérifier</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>[user.name]</strong><br>
+                                <span style="font-size: 0.85rem; color: #666;">[user.email]</span>
+                            </td>
+                            <td>[siret]</td>
+                            <td>[location]</td>
+                            <td><span class="stars">★★★★☆</span> ([rating])</td>
+                            <td>[total_missions]</td>
+                            <td><span class="badge badge-verified">Vérifié</span></td>
+                            <td>
+                                <button class="btn btn-sm btn-danger" style="border-style: dashed;">✗ Retirer</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>[user.name]</strong><br>
+                                <span style="font-size: 0.85rem; color: #666;">[user.email]</span>
+                            </td>
+                            <td style="color: #dc3545;">Non renseigné</td>
+                            <td>[location]</td>
+                            <td>-</td>
+                            <td>0</td>
+                            <td><span class="badge badge-pending">En attente</span></td>
+                            <td>
+                                <button class="btn btn-sm" style="border-style: dashed;" disabled>SIRET requis</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="annotation">
+                    <strong>Actions :</strong><br>
+                    - Vérifier : PATCH route('admin.photographers.toggle-verification', $photographer)<br>
+                    - Retirer la vérification : même route (toggle)<br>
+                    <strong>Logique :</strong> is_verified = !is_verified<br>
+                    <strong>Note :</strong> Un photographe sans SIRET ne devrait pas pouvoir être vérifié (validation côté serveur)
+                </div>
+
+                <div class="pagination">
+                    <a href="#">&laquo;</a>
+                    <a href="#" class="active">1</a>
+                    <a href="#">2</a>
+                    <a href="#">&raquo;</a>
+                </div>
+            </main>
+        </div>
+    </div>
+</body>
+</html>

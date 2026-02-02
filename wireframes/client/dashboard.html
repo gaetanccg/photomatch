@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Client - Wireframe PhotoMatch</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: system-ui, -apple-system, sans-serif; background: #f5f5f5; }
+        .wireframe { max-width: 1200px; margin: 0 auto; background: white; border: 2px solid #333; }
+        .annotation { background: #fff3cd; border-left: 4px solid #ffc107; padding: 8px 12px; margin: 15px; font-size: 0.85rem; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 2px solid #333; }
+        .logo { font-size: 1.25rem; font-weight: bold; }
+        .nav { display: flex; gap: 20px; align-items: center; }
+        .nav a { text-decoration: none; color: #333; font-size: 0.9rem; }
+        .nav a.active { font-weight: 600; border-bottom: 2px solid #333; }
+        .btn { border: 2px solid #333; padding: 8px 16px; background: white; text-decoration: none; color: #333; display: inline-block; }
+        .btn-primary { background: #333; color: white; }
+        .btn-sm { padding: 6px 12px; font-size: 0.85rem; }
+        a.back { display: inline-block; margin: 20px; color: #333; }
+        .avatar { width: 36px; height: 36px; border: 2px solid #333; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: bold; background: #f5f5f5; }
+
+        .content { padding: 30px; }
+        .page-title { margin-bottom: 30px; }
+        .page-title h1 { font-size: 1.5rem; margin-bottom: 5px; }
+        .page-title p { color: #666; }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            border: 2px solid #333;
+            padding: 20px;
+        }
+        .stat-card h3 { font-size: 0.85rem; color: #666; margin-bottom: 5px; }
+        .stat-card .value { font-size: 2rem; font-weight: bold; }
+        .stat-card .trend { font-size: 0.85rem; color: #28a745; margin-top: 5px; }
+
+        .section { margin-bottom: 30px; }
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .section-header h2 { font-size: 1.1rem; }
+
+        .card { border: 2px solid #333; margin-bottom: 15px; }
+        .card-body { padding: 15px; }
+
+        .request-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        .request-item:last-child { border-bottom: none; }
+        .request-info h4 { margin-bottom: 3px; }
+        .request-meta { font-size: 0.85rem; color: #666; }
+        .badge {
+            padding: 4px 10px;
+            font-size: 0.75rem;
+            border: 1px solid;
+        }
+        .badge-pending { background: #fff3cd; border-color: #ffc107; color: #856404; }
+        .badge-accepted { background: #d4edda; border-color: #28a745; color: #155724; }
+        .badge-declined { background: #f8d7da; border-color: #dc3545; color: #721c24; }
+
+        .project-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        .project-card:last-child { border-bottom: none; }
+        .project-info h4 { margin-bottom: 3px; }
+        .project-meta { font-size: 0.85rem; color: #666; }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        .empty-state h3 { margin-bottom: 10px; color: #333; }
+
+        .quick-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+<body>
+    <a href="../index.html" class="back">&larr; Retour index</a>
+
+    <div class="wireframe">
+        <!-- Header Client -->
+        <header class="header">
+            <div class="logo">PhotoMatch</div>
+            <nav class="nav">
+                <a href="../public/search.html">Rechercher</a>
+                <a href="projects/index.html">Mes projets</a>
+                <a href="requests/index.html">Mes demandes</a>
+                <div class="avatar" style="cursor: pointer;">JD</div>
+            </nav>
+        </header>
+
+        <div class="annotation">
+            <strong>Route :</strong> GET route('client.dashboard')<br>
+            <strong>Controller :</strong> ClientController@dashboard<br>
+            <strong>Middleware :</strong> auth, role:client
+        </div>
+
+        <div class="content">
+            <div class="page-title">
+                <h1>Bonjour, [user.name] !</h1>
+                <p>Voici un résumé de votre activité</p>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Projets actifs</h3>
+                    <div class="value">[X]</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Demandes en attente</h3>
+                    <div class="value">[X]</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Missions réalisées</h3>
+                    <div class="value">[X]</div>
+                </div>
+            </div>
+
+            <div class="annotation">
+                <strong>Stats calculées :</strong><br>
+                - Projets actifs : COUNT(photo_projects WHERE client_id = auth()->id() AND status IN ('draft', 'published', 'in_progress'))<br>
+                - Demandes en attente : COUNT(booking_requests JOIN photo_projects WHERE client_id = auth()->id() AND status = 'pending')<br>
+                - Missions réalisées : COUNT(booking_requests WHERE status = 'accepted' AND completed)
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="section">
+                <h2 style="margin-bottom: 15px;">Actions rapides</h2>
+                <div class="quick-actions">
+                    <a href="projects/create.html" class="btn btn-primary" style="border-style: dashed;">+ Créer un projet</a>
+                    <a href="../public/search.html" class="btn" style="border-style: dashed;">Rechercher un photographe</a>
+                </div>
+            </div>
+
+            <!-- Recent Requests -->
+            <div class="section">
+                <div class="section-header">
+                    <h2>Demandes récentes</h2>
+                    <a href="requests/index.html" class="btn btn-sm" style="border-style: dashed;">Voir tout</a>
+                </div>
+
+                <div class="card">
+                    <div class="request-item" style="border-style: dashed; cursor: pointer;">
+                        <div class="request-info">
+                            <h4>[Projet] → [Photographe]</h4>
+                            <div class="request-meta">Envoyée le [sent_at]</div>
+                        </div>
+                        <span class="badge badge-pending">En attente</span>
+                    </div>
+                    <div class="request-item" style="border-style: dashed; cursor: pointer;">
+                        <div class="request-info">
+                            <h4>[Projet] → [Photographe]</h4>
+                            <div class="request-meta">Répondue le [responded_at]</div>
+                        </div>
+                        <span class="badge badge-accepted">Acceptée</span>
+                    </div>
+                    <div class="request-item" style="border-style: dashed; cursor: pointer;">
+                        <div class="request-info">
+                            <h4>[Projet] → [Photographe]</h4>
+                            <div class="request-meta">Répondue le [responded_at]</div>
+                        </div>
+                        <span class="badge badge-declined">Refusée</span>
+                    </div>
+                </div>
+
+                <!-- Empty State -->
+                <div class="empty-state" style="display: none;">
+                    <h3>Aucune demande</h3>
+                    <p>Vous n'avez pas encore envoyé de demande à un photographe.</p>
+                    <a href="../public/search.html" class="btn" style="margin-top: 15px;">Trouver un photographe</a>
+                </div>
+            </div>
+
+            <div class="annotation">
+                <strong>Données :</strong> 5 dernières booking_requests via photo_projects.client_id<br>
+                <strong>Action clic :</strong> route('client.requests.show', $bookingRequest)
+            </div>
+
+            <!-- Active Projects -->
+            <div class="section">
+                <div class="section-header">
+                    <h2>Mes projets</h2>
+                    <a href="projects/index.html" class="btn btn-sm" style="border-style: dashed;">Voir tout</a>
+                </div>
+
+                <div class="card">
+                    <div class="project-card" style="border-style: dashed; cursor: pointer;">
+                        <div class="project-info">
+                            <h4>[photo_projects.title]</h4>
+                            <div class="project-meta">[project_type] • [location] • [event_date]</div>
+                        </div>
+                        <span class="badge badge-pending">Brouillon</span>
+                    </div>
+                    <div class="project-card" style="border-style: dashed; cursor: pointer;">
+                        <div class="project-info">
+                            <h4>[photo_projects.title]</h4>
+                            <div class="project-meta">[project_type] • [location] • [event_date]</div>
+                        </div>
+                        <span class="badge badge-accepted">En cours</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="annotation">
+                <strong>Données :</strong> 5 derniers photo_projects WHERE client_id = auth()->id() ORDER BY updated_at DESC<br>
+                <strong>Action clic :</strong> route('client.projects.show', $project)
+            </div>
+        </div>
+    </div>
+</body>
+</html>

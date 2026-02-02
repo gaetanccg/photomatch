@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Headers & Navigation - Wireframe PhotoMatch</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: system-ui, -apple-system, sans-serif; background: #f5f5f5; padding: 20px; line-height: 1.6; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { font-size: 1.5rem; margin-bottom: 20px; }
+        h2 { font-size: 1.2rem; margin: 30px 0 15px; padding: 10px; background: #333; color: white; }
+        .section { background: white; border: 2px solid #333; margin-bottom: 30px; }
+        .annotation { background: #fff3cd; border-left: 4px solid #ffc107; padding: 8px 12px; margin: 15px; font-size: 0.85rem; }
+        a.back { display: inline-block; margin-bottom: 20px; color: #333; }
+
+        /* HEADER STYLES */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 2px solid #333;
+            background: white;
+        }
+        .logo {
+            font-size: 1.25rem;
+            font-weight: bold;
+            text-decoration: none;
+            color: #333;
+        }
+        .nav {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        .nav a {
+            text-decoration: none;
+            color: #333;
+            font-size: 0.9rem;
+            padding: 8px 0;
+            border-bottom: 2px solid transparent;
+        }
+        .nav a:hover, .nav a.active {
+            border-bottom-color: #333;
+        }
+        .nav-btn {
+            border: 2px solid #333;
+            padding: 8px 16px;
+            background: white;
+            text-decoration: none;
+            color: #333;
+            font-size: 0.9rem;
+        }
+        .nav-btn-primary {
+            background: #333;
+            color: white;
+        }
+        .avatar-small {
+            width: 36px;
+            height: 36px;
+            border: 2px solid #333;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+            background: #f5f5f5;
+            cursor: pointer;
+        }
+        .notification-badge {
+            position: relative;
+        }
+        .notification-badge::after {
+            content: '3';
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 18px;
+            height: 18px;
+            background: #dc3545;
+            color: white;
+            border-radius: 50%;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* SIDEBAR */
+        .layout {
+            display: flex;
+            min-height: 400px;
+        }
+        .sidebar {
+            width: 250px;
+            border-right: 2px solid #333;
+            background: #fafafa;
+        }
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 2px solid #333;
+        }
+        .sidebar-nav {
+            padding: 10px 0;
+        }
+        .sidebar-nav a {
+            display: block;
+            padding: 12px 20px;
+            text-decoration: none;
+            color: #333;
+            font-size: 0.9rem;
+            border-left: 3px solid transparent;
+        }
+        .sidebar-nav a:hover {
+            background: #f0f0f0;
+        }
+        .sidebar-nav a.active {
+            background: #e9e9e9;
+            border-left-color: #333;
+            font-weight: 600;
+        }
+        .sidebar-section {
+            padding: 10px 20px 5px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: #666;
+            letter-spacing: 0.5px;
+        }
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            background: white;
+        }
+
+        /* MOBILE NAV */
+        .mobile-nav {
+            display: none;
+        }
+        .hamburger {
+            width: 24px;
+            height: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+        .hamburger span {
+            height: 3px;
+            background: #333;
+        }
+
+        /* DROPDOWN */
+        .dropdown {
+            position: relative;
+        }
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border: 2px solid #333;
+            min-width: 200px;
+            margin-top: 5px;
+            z-index: 100;
+        }
+        .dropdown-menu a {
+            display: block;
+            padding: 10px 15px;
+            text-decoration: none;
+            color: #333;
+            font-size: 0.9rem;
+            border-bottom: 1px solid #eee;
+        }
+        .dropdown-menu a:last-child {
+            border-bottom: none;
+        }
+        .dropdown-menu a:hover {
+            background: #f5f5f5;
+        }
+        .dropdown-divider {
+            border-top: 2px solid #333;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="../index.html" class="back">&larr; Retour index</a>
+        <h1>Headers & Navigation</h1>
+
+        <!-- PUBLIC HEADER -->
+        <h2>Header Public (visiteur non connecté)</h2>
+        <div class="section">
+            <header class="header">
+                <a href="#" class="logo">PhotoMatch</a>
+                <nav class="nav">
+                    <a href="#">Trouver un photographe</a>
+                    <a href="#">Comment ça marche</a>
+                    <a href="#" class="nav-btn">Connexion</a>
+                    <a href="#" class="nav-btn nav-btn-primary">Inscription</a>
+                </nav>
+            </header>
+            <div class="annotation">
+                <strong>Routes associées :</strong><br>
+                - Logo → route('home')<br>
+                - Trouver un photographe → route('search.index')<br>
+                - Connexion → route('login')<br>
+                - Inscription → route('register')
+            </div>
+        </div>
+
+        <!-- CLIENT HEADER -->
+        <h2>Header Client (connecté)</h2>
+        <div class="section">
+            <header class="header">
+                <a href="#" class="logo">PhotoMatch</a>
+                <nav class="nav">
+                    <a href="#" class="active">Rechercher</a>
+                    <a href="#">Mes projets</a>
+                    <a href="#">Mes demandes</a>
+                    <div class="dropdown">
+                        <div class="avatar-small notification-badge">JD</div>
+                        <div class="dropdown-menu">
+                            <a href="#">Mon profil</a>
+                            <a href="#">Notifications <span style="color: #dc3545;">(3)</span></a>
+                            <a href="#">Historique</a>
+                            <div class="dropdown-divider"></div>
+                            <a href="#" style="color: #dc3545;">Déconnexion</a>
+                        </div>
+                    </div>
+                </nav>
+            </header>
+            <div class="annotation">
+                <strong>Routes associées :</strong><br>
+                - Rechercher → route('search.index') [page par défaut client]<br>
+                - Mes projets → route('client.projects.index')<br>
+                - Mes demandes → route('client.requests.index')<br>
+                - Mon profil → route('profile.edit')<br>
+                - Notifications → route('notifications.index')<br>
+                - Historique → route('client.history.index')<br>
+                - Déconnexion → route('logout') [POST]
+            </div>
+        </div>
+
+        <!-- PHOTOGRAPHER LAYOUT -->
+        <h2>Layout Photographe (sidebar)</h2>
+        <div class="section">
+            <header class="header">
+                <a href="#" class="logo">PhotoMatch</a>
+                <nav class="nav">
+                    <a href="#">Voir mon profil public</a>
+                    <div class="dropdown">
+                        <div class="avatar-small">PM</div>
+                    </div>
+                </nav>
+            </header>
+            <div class="layout">
+                <aside class="sidebar">
+                    <div class="sidebar-header">
+                        <strong>Pierre Martin</strong>
+                        <div style="font-size: 0.85rem; color: #666;">Photographe</div>
+                    </div>
+                    <nav class="sidebar-nav">
+                        <div class="sidebar-section">Général</div>
+                        <a href="#" class="active">Tableau de bord</a>
+                        <a href="#">Mon profil</a>
+                        <a href="#">Portfolio</a>
+
+                        <div class="sidebar-section">Planning</div>
+                        <a href="#">Disponibilités</a>
+
+                        <div class="sidebar-section">Activité</div>
+                        <a href="#">Demandes <span style="background:#dc3545;color:white;padding:2px 6px;border-radius:10px;font-size:0.75rem;margin-left:5px;">5</span></a>
+                        <a href="#">Mes avis</a>
+                        <a href="#">Historique</a>
+                    </nav>
+                </aside>
+                <main class="main-content">
+                    <p style="color: #666;">[Contenu de la page]</p>
+                </main>
+            </div>
+            <div class="annotation">
+                <strong>Routes sidebar photographe :</strong><br>
+                - Tableau de bord → route('photographer.dashboard')<br>
+                - Mon profil → route('photographer.profile.edit')<br>
+                - Portfolio → route('photographer.portfolio.index')<br>
+                - Disponibilités → route('photographer.availabilities.index')<br>
+                - Demandes → route('photographer.requests.index')<br>
+                - Mes avis → route('photographer.reviews.index')<br>
+                - Historique → route('photographer.history.index')<br>
+                - Voir profil public → route('photographers.show', photographer)
+            </div>
+        </div>
+
+        <!-- ADMIN LAYOUT -->
+        <h2>Layout Admin (sidebar)</h2>
+        <div class="section">
+            <header class="header" style="background: #333; border-color: #333;">
+                <a href="#" class="logo" style="color: white;">PhotoMatch Admin</a>
+                <nav class="nav">
+                    <div class="avatar-small" style="background: white;">A</div>
+                </nav>
+            </header>
+            <div class="layout">
+                <aside class="sidebar" style="background: #2d2d2d; border-color: #333;">
+                    <nav class="sidebar-nav">
+                        <a href="#" class="active" style="color: white; border-left-color: white;">Dashboard</a>
+                        <a href="#" style="color: #ccc;">Utilisateurs</a>
+                        <a href="#" style="color: #ccc;">Photographes</a>
+                    </nav>
+                </aside>
+                <main class="main-content">
+                    <p style="color: #666;">[Contenu admin]</p>
+                </main>
+            </div>
+            <div class="annotation">
+                <strong>Routes admin :</strong><br>
+                - Dashboard → route('admin.dashboard')<br>
+                - Utilisateurs → route('admin.users.index')<br>
+                - Photographes → route('admin.photographers.index')
+            </div>
+        </div>
+
+        <!-- MOBILE -->
+        <h2>Header Mobile</h2>
+        <div class="section" style="max-width: 400px;">
+            <header class="header">
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <a href="#" class="logo">PhotoMatch</a>
+                <div class="avatar-small notification-badge">JD</div>
+            </header>
+            <div class="annotation">
+                Sur mobile : hamburger menu à gauche, logo centré, avatar à droite.
+                Le menu s'ouvre en slide depuis la gauche.
+            </div>
+        </div>
+
+        <!-- NOTIFICATIONS DROPDOWN -->
+        <h2>Dropdown Notifications</h2>
+        <div class="section">
+            <div style="position: relative; display: inline-block;">
+                <div class="avatar-small notification-badge">JD</div>
+                <div class="dropdown-menu" style="position: relative; margin-top: 10px;">
+                    <div style="padding: 10px 15px; font-weight: 600; border-bottom: 2px solid #333;">
+                        Notifications
+                    </div>
+                    <a href="#" style="background: #f0f7ff;">
+                        <div style="font-weight: 500;">Nouvelle demande reçue</div>
+                        <div style="font-size: 0.8rem; color: #666;">Il y a 5 minutes</div>
+                    </a>
+                    <a href="#">
+                        <div style="font-weight: 500;">Demande acceptée</div>
+                        <div style="font-size: 0.8rem; color: #666;">Il y a 1 heure</div>
+                    </a>
+                    <a href="#">
+                        <div style="font-weight: 500;">Nouvel avis reçu</div>
+                        <div style="font-size: 0.8rem; color: #666;">Hier</div>
+                    </a>
+                    <a href="#" style="text-align: center; color: #007bff;">
+                        Voir toutes les notifications
+                    </a>
+                </div>
+            </div>
+            <div class="annotation">
+                Les notifications non lues ont un fond bleu clair.
+                Clique sur une notification → route('notifications.read', notification) [POST] puis redirection.
+            </div>
+        </div>
+    </div>
+</body>
+</html>

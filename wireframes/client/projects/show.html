@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Détail projet - Wireframe PhotoMatch</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: system-ui, -apple-system, sans-serif; background: #f5f5f5; }
+        .wireframe { max-width: 1100px; margin: 0 auto; background: white; border: 2px solid #333; }
+        .annotation { background: #fff3cd; border-left: 4px solid #ffc107; padding: 8px 12px; margin: 15px; font-size: 0.85rem; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 2px solid #333; }
+        .logo { font-size: 1.25rem; font-weight: bold; }
+        .nav { display: flex; gap: 20px; align-items: center; }
+        .nav a { text-decoration: none; color: #333; font-size: 0.9rem; }
+        .btn { border: 2px solid #333; padding: 8px 16px; background: white; text-decoration: none; color: #333; display: inline-block; cursor: pointer; }
+        .btn-primary { background: #333; color: white; }
+        .btn-sm { padding: 6px 12px; font-size: 0.85rem; }
+        .btn-danger { color: #dc3545; border-color: #dc3545; }
+        a.back { display: inline-block; margin: 20px; color: #333; }
+
+        .breadcrumb { padding: 15px 30px; font-size: 0.9rem; color: #666; border-bottom: 1px solid #eee; }
+        .breadcrumb a { color: #333; text-decoration: none; }
+
+        .content { padding: 30px; }
+
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 30px;
+        }
+        .project-title h1 { font-size: 1.5rem; margin-bottom: 10px; }
+        .project-actions { display: flex; gap: 10px; }
+        .badge {
+            padding: 6px 14px;
+            font-size: 0.85rem;
+            border: 2px solid;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        .badge-draft { background: #e2e3e5; border-color: #6c757d; color: #383d41; }
+        .badge-published { background: #cce5ff; border-color: #007bff; color: #004085; }
+        .badge-in_progress { background: #fff3cd; border-color: #ffc107; color: #856404; }
+        .badge-completed { background: #d4edda; border-color: #28a745; color: #155724; }
+
+        .project-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+
+        .section {
+            border: 2px solid #333;
+            margin-bottom: 20px;
+        }
+        .section-header {
+            padding: 15px 20px;
+            border-bottom: 2px solid #333;
+            font-weight: 600;
+            background: #fafafa;
+        }
+        .section-body { padding: 20px; }
+
+        .info-row {
+            display: flex;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .info-row:last-child { border-bottom: none; }
+        .info-label { width: 150px; color: #666; font-size: 0.9rem; }
+        .info-value { flex: 1; }
+
+        .description { line-height: 1.7; color: #444; }
+
+        .request-card {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .request-card:hover { background: #f9f9f9; }
+        .request-card:last-child { border-bottom: none; }
+        .request-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .request-photographer { font-weight: 600; }
+        .request-date { font-size: 0.85rem; color: #666; }
+        .request-price { font-weight: 600; margin-top: 5px; }
+        .badge-sm {
+            padding: 3px 8px;
+            font-size: 0.75rem;
+            border: 1px solid;
+        }
+        .badge-pending { background: #fff3cd; border-color: #ffc107; color: #856404; }
+        .badge-accepted { background: #d4edda; border-color: #28a745; color: #155724; }
+        .badge-declined { background: #f8d7da; border-color: #dc3545; color: #721c24; }
+
+        .empty-requests {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+        }
+
+        .sidebar-card {
+            border: 2px solid #333;
+            margin-bottom: 20px;
+        }
+        .sidebar-card-header {
+            padding: 15px;
+            border-bottom: 2px solid #333;
+            font-weight: 600;
+            background: #fafafa;
+        }
+        .sidebar-card-body { padding: 15px; }
+
+        .action-btn {
+            display: block;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .action-btn:last-child { margin-bottom: 0; }
+    </style>
+</head>
+<body>
+    <a href="../../index.html" class="back">&larr; Retour index</a>
+
+    <div class="wireframe">
+        <header class="header">
+            <div class="logo">PhotoMatch</div>
+            <nav class="nav">
+                <a href="../../public/search.html">Rechercher</a>
+                <a href="index.html">Mes projets</a>
+                <a href="../requests/index.html">Mes demandes</a>
+            </nav>
+        </header>
+
+        <div class="annotation">
+            <strong>Route :</strong> GET route('client.projects.show', $project)<br>
+            <strong>Controller :</strong> PhotoProjectController@show
+        </div>
+
+        <nav class="breadcrumb">
+            <a href="../dashboard.html">Dashboard</a> /
+            <a href="index.html">Mes projets</a> /
+            <span>[photo_projects.title]</span>
+        </nav>
+
+        <div class="content">
+            <div class="project-header">
+                <div class="project-title">
+                    <span class="badge badge-published">[status]</span>
+                    <h1>[photo_projects.title]</h1>
+                </div>
+                <div class="project-actions">
+                    <a href="edit.html" class="btn" style="border-style: dashed;">Modifier</a>
+                    <button class="btn btn-danger" style="border-style: dashed;">Supprimer</button>
+                </div>
+            </div>
+
+            <div class="project-grid">
+                <!-- Main Content -->
+                <div>
+                    <!-- Project Details -->
+                    <div class="section">
+                        <div class="section-header">Détails du projet</div>
+                        <div class="section-body">
+                            <div class="info-row">
+                                <div class="info-label">Type</div>
+                                <div class="info-value">[project_type traduit]</div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-label">Date</div>
+                                <div class="info-value">[event_date] ou [date_start] - [date_end]</div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-label">Lieu</div>
+                                <div class="info-value">[location]</div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-label">Budget</div>
+                                <div class="info-value">[budget_min]€ - [budget_max]€</div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-label">Durée estimée</div>
+                                <div class="info-value">[estimated_duration] heures</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="annotation">
+                        <strong>Champs :</strong> photo_projects.*<br>
+                        <strong>Traduction project_type :</strong> event→Événement, portrait→Portrait, corporate→Corporate, product→Produit, real_estate→Immobilier, other→Autre
+                    </div>
+
+                    <!-- Description -->
+                    <div class="section">
+                        <div class="section-header">Description</div>
+                        <div class="section-body">
+                            <p class="description">[photo_projects.description]</p>
+                        </div>
+                    </div>
+
+                    <!-- Associated Requests -->
+                    <div class="section">
+                        <div class="section-header">Demandes envoyées ([X])</div>
+                        <div class="section-body" style="padding: 0;">
+                            <div class="request-card" style="border-style: dashed;">
+                                <div class="request-header">
+                                    <span class="request-photographer">[Photographe 1]</span>
+                                    <span class="badge-sm badge-accepted">Acceptée</span>
+                                </div>
+                                <div class="request-date">Envoyée le [sent_at] • Réponse le [responded_at]</div>
+                                <div class="request-price">Prix proposé : [proposed_price]€</div>
+                            </div>
+
+                            <div class="request-card" style="border-style: dashed;">
+                                <div class="request-header">
+                                    <span class="request-photographer">[Photographe 2]</span>
+                                    <span class="badge-sm badge-pending">En attente</span>
+                                </div>
+                                <div class="request-date">Envoyée le [sent_at]</div>
+                            </div>
+
+                            <div class="request-card" style="border-style: dashed;">
+                                <div class="request-header">
+                                    <span class="request-photographer">[Photographe 3]</span>
+                                    <span class="badge-sm badge-declined">Refusée</span>
+                                </div>
+                                <div class="request-date">Envoyée le [sent_at] • Réponse le [responded_at]</div>
+                            </div>
+
+                            <!-- Empty state -->
+                            <div class="empty-requests" style="display: none;">
+                                <p>Aucune demande envoyée pour ce projet.</p>
+                                <a href="../../public/search.html" class="btn" style="margin-top: 10px; border-style: dashed;">Trouver un photographe</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="annotation">
+                        <strong>Données :</strong> booking_requests WHERE project_id = $project->id<br>
+                        <strong>JOIN :</strong> photographers → users pour le nom<br>
+                        <strong>Action clic :</strong> route('client.requests.show', $bookingRequest)
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div>
+                    <div class="sidebar-card">
+                        <div class="sidebar-card-header">Actions</div>
+                        <div class="sidebar-card-body">
+                            <a href="../../public/search.html" class="btn btn-primary action-btn" style="border-style: dashed;">
+                                Trouver un photographe
+                            </a>
+                            <a href="edit.html" class="btn action-btn" style="border-style: dashed;">
+                                Modifier le projet
+                            </a>
+
+                            <!-- If status is draft -->
+                            <button class="btn action-btn" style="border-style: dashed; background: #d4edda; border-color: #28a745;">
+                                Publier le projet
+                            </button>
+
+                            <!-- If has accepted request -->
+                            <button class="btn action-btn" style="border-style: dashed; display: none;">
+                                Marquer comme terminé
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="annotation">
+                        <strong>Actions conditionnelles :</strong><br>
+                        - Si status='draft' → afficher "Publier"<br>
+                        - Si booking_request acceptée → afficher "Marquer comme terminé"<br>
+                        - "Publier" → PUT avec status='published'<br>
+                        - "Terminé" → PUT avec status='completed'
+                    </div>
+
+                    <div class="sidebar-card">
+                        <div class="sidebar-card-header">Informations</div>
+                        <div class="sidebar-card-body">
+                            <p style="font-size: 0.9rem; color: #666; margin-bottom: 10px;">
+                                <strong>Créé le :</strong> [created_at]
+                            </p>
+                            <p style="font-size: 0.9rem; color: #666;">
+                                <strong>Modifié le :</strong> [updated_at]
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="sidebar-card" style="border-color: #dc3545;">
+                        <div class="sidebar-card-header" style="background: #f8d7da;">Zone de danger</div>
+                        <div class="sidebar-card-body">
+                            <p style="font-size: 0.85rem; color: #666; margin-bottom: 15px;">
+                                La suppression est irréversible et annulera toutes les demandes associées.
+                            </p>
+                            <button class="btn btn-danger action-btn" style="border-style: dashed;">
+                                Supprimer le projet
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="annotation">
+                        <strong>Suppression :</strong> DELETE route('client.projects.destroy', $project)<br>
+                        <strong>Confirmation requise :</strong> "Êtes-vous sûr de vouloir supprimer ce projet ?"<br>
+                        <strong>Cascade :</strong> Supprime aussi les booking_requests associées
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

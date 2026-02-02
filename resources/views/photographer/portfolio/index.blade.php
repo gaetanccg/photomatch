@@ -105,6 +105,13 @@
 
                                     <img src="{{ $image->url }}" class="w-full h-48 object-cover rounded-lg mb-4">
 
+                                    <!-- Formulaire de suppression (séparé pour éviter les formulaires imbriqués) -->
+                                    <form id="delete-form-{{ $image->id }}" action="{{ route('photographer.portfolio.destroy', $image) }}" method="POST"
+                                          onsubmit="return confirm('Supprimer cette image ?')" class="hidden">
+                                        @csrf
+                                        @method('DELETE')
+                                    </form>
+
                                     <form action="{{ route('photographer.portfolio.update', $image) }}" method="POST" class="space-y-4">
                                         @csrf
                                         @method('PUT')
@@ -138,14 +145,9 @@
                                         </div>
 
                                         <div class="flex justify-between pt-4 border-t">
-                                            <form action="{{ route('photographer.portfolio.destroy', $image) }}" method="POST"
-                                                  onsubmit="return confirm('Supprimer cette image ?')">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="text-red-600 hover:text-red-700 text-sm font-medium">
-                                                    Supprimer
-                                                </button>
-                                            </form>
+                                            <button type="submit" form="delete-form-{{ $image->id }}" class="text-red-600 hover:text-red-700 text-sm font-medium">
+                                                Supprimer
+                                            </button>
                                             <x-button type="submit" size="sm">Enregistrer</x-button>
                                         </div>
                                     </form>

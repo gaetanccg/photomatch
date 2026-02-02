@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accueil - Wireframe PhotoMatch</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: system-ui, -apple-system, sans-serif; background: #f5f5f5; }
+        .wireframe { max-width: 1200px; margin: 0 auto; background: white; border: 2px solid #333; }
+        .annotation { background: #fff3cd; border-left: 4px solid #ffc107; padding: 8px 12px; margin: 15px; font-size: 0.85rem; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 2px solid #333; }
+        .logo { font-size: 1.25rem; font-weight: bold; }
+        .nav { display: flex; gap: 15px; align-items: center; }
+        .nav a { text-decoration: none; color: #333; font-size: 0.9rem; }
+        .btn { border: 2px solid #333; padding: 8px 16px; background: white; text-decoration: none; color: #333; }
+        .btn-primary { background: #333; color: white; }
+        a.back { display: inline-block; margin: 20px; color: #333; }
+
+        /* Hero */
+        .hero {
+            padding: 60px 40px;
+            text-align: center;
+            border-bottom: 2px solid #333;
+            background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+        }
+        .hero h1 { font-size: 2.5rem; margin-bottom: 15px; }
+        .hero p { font-size: 1.1rem; color: #666; margin-bottom: 30px; max-width: 600px; margin-left: auto; margin-right: auto; }
+
+        /* Search Box */
+        .search-box {
+            max-width: 700px;
+            margin: 0 auto;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .search-input {
+            flex: 1;
+            min-width: 200px;
+            border: 2px solid #333;
+            padding: 15px;
+            font-size: 1rem;
+        }
+        .search-select {
+            border: 2px solid #333;
+            padding: 15px;
+            font-size: 1rem;
+            min-width: 180px;
+            background: white;
+        }
+        .search-btn {
+            border: 2px solid #333;
+            padding: 15px 30px;
+            background: #333;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        /* Stats */
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            padding: 40px;
+            border-bottom: 2px solid #333;
+            background: #fafafa;
+        }
+        .stat { text-align: center; }
+        .stat-number { font-size: 2rem; font-weight: bold; }
+        .stat-label { color: #666; font-size: 0.9rem; }
+
+        /* Sections */
+        .section { padding: 40px; border-bottom: 2px solid #333; }
+        .section h2 { font-size: 1.5rem; margin-bottom: 25px; text-align: center; }
+
+        /* Specialties Grid */
+        .specialties-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .specialty-card {
+            border: 2px dashed #333;
+            padding: 25px 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .specialty-card:hover { background: #333; color: white; border-style: solid; }
+        .specialty-icon { font-size: 2rem; margin-bottom: 10px; }
+        .specialty-name { font-weight: 500; }
+
+        /* Featured Photographers */
+        .photographers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        .photographer-card {
+            border: 2px solid #333;
+        }
+        .photographer-image {
+            height: 180px;
+            background: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            border-bottom: 2px solid #333;
+        }
+        .photographer-info { padding: 15px; }
+        .photographer-info h3 { margin-bottom: 5px; }
+        .photographer-meta { font-size: 0.85rem; color: #666; margin-bottom: 10px; }
+        .photographer-rating { display: flex; gap: 2px; font-size: 0.9rem; }
+        .star-filled { color: #ffc107; }
+        .photographer-specialties { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 10px; }
+        .tag { font-size: 0.75rem; padding: 3px 8px; background: #f5f5f5; border: 1px solid #ddd; }
+
+        /* How it works */
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .step { text-align: center; }
+        .step-number {
+            width: 50px;
+            height: 50px;
+            border: 2px solid #333;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin: 0 auto 15px;
+        }
+        .step h3 { margin-bottom: 10px; }
+        .step p { font-size: 0.9rem; color: #666; }
+
+        /* CTA */
+        .cta {
+            text-align: center;
+            padding: 60px 40px;
+            background: #333;
+            color: white;
+        }
+        .cta h2 { margin-bottom: 15px; }
+        .cta p { margin-bottom: 25px; opacity: 0.9; }
+        .cta-buttons { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
+        .cta .btn { border-color: white; }
+        .cta .btn-primary { background: white; color: #333; }
+
+        /* Footer */
+        .footer {
+            padding: 40px;
+            background: #fafafa;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+        }
+        .footer h4 { margin-bottom: 15px; }
+        .footer ul { list-style: none; }
+        .footer li { margin-bottom: 8px; }
+        .footer a { color: #666; text-decoration: none; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+    <a href="../index.html" class="back">&larr; Retour index</a>
+
+    <div class="wireframe">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">PhotoMatch</div>
+            <nav class="nav">
+                <a href="search.html">Trouver un photographe</a>
+                <a href="../shared/login.html" class="btn">Connexion</a>
+                <a href="../shared/register.html" class="btn btn-primary">Inscription</a>
+            </nav>
+        </header>
+
+        <div class="annotation">
+            <strong>Route :</strong> GET route('home')<br>
+            <strong>Controller :</strong> HomeController@index
+        </div>
+
+        <!-- Hero -->
+        <section class="hero">
+            <h1>Trouvez le photographe idéal</h1>
+            <p>Connectez-vous avec des photographes professionnels pour vos événements, shootings et projets.</p>
+
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="Ville, code postal..." style="border-style: dashed;">
+                <select class="search-select" style="border-style: dashed;">
+                    <option>Type de projet</option>
+                    <option>Mariage</option>
+                    <option>Portrait</option>
+                    <option>Corporate</option>
+                    <option>Événement</option>
+                    <option>Immobilier</option>
+                    <option>Produit</option>
+                </select>
+                <button class="search-btn" style="border-style: dashed;">Rechercher</button>
+            </div>
+        </section>
+
+        <div class="annotation">
+            <strong>Action recherche :</strong> Redirige vers route('search.index') avec les paramètres de recherche<br>
+            <strong>Paramètres :</strong> ?location=...&specialty=...
+        </div>
+
+        <!-- Stats -->
+        <section class="stats">
+            <div class="stat">
+                <div class="stat-number">[X]</div>
+                <div class="stat-label">Photographes</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">[X]</div>
+                <div class="stat-label">Projets réalisés</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">[X]</div>
+                <div class="stat-label">Clients satisfaits</div>
+            </div>
+        </section>
+
+        <div class="annotation">
+            <strong>Données :</strong> Statistiques calculées dynamiquement<br>
+            - Photographes : COUNT(photographers WHERE is_verified = true)<br>
+            - Projets : COUNT(booking_requests WHERE status = 'accepted')<br>
+            - Clients : COUNT(DISTINCT users WHERE role = 'client')
+        </div>
+
+        <!-- Specialties -->
+        <section class="section">
+            <h2>Explorez par spécialité</h2>
+            <div class="specialties-grid">
+                <div class="specialty-card">
+                    <div class="specialty-icon">💒</div>
+                    <div class="specialty-name">Mariage</div>
+                </div>
+                <div class="specialty-card">
+                    <div class="specialty-icon">👤</div>
+                    <div class="specialty-name">Portrait</div>
+                </div>
+                <div class="specialty-card">
+                    <div class="specialty-icon">🏢</div>
+                    <div class="specialty-name">Corporate</div>
+                </div>
+                <div class="specialty-card">
+                    <div class="specialty-icon">🎉</div>
+                    <div class="specialty-name">Événement</div>
+                </div>
+                <div class="specialty-card">
+                    <div class="specialty-icon">🏠</div>
+                    <div class="specialty-name">Immobilier</div>
+                </div>
+                <div class="specialty-card">
+                    <div class="specialty-icon">📦</div>
+                    <div class="specialty-name">Produit</div>
+                </div>
+            </div>
+        </section>
+
+        <div class="annotation">
+            <strong>Données :</strong> Liste depuis table specialties<br>
+            <strong>Champs :</strong> name, slug, icon<br>
+            <strong>Action clic :</strong> route('search.index', ['specialty' => $specialty->slug])
+        </div>
+
+        <!-- Featured Photographers -->
+        <section class="section">
+            <h2>Photographes à la une</h2>
+            <div class="photographers-grid">
+                <div class="photographer-card" style="border-style: dashed; cursor: pointer;">
+                    <div class="photographer-image">[Photo portfolio]</div>
+                    <div class="photographer-info">
+                        <h3>[Nom photographe]</h3>
+                        <div class="photographer-meta">[Ville] • [X] ans d'expérience</div>
+                        <div class="photographer-rating">
+                            <span class="star-filled">★★★★</span><span>★</span>
+                            <span style="color: #666; margin-left: 5px;">([X] avis)</span>
+                        </div>
+                        <div class="photographer-specialties">
+                            <span class="tag">[Spécialité 1]</span>
+                            <span class="tag">[Spécialité 2]</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Répété 3-4 fois -->
+                <div class="photographer-card" style="border-style: dashed; cursor: pointer;">
+                    <div class="photographer-image">[Photo portfolio]</div>
+                    <div class="photographer-info">
+                        <h3>[Nom photographe]</h3>
+                        <div class="photographer-meta">[Ville] • [X] ans d'expérience</div>
+                        <div class="photographer-rating">
+                            <span class="star-filled">★★★★★</span>
+                            <span style="color: #666; margin-left: 5px;">([X] avis)</span>
+                        </div>
+                        <div class="photographer-specialties">
+                            <span class="tag">[Spécialité]</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="photographer-card" style="border-style: dashed; cursor: pointer;">
+                    <div class="photographer-image">[Photo portfolio]</div>
+                    <div class="photographer-info">
+                        <h3>[Nom photographe]</h3>
+                        <div class="photographer-meta">[Ville] • [X] ans d'expérience</div>
+                        <div class="photographer-rating">
+                            <span class="star-filled">★★★★</span><span>★</span>
+                            <span style="color: #666; margin-left: 5px;">([X] avis)</span>
+                        </div>
+                        <div class="photographer-specialties">
+                            <span class="tag">[Spécialité]</span>
+                            <span class="tag">[Spécialité]</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="annotation">
+            <strong>Données :</strong> Photographes avec is_verified = true, triés par rating DESC<br>
+            <strong>Jointures :</strong> photographers → users (name), portfolio_images (featured), specialties<br>
+            <strong>Action clic :</strong> route('photographers.show', $photographer)
+        </div>
+
+        <!-- How it works -->
+        <section class="section" style="background: #fafafa;">
+            <h2>Comment ça marche ?</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Décrivez votre projet</h3>
+                    <p>Créez un projet avec vos besoins : type, date, lieu, budget.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Trouvez votre photographe</h3>
+                    <p>Parcourez les profils et portfolios des photographes.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Envoyez une demande</h3>
+                    <p>Contactez le photographe de votre choix.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3>Réalisez votre projet</h3>
+                    <p>Validez les conditions et lancez votre collaboration.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA -->
+        <section class="cta">
+            <h2>Prêt à commencer ?</h2>
+            <p>Rejoignez PhotoMatch et trouvez le photographe parfait pour votre projet.</p>
+            <div class="cta-buttons">
+                <a href="../shared/register.html" class="btn btn-primary" style="border-style: dashed;">Je cherche un photographe</a>
+                <a href="../shared/register.html" class="btn" style="border-style: dashed; color: white;">Je suis photographe</a>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div>
+                <h4>PhotoMatch</h4>
+                <p style="font-size: 0.85rem; color: #666;">La plateforme de mise en relation entre clients et photographes professionnels.</p>
+            </div>
+            <div>
+                <h4>Liens utiles</h4>
+                <ul>
+                    <li><a href="search.html">Trouver un photographe</a></li>
+                    <li><a href="#">Comment ça marche</a></li>
+                    <li><a href="#">FAQ</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Légal</h4>
+                <ul>
+                    <li><a href="#">Mentions légales</a></li>
+                    <li><a href="#">CGU</a></li>
+                    <li><a href="#">Politique de confidentialité</a></li>
+                    <li><a href="#">Cookies</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Contact</h4>
+                <ul>
+                    <li><a href="#">contact@photomatch.fr</a></li>
+                    <li><a href="#">Aide & Support</a></li>
+                </ul>
+            </div>
+        </footer>
+
+        <div class="annotation">
+            <strong>Routes légales :</strong><br>
+            - Mentions légales → route('legal.mentions')<br>
+            - CGU → route('legal.cgu')<br>
+            - Confidentialité → route('legal.privacy')<br>
+            - Cookies → route('legal.cookies')
+        </div>
+    </div>
+</body>
+</html>

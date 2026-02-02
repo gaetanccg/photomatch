@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laisser un avis - Wireframe PhotoMatch</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: system-ui, -apple-system, sans-serif; background: #f5f5f5; }
+        .wireframe { max-width: 700px; margin: 0 auto; background: white; border: 2px solid #333; }
+        .annotation { background: #fff3cd; border-left: 4px solid #ffc107; padding: 8px 12px; margin: 15px; font-size: 0.85rem; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 2px solid #333; }
+        .logo { font-size: 1.25rem; font-weight: bold; }
+        .btn { border: 2px solid #333; padding: 10px 20px; background: white; text-decoration: none; color: #333; display: inline-block; cursor: pointer; }
+        .btn-primary { background: #333; color: white; }
+        .btn-lg { padding: 14px 28px; }
+        a.back { display: inline-block; margin: 20px; color: #333; }
+
+        .content { padding: 30px; }
+        .page-title { margin-bottom: 30px; text-align: center; }
+        .page-title h1 { font-size: 1.5rem; margin-bottom: 10px; }
+        .page-title p { color: #666; }
+
+        .photographer-summary {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            padding: 20px;
+            border: 2px solid #333;
+            margin-bottom: 30px;
+            background: #fafafa;
+        }
+        .photographer-avatar {
+            width: 70px;
+            height: 70px;
+            border: 2px solid #333;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: white;
+        }
+        .photographer-info h3 { margin-bottom: 5px; }
+        .photographer-meta { font-size: 0.9rem; color: #666; }
+
+        .form-group { margin-bottom: 25px; }
+        .form-label { display: block; margin-bottom: 10px; font-weight: 500; }
+        .form-hint { font-size: 0.85rem; color: #666; margin-top: 8px; }
+        .form-textarea {
+            width: 100%;
+            border: 2px solid #333;
+            padding: 15px;
+            font-size: 0.95rem;
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .rating-input {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        .rating-star {
+            width: 50px;
+            height: 50px;
+            border: 2px dashed #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+        }
+        .rating-star:hover, .rating-star.selected {
+            background: #ffc107;
+            border-style: solid;
+        }
+        .rating-label {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            padding-top: 20px;
+            border-top: 2px solid #333;
+        }
+    </style>
+</head>
+<body>
+    <a href="../../index.html" class="back">&larr; Retour index</a>
+
+    <div class="wireframe">
+        <header class="header">
+            <div class="logo">PhotoMatch</div>
+            <a href="../requests/show.html" class="btn">Annuler</a>
+        </header>
+
+        <div class="annotation">
+            <strong>Route :</strong> GET route('client.reviews.create', $bookingRequest)<br>
+            <strong>Action :</strong> POST route('client.reviews.store', $bookingRequest)<br>
+            <strong>Controller :</strong> ReviewController@create / store<br>
+            <strong>Prérequis :</strong> booking_request.status = 'accepted' ET pas d'avis existant
+        </div>
+
+        <div class="content">
+            <div class="page-title">
+                <h1>Laisser un avis</h1>
+                <p>Partagez votre expérience avec ce photographe</p>
+            </div>
+
+            <div class="photographer-summary">
+                <div class="photographer-avatar">[Init]</div>
+                <div class="photographer-info">
+                    <h3>[photographe.user.name]</h3>
+                    <div class="photographer-meta">
+                        Mission : [photo_project.title]<br>
+                        Date : [event_date]
+                    </div>
+                </div>
+            </div>
+
+            <form>
+                <div class="form-group">
+                    <label class="form-label">Votre note *</label>
+                    <div class="rating-input">
+                        <div class="rating-star">★</div>
+                        <div class="rating-star">★</div>
+                        <div class="rating-star selected">★</div>
+                        <div class="rating-star selected">★</div>
+                        <div class="rating-star selected">★</div>
+                    </div>
+                    <div class="rating-label">Excellent</div>
+                    <input type="hidden" name="rating" value="5">
+                </div>
+
+                <div class="annotation">
+                    <strong>Champ :</strong> reviews.rating<br>
+                    <strong>Validation :</strong> required, integer, min:1, max:5<br>
+                    <strong>Labels :</strong> 1=Très mauvais, 2=Mauvais, 3=Moyen, 4=Bien, 5=Excellent
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Votre commentaire</label>
+                    <textarea class="form-textarea" name="comment" style="border-style: dashed;" placeholder="Décrivez votre expérience : qualité des photos, professionnalisme, ponctualité..."></textarea>
+                    <p class="form-hint">Votre avis aidera d'autres clients à faire leur choix</p>
+                </div>
+
+                <div class="annotation">
+                    <strong>Champ :</strong> reviews.comment<br>
+                    <strong>Validation :</strong> nullable, string<br>
+                    <strong>Autres champs auto-remplis :</strong><br>
+                    - client_id = auth()->id()<br>
+                    - photographer_id = bookingRequest->photographer_id<br>
+                    - booking_request_id = $bookingRequest->id
+                </div>
+
+                <div class="form-actions">
+                    <a href="../requests/show.html" class="btn">Annuler</a>
+                    <button type="submit" class="btn btn-primary btn-lg" style="border-style: dashed;">
+                        Publier mon avis
+                    </button>
+                </div>
+
+                <div class="annotation">
+                    <strong>Après soumission :</strong><br>
+                    - Création de l'avis<br>
+                    - Mise à jour du rating moyen du photographe<br>
+                    - Notification au photographe<br>
+                    - Redirect vers route('client.requests.show', $bookingRequest) avec flash success
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
