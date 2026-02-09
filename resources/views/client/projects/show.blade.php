@@ -214,17 +214,7 @@
                         <div>
                             <dt class="text-sm font-medium text-gray-500">Type de projet</dt>
                             <dd class="mt-1 text-sm text-gray-900">
-                                @php
-                                    $types = [
-                                        'event' => 'Événement',
-                                        'product' => 'Produit',
-                                        'real_estate' => 'Immobilier',
-                                        'corporate' => 'Corporate',
-                                        'portrait' => 'Portrait',
-                                        'other' => 'Autre',
-                                    ];
-                                @endphp
-                                {{ $types[$project->project_type] ?? $project->project_type }}
+                                {{ $project->project_type->label() }}
                             </dd>
                         </div>
 

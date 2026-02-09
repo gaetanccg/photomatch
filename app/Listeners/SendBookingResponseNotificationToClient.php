@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Enums\BookingStatus;
 use App\Events\BookingRequestResponded;
 use App\Notifications\BookingRequestAccepted;
 use App\Notifications\BookingRequestDeclined;
@@ -18,7 +19,7 @@ class SendBookingResponseNotificationToClient implements ShouldQueue
         $client = $bookingRequest->project->client;
 
         // Send appropriate notification based on status
-        if ($bookingRequest->status === 'accepted') {
+        if ($bookingRequest->status === BookingStatus::Accepted) {
             $client->notify(new BookingRequestAccepted($bookingRequest));
         } else {
             $client->notify(new BookingRequestDeclined($bookingRequest));

@@ -182,13 +182,99 @@ make artisan migrate
 make artisan make:model Photo -mfc
 ```
 
+## Tests
+
+### Technologie
+
+- **PHPUnit** avec **Laravel Testing Framework** pour les tests unitaires et feature
+- **Laravel Dusk** pour les tests E2E (browser)
+- Base **SQLite en mémoire** pour l'isolation et la rapidité
+
+### Structure des tests
+
+```
+tests/
+├── TestCase.php
+├── DuskTestCase.php
+├── Browser/                          # Tests E2E (navigateur réel)
+│   ├── AuthenticationTest.php        # Login, logout, inscription
+│   ├── ClientWorkflowTest.php        # Workflow client complet
+│   └── PhotographerWorkflowTest.php  # Workflow photographe complet
+├── Feature/                          # Tests HTTP (sans navigateur)
+│   ├── Auth/                         # Authentification, inscription, reset password
+│   ├── Http/Controllers/             # Controllers (Portfolio, Client, Search, etc.)
+│   └── ProfileTest.php
+└── Unit/                             # Tests unitaires isolés
+    ├── Actions/Booking/              # Actions métier (Create, Respond, Cancel)
+    ├── Enums/                        # Enums (ProjectType, BookingStatus)
+    ├── Services/                     # Services (Statistics, PortfolioUpload)
+    ├── Queries/                      # Query builders
+    ├── Transformers/                 # Transformers
+    └── Observers/                    # Observers Eloquent
+```
+
 ### Lancer les tests
 
 ```bash
+# Tous les tests PHPUnit (Unit + Feature)
 make test
-# ou pour un test spécifique
-make artisan test --filter=PhotoTest
+# ou
+php artisan test
+
+# Par suite
+php artisan test --testsuite=Unit
+php artisan test --testsuite=Feature
+
+# Fichier spécifique
+php artisan test tests/Unit/Actions/Booking/CreateBookingRequestActionTest.php
+
+# Filtrer par nom
+php artisan test --filter="test_client_can_create_booking_request"
 ```
+
+### Outils et patterns utilisés
+
+- **RefreshDatabase** : réinitialise la BDD entre chaque test
+- **Factories** : génération de données (`User::factory()`, `PhotoProject::factory()`)
+- **Event::fake()** / **Notification::fake()** : mock des events et notifications
+- **actingAs()** : simulation d'utilisateur authentifié
+
+### Tests E2E avec Dusk
+
+Les tests Dusk utilisent un vrai navigateur Chrome pour simuler les interactions utilisateur.
+
+**Prérequis :**
+- Chrome ou Chromium installé localement
+
+**Lancer les tests E2E :**
+
+```bash
+# Démarrer le serveur de test (dans un terminal)
+php artisan serve --port=8000
+
+# Lancer les tests Dusk (dans un autre terminal)
+php artisan dusk
+
+# Un fichier spécifique
+php artisan dusk tests/Browser/AuthenticationTest.php
+
+# Un test spécifique
+php artisan dusk --filter="test_user_can_login_as_client"
+
+# Mode visible (sans headless) pour debug
+php artisan dusk --browse
+```
+
+**Tests E2E disponibles :**
+
+| Fichier | Ce qui est testé |
+|---------|------------------|
+| `AuthenticationTest` | Login, logout, inscription client/photographe |
+| `ClientWorkflowTest` | Dashboard, création projet, recherche, envoi demande |
+| `PhotographerWorkflowTest` | Dashboard, profil, demandes, accepter/refuser |
+
+**Screenshots d'erreurs :**
+En cas d'échec, les screenshots sont sauvegardés dans `tests/Browser/screenshots/`.
 
 ## Troubleshooting
 
@@ -239,4 +325,4 @@ make install           # Réinstalle
 - [ ] Paiements Stripe
 - [ ] Génération contrats PDF
 - [ ] Multi-langue
-- [ ] Tests automatisés
+- [x] Tests automatisés

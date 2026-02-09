@@ -16,7 +16,7 @@ class ReviewController extends Controller
         private PhotographerStatisticsService $statisticsService
     ) {}
 
-    public function create(BookingRequest $bookingRequest): View
+    public function create(BookingRequest $bookingRequest): View|RedirectResponse
     {
         if ($bookingRequest->project->client_id !== auth()->id()) {
             abort(403);

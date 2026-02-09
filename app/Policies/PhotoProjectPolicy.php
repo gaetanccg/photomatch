@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Enums\BookingStatus;
 use App\Models\PhotoProject;
 use App\Models\User;
 
@@ -51,7 +52,7 @@ class PhotoProjectPolicy
 
         // Cannot delete if has accepted requests
         return !$photoProject->bookingRequests()
-            ->where('status', 'accepted')
+            ->where('status', BookingStatus::Accepted)
             ->exists();
     }
 

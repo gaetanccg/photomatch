@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Enums\BookingStatus;
 use App\Models\BookingRequest;
 use App\Models\User;
 
@@ -35,7 +36,7 @@ class BookingRequestPolicy
     public function update(User $user, BookingRequest $bookingRequest): bool
     {
         // Only the photographer can respond to pending requests
-        if ($bookingRequest->status !== 'pending') {
+        if ($bookingRequest->status !== BookingStatus::Pending) {
             return false;
         }
 
@@ -45,7 +46,7 @@ class BookingRequestPolicy
     public function delete(User $user, BookingRequest $bookingRequest): bool
     {
         // Only pending requests can be deleted
-        if ($bookingRequest->status !== 'pending') {
+        if ($bookingRequest->status !== BookingStatus::Pending) {
             return false;
         }
 

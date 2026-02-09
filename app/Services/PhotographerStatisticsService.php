@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Photographer;
+use Illuminate\Support\Facades\DB;
 
 class PhotographerStatisticsService
 {
@@ -31,12 +32,19 @@ class PhotographerStatisticsService
 
     public function getAvailableYears(Photographer $photographer): \Illuminate\Support\Collection
     {
+        $driver = DB::connection()->getDriverName();
+
+        $yearExpression = $driver === 'sqlite'
+            ? "strftime('%Y', responded_at) as year"
+            : 'YEAR(responded_at) as year';
+
         return $photographer->bookingRequests()
             ->where('status', 'accepted')
             ->whereNotNull('responded_at')
-            ->selectRaw('YEAR(responded_at) as year')
+            ->selectRaw($yearExpression)
             ->distinct()
             ->orderByDesc('year')
-            ->pluck('year');
+            ->pluck('year')
+            ->map(fn($year) => (int) $year);
     }
 }
