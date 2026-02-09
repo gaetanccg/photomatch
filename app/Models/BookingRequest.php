@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\BookingStatus;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -26,6 +27,7 @@ class BookingRequest extends Model
     protected function casts(): array
     {
         return [
+            'status' => BookingStatus::class,
             'sent_at' => 'datetime',
             'responded_at' => 'datetime',
             'proposed_price' => 'decimal:2',
@@ -42,10 +44,6 @@ class BookingRequest extends Model
         return $this->belongsTo(Photographer::class);
     }
 
-    /**
-     * Get the client (owner of the project) through the project relationship.
-     * Note: Use project.client eager loading instead of this accessor for queries.
-     */
     public function getClientAttribute(): ?User
     {
         return $this->project?->client;
@@ -53,17 +51,17 @@ class BookingRequest extends Model
 
     public function scopePending(Builder $query): Builder
     {
-        return $query->where('status', 'pending');
+        return $query->where('status', BookingStatus::Pending);
     }
 
     public function scopeAccepted(Builder $query): Builder
     {
-        return $query->where('status', 'accepted');
+        return $query->where('status', BookingStatus::Accepted);
     }
 
     public function scopeDeclined(Builder $query): Builder
     {
-        return $query->where('status', 'declined');
+        return $query->where('status', BookingStatus::Declined);
     }
 
     public function review(): HasOne
@@ -78,6 +76,6 @@ class BookingRequest extends Model
 
     public function canBeReviewed(): bool
     {
-        return $this->status === 'accepted' && !$this->hasReview();
+        return $this->status === BookingStatus::Accepted && !$this->hasReview();
     }
 }

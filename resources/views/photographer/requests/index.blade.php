@@ -37,16 +37,8 @@
                             <div class="flex-1">
                                 <div class="flex items-center gap-3">
                                     <h3 class="text-lg font-semibold text-gray-900">{{ $request->project->title }}</h3>
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                        {{ $request->status === 'pending' ? 'bg-yellow-100 text-yellow-800' : '' }}
-                                        {{ $request->status === 'accepted' ? 'bg-green-100 text-green-800' : '' }}
-                                        {{ $request->status === 'declined' ? 'bg-red-100 text-red-800' : '' }}
-                                        {{ $request->status === 'cancelled' ? 'bg-gray-100 text-gray-800' : '' }}
-                                    ">
-                                        {{ $request->status === 'pending' ? 'En attente' : '' }}
-                                        {{ $request->status === 'accepted' ? 'Acceptée' : '' }}
-                                        {{ $request->status === 'declined' ? 'Refusée' : '' }}
-                                        {{ $request->status === 'cancelled' ? 'Annulée' : '' }}
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $request->status->badgeClasses() }}">
+                                        {{ $request->status->label() }}
                                     </span>
                                 </div>
 

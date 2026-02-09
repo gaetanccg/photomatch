@@ -14,16 +14,8 @@
                 <h1 class="text-2xl font-bold text-gray-900">{{ $bookingRequest->project->title }}</h1>
                 <p class="mt-1 text-sm text-gray-600">Demande de {{ $bookingRequest->project->client->name }}</p>
             </div>
-            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium
-                {{ $bookingRequest->status === 'pending' ? 'bg-yellow-100 text-yellow-800' : '' }}
-                {{ $bookingRequest->status === 'accepted' ? 'bg-green-100 text-green-800' : '' }}
-                {{ $bookingRequest->status === 'declined' ? 'bg-red-100 text-red-800' : '' }}
-                {{ $bookingRequest->status === 'cancelled' ? 'bg-gray-100 text-gray-800' : '' }}
-            ">
-                {{ $bookingRequest->status === 'pending' ? 'En attente de réponse' : '' }}
-                {{ $bookingRequest->status === 'accepted' ? 'Acceptée' : '' }}
-                {{ $bookingRequest->status === 'declined' ? 'Refusée' : '' }}
-                {{ $bookingRequest->status === 'cancelled' ? 'Annulée' : '' }}
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium {{ $bookingRequest->status->badgeClasses() }}">
+                {{ $bookingRequest->status->label() }}
             </span>
         </div>
 
@@ -106,7 +98,7 @@
                 @endif
 
                 <!-- Response Form -->
-                @if($bookingRequest->status === 'pending')
+                @if($bookingRequest->status === \App\Enums\BookingStatus::Pending)
                     <div class="bg-white rounded-xl shadow-sm">
                         <div class="px-6 py-4 border-b border-gray-200">
                             <h2 class="text-lg font-semibold text-gray-900">Répondre à la demande</h2>
@@ -227,7 +219,7 @@
                         @endif
                     </div>
 
-                    @if($bookingRequest->status === 'pending')
+                    @if($bookingRequest->status === \App\Enums\BookingStatus::Pending)
                         <div class="px-6 pb-6">
                             <form action="{{ route('photographer.requests.destroy', $bookingRequest) }}" method="POST"
                                   onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette demande ? Le client sera notifié.');">

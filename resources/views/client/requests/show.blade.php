@@ -129,7 +129,7 @@
                         </a>
                     </div>
 
-                    @if($bookingRequest->status === 'pending')
+                    @if($bookingRequest->status === \App\Enums\BookingStatus::Pending)
                         <div class="mt-4 pt-4 border-t border-gray-100">
                             <form action="{{ route('client.requests.destroy', $bookingRequest) }}" method="POST"
                                   onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette demande ? Le photographe sera notifié.');">

@@ -6,17 +6,18 @@ use App\Http\Requests\StoreReviewRequest;
 use App\Http\Requests\UpdateReviewResponseRequest;
 use App\Models\BookingRequest;
 use App\Models\Review;
+use App\Services\PhotographerStatisticsService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
 class ReviewController extends Controller
 {
-    /**
-     * Show form to create a review for a booking request (Client)
-     */
-    public function create(BookingRequest $bookingRequest): View
+    public function __construct(
+        private PhotographerStatisticsService $statisticsService
+    ) {}
+
+    public function create(BookingRequest $bookingRequest): View|RedirectResponse
     {
-        // Verify ownership and eligibility
         if ($bookingRequest->project->client_id !== auth()->id()) {
             abort(403);
         }
@@ -32,12 +33,8 @@ class ReviewController extends Controller
         return view('client.reviews.create', compact('bookingRequest'));
     }
 
-    /**
-     * Store a new review (Client)
-     */
     public function store(StoreReviewRequest $request, BookingRequest $bookingRequest): RedirectResponse
     {
-        // Verify ownership and eligibility
         if ($bookingRequest->project->client_id !== auth()->id()) {
             abort(403);
         }
@@ -48,7 +45,7 @@ class ReviewController extends Controller
                 ->with('error', 'Cette mission ne peut pas être évaluée.');
         }
 
-        $review = Review::create([
+        Review::create([
             'booking_request_id' => $bookingRequest->id,
             'client_id' => auth()->id(),
             'photographer_id' => $bookingRequest->photographer_id,
@@ -56,20 +53,15 @@ class ReviewController extends Controller
             'comment' => $request->comment,
         ]);
 
-        // Update photographer's average rating
-        $bookingRequest->photographer->updateRating();
+        // Note: Photographer rating is automatically updated via ReviewObserver
 
         return redirect()
             ->route('client.requests.show', $bookingRequest)
             ->with('success', 'Votre avis a été publié avec succès.');
     }
 
-    /**
-     * Show form to respond to a review (Photographer)
-     */
     public function showResponse(Review $review): View
     {
-        // Verify ownership
         if ($review->photographer_id !== auth()->user()->photographer?->id) {
             abort(403);
         }
@@ -79,12 +71,8 @@ class ReviewController extends Controller
         return view('photographer.reviews.respond', compact('review'));
     }
 
-    /**
-     * Store photographer response to a review
-     */
     public function storeResponse(UpdateReviewResponseRequest $request, Review $review): RedirectResponse
     {
-        // Verify ownership
         if ($review->photographer_id !== auth()->user()->photographer?->id) {
             abort(403);
         }
@@ -99,9 +87,6 @@ class ReviewController extends Controller
             ->with('success', 'Votre réponse a été publiée avec succès.');
     }
 
-    /**
-     * List all reviews for the photographer
-     */
     public function photographerIndex(): View
     {
         $photographer = auth()->user()->photographer;
@@ -111,12 +96,7 @@ class ReviewController extends Controller
             ->latest()
             ->paginate(10);
 
-        $stats = [
-            'total_reviews' => $photographer->reviews()->count(),
-            'average_rating' => $photographer->reviews()->avg('rating'),
-            'five_star' => $photographer->reviews()->where('rating', 5)->count(),
-            'pending_responses' => $photographer->reviews()->whereNull('photographer_response')->count(),
-        ];
+        $stats = $this->statisticsService->getReviewStats($photographer);
 
         return view('photographer.reviews.index', compact('reviews', 'stats'));
     }

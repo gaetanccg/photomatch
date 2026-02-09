@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ProjectType;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -32,6 +33,7 @@ class PhotoProject extends Model
     protected function casts(): array
     {
         return [
+            'project_type' => ProjectType::class,
             'event_date' => 'date',
             'date_start' => 'date',
             'date_end' => 'date',
@@ -57,9 +59,10 @@ class PhotoProject extends Model
         return $query->where('status', 'published');
     }
 
-    public function scopeByType(Builder $query, string $type): Builder
+    public function scopeByType(Builder $query, string|ProjectType $type): Builder
     {
-        return $query->where('project_type', $type);
+        $value = $type instanceof ProjectType ? $type->value : $type;
+        return $query->where('project_type', $value);
     }
 
     public function scopeInBudgetRange(Builder $query, ?float $min, ?float $max): Builder

@@ -2,59 +2,48 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\BookingRequestCreated;
-use App\Events\BookingRequestResponded;
+use App\Actions\Booking\CancelBookingRequestAction;
+use App\Actions\Booking\CreateBookingRequestAction;
+use App\Actions\Booking\RespondToBookingRequestAction;
 use App\Http\Requests\StoreBookingRequestRequest;
 use App\Http\Requests\UpdateBookingRequestRequest;
 use App\Models\BookingRequest;
 use App\Models\PhotoProject;
 use App\Models\Photographer;
-use App\Notifications\BookingRequestCancelled;
-use Carbon\Carbon;
+use App\Services\PhotographerStatisticsService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
 class BookingRequestController extends Controller
 {
-    /**
-     * Store a new booking request (client creating a request to a photographer).
-     */
+    public function __construct(
+        private CreateBookingRequestAction $createAction,
+        private RespondToBookingRequestAction $respondAction,
+        private CancelBookingRequestAction $cancelAction,
+        private PhotographerStatisticsService $statisticsService
+    ) {}
+
     public function store(StoreBookingRequestRequest $request): RedirectResponse
     {
         $project = PhotoProject::findOrFail($request->project_id);
         $photographer = Photographer::findOrFail($request->photographer_id);
 
-        // Check that the project belongs to the authenticated user
         if ($project->client_id !== auth()->id()) {
             abort(403, 'Ce projet ne vous appartient pas.');
         }
 
-        // Check that the project is published
-        if ($project->status !== 'published') {
-            return back()->with('error', 'Le projet doit être publié pour envoyer une demande.');
+        $errors = $this->createAction->canCreate($project, $photographer);
+        if (!empty($errors)) {
+            return back()->with('error', $errors[0]);
         }
 
-        // Check if a request already exists for this project-photographer combination
-        $existingRequest = BookingRequest::where('project_id', $project->id)
-            ->where('photographer_id', $photographer->id)
-            ->first();
-
-        if ($existingRequest) {
-            return back()->with('error', 'Une demande a déjà été envoyée à ce photographe pour ce projet.');
-        }
-
-        $bookingRequest = BookingRequest::create([
-            'project_id' => $project->id,
-            'photographer_id' => $photographer->id,
-            'status' => 'pending',
-            'client_message' => $request->message,
-            'proposed_price' => $request->proposed_rate,
-            'sent_at' => Carbon::now(),
-        ]);
-
-        // Dispatch event for notifications
-        event(new BookingRequestCreated($bookingRequest));
+        $this->createAction->execute(
+            $project,
+            $photographer,
+            $request->message,
+            $request->proposed_rate
+        );
 
         return redirect()
             ->route('client.projects.show', $project)
@@ -68,7 +57,6 @@ class BookingRequestController extends Controller
         $query = $photographer->bookingRequests()
             ->with(['project.client']);
 
-        // Apply status filter
         if (request('status') && in_array(request('status'), ['pending', 'accepted', 'declined', 'cancelled'])) {
             $query->where('status', request('status'));
         }
@@ -82,52 +70,33 @@ class BookingRequestController extends Controller
     {
         $photographer = auth()->user()->photographer;
 
-        // Get completed missions (accepted requests)
         $query = $photographer->bookingRequests()
             ->with(['project.client', 'review'])
             ->where('status', 'accepted');
 
-        // Date range filter
         if (request('from')) {
             $query->whereDate('responded_at', '>=', request('from'));
         }
         if (request('to')) {
             $query->whereDate('responded_at', '<=', request('to'));
         }
-
-        // Year filter
         if (request('year')) {
             $query->whereYear('responded_at', request('year'));
         }
 
         $missions = $query->latest('responded_at')->paginate(15);
 
-        // Statistics
-        $totalMissions = $photographer->bookingRequests()->where('status', 'accepted')->count();
-        $totalEarnings = $photographer->bookingRequests()
-            ->where('status', 'accepted')
-            ->whereNotNull('proposed_price')
-            ->sum('proposed_price');
-        $avgRating = $photographer->reviews()->avg('rating');
-        $reviewCount = $photographer->reviews()->count();
+        $stats = $this->statisticsService->getHistoryStats($photographer);
+        $years = $this->statisticsService->getAvailableYears($photographer);
 
-        // Get available years for filter
-        $years = $photographer->bookingRequests()
-            ->where('status', 'accepted')
-            ->whereNotNull('responded_at')
-            ->selectRaw('YEAR(responded_at) as year')
-            ->distinct()
-            ->orderByDesc('year')
-            ->pluck('year');
-
-        return view('photographer.history.index', compact(
-            'missions',
-            'totalMissions',
-            'totalEarnings',
-            'avgRating',
-            'reviewCount',
-            'years'
-        ));
+        return view('photographer.history.index', [
+            'missions' => $missions,
+            'totalMissions' => $stats['total_missions'],
+            'totalEarnings' => $stats['total_earnings'],
+            'avgRating' => $stats['avg_rating'],
+            'reviewCount' => $stats['review_count'],
+            'years' => $years,
+        ]);
     }
 
     public function show(BookingRequest $bookingRequest): View
@@ -143,25 +112,16 @@ class BookingRequestController extends Controller
     {
         Gate::authorize('update', $bookingRequest);
 
-        // Verify the request is still pending
-        if ($bookingRequest->status !== 'pending') {
+        if (!$this->respondAction->canRespond($bookingRequest)) {
             return back()->with('error', 'Cette demande a déjà été traitée.');
         }
 
-        $data = [
-            'status' => $request->status,
-            'photographer_response' => $request->photographer_response,
-            'responded_at' => Carbon::now(),
-        ];
-
-        if ($request->status === 'accepted' && $request->filled('proposed_price')) {
-            $data['proposed_price'] = $request->proposed_price;
-        }
-
-        $bookingRequest->update($data);
-
-        // Dispatch event for notifications
-        event(new BookingRequestResponded($bookingRequest));
+        $this->respondAction->execute(
+            $bookingRequest,
+            $request->status,
+            $request->photographer_response,
+            $request->filled('proposed_price') ? $request->proposed_price : null
+        );
 
         $message = $request->status === 'accepted'
             ? 'Demande acceptée avec succès.'
@@ -170,33 +130,14 @@ class BookingRequestController extends Controller
         return redirect()->route('photographer.requests.index')->with('success', $message);
     }
 
-    /**
-     * Delete a booking request and notify the other party.
-     */
     public function destroy(BookingRequest $bookingRequest): RedirectResponse
     {
         Gate::authorize('delete', $bookingRequest);
 
         $user = auth()->user();
-        $isClient = $user->isClient();
-        $cancelledBy = $isClient ? 'client' : 'photographer';
+        $redirectRoute = $this->cancelAction->getRedirectRoute($user);
 
-        // Determine who to notify
-        if ($isClient) {
-            // Client cancels: notify the photographer
-            $notifiable = $bookingRequest->photographer->user;
-            $redirectRoute = 'client.requests.index';
-        } else {
-            // Photographer cancels: notify the client
-            $notifiable = $bookingRequest->project->client;
-            $redirectRoute = 'photographer.requests.index';
-        }
-
-        // Send notification before deleting
-        $notifiable->notify(new BookingRequestCancelled($bookingRequest, $cancelledBy));
-
-        // Delete the request
-        $bookingRequest->delete();
+        $this->cancelAction->execute($bookingRequest, $user);
 
         return redirect()->route($redirectRoute)->with('success', 'La demande a été supprimée avec succès.');
     }

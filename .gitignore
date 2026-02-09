@@ -12,6 +12,12 @@
 .env.deploy
 .phpactor.json
 .phpunit.result.cache
+
+# Dusk
+.env.dusk.local
+/tests/Browser/screenshots
+/tests/Browser/console
+/tests/Browser/source
 Homestead.json
 Homestead.yaml
 npm-debug.log
@@ -22,3 +28,4 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+.DS_Store
