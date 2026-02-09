@@ -72,6 +72,11 @@ class Photographer extends Model
         return $this->hasMany(PortfolioImage::class);
     }
 
+    public function tags(): HasMany
+    {
+        return $this->hasMany(PhotographerTag::class);
+    }
+
     public function completedMissions(): HasMany
     {
         return $this->hasMany(BookingRequest::class)->where('status', 'accepted');

@@ -12,13 +12,15 @@ class PhotographerMatchingService
     // Pondérations des critères (total = 100)
     private const WEIGHT_SPECIALTY = 25;
 
-    private const WEIGHT_KEYWORDS = 15;
+    private const WEIGHT_TAGS = 10;
+
+    private const WEIGHT_KEYWORDS = 10;
 
     private const WEIGHT_DISTANCE = 15;
 
     private const WEIGHT_RATING = 20;
 
-    private const WEIGHT_EXPERIENCE = 10;
+    private const WEIGHT_EXPERIENCE = 5;
 
     private const WEIGHT_PRICE = 15;
 
@@ -34,7 +36,7 @@ class PhotographerMatchingService
     ): LengthAwarePaginator {
         $query = Photographer::query()
             ->whereHas('user')
-            ->with(['user', 'specialties', 'portfolioImages' => fn ($q) => $q->featured()->limit(1)]);
+            ->with(['user', 'specialties', 'tags', 'portfolioImages' => fn ($q) => $q->featured()->limit(1)]);
 
         // Apply strict filters
         $this->applyStrictFilters($query, $project, $filters);
@@ -131,6 +133,7 @@ class PhotographerMatchingService
     public function calculateScore(Photographer $photographer, PhotoProject $project): array
     {
         $specialtyScore = $this->calculateSpecialtyScore($photographer, $project);
+        $tagScore = $this->calculateTagScore($photographer, $project);
         $keywordScore = $this->calculateKeywordScore($photographer, $project);
         $distanceScore = $this->calculateDistanceScore($photographer, $project);
         $ratingScore = $this->calculateRatingScore($photographer);
@@ -138,9 +141,10 @@ class PhotographerMatchingService
         $priceScore = $this->calculatePriceScore($photographer, $project);
 
         return [
-            'total' => round($specialtyScore + $keywordScore + $distanceScore + $ratingScore + $experienceScore + $priceScore, 1),
+            'total' => round($specialtyScore + $tagScore + $keywordScore + $distanceScore + $ratingScore + $experienceScore + $priceScore, 1),
             'breakdown' => [
                 'specialty' => round($specialtyScore, 1),
+                'tags' => round($tagScore, 1),
                 'keywords' => round($keywordScore, 1),
                 'distance' => round($distanceScore, 1),
                 'rating' => round($ratingScore, 1),
@@ -174,6 +178,35 @@ class PhotographerMatchingService
             'beginner' => self::WEIGHT_SPECIALTY - 10,
             default => self::WEIGHT_SPECIALTY - 10,
         };
+    }
+
+    /**
+     * Calculate tag match score using word boundary matching.
+     */
+    public function calculateTagScore(Photographer $photographer, PhotoProject $project): float
+    {
+        $tags = $photographer->tags;
+
+        if ($tags->isEmpty() || ! $project->description) {
+            return self::WEIGHT_TAGS * 0.5;
+        }
+
+        $description = mb_strtolower($project->description.' '.$project->title);
+        $matches = 0;
+
+        foreach ($tags as $tag) {
+            $tagName = mb_strtolower(trim($tag->name));
+            if (empty($tagName)) {
+                continue;
+            }
+
+            $pattern = '/(?<=\s|^|[^a-zA-ZÀ-ÿ0-9])'.preg_quote($tagName, '/').'(?=\s|$|[^a-zA-ZÀ-ÿ0-9])/ui';
+            if (preg_match($pattern, $description)) {
+                $matches++;
+            }
+        }
+
+        return min($matches / max($tags->count(), 1), 1) * self::WEIGHT_TAGS;
     }
 
     /**

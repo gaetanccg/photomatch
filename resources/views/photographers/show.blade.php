@@ -62,6 +62,16 @@
                                         <x-specialty-badge :specialty="$specialty" :level="$specialty->pivot->experience_level" />
                                     @endforeach
                                 </div>
+
+                                @if($photographer->tags->count() > 0)
+                                    <div class="mt-3 flex flex-wrap gap-2">
+                                        @foreach($photographer->tags as $tag)
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
+                                                {{ $tag->name }}
+                                            </span>
+                                        @endforeach
+                                    </div>
+                                @endif
                             </div>
                         </div>
                     </div>
