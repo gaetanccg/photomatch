@@ -6,6 +6,7 @@ use App\Models\Photographer;
 use App\Models\PortfolioImage;
 use App\Transformers\PhotographerMapTransformer;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class PhotographerMapTransformerTest extends TestCase
@@ -65,6 +66,8 @@ class PhotographerMapTransformerTest extends TestCase
 
     public function test_transform_uses_portfolio_image_as_photo(): void
     {
+        Storage::fake('s3');
+
         $photographer = Photographer::factory()->create();
         PortfolioImage::factory()->forPhotographer($photographer)->create([
             'path' => 'portfolios/1/test.jpg',
