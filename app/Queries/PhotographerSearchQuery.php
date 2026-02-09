@@ -9,8 +9,11 @@ use Illuminate\Database\Eloquent\Builder;
 class PhotographerSearchQuery
 {
     private Builder $query;
+
     private array $filters;
+
     private string $sortBy = 'rating';
+
     private string $sortDir = 'desc';
 
     public function __construct(array $filters = [])
@@ -38,7 +41,7 @@ class PhotographerSearchQuery
             'user',
             'specialties',
             'reviews',
-            'portfolioImages' => fn($q) => $q->featured()->limit(1)
+            'portfolioImages' => fn ($q) => $q->featured()->limit(1),
         ])->withCount('reviews');
 
         return $this;
@@ -73,7 +76,7 @@ class PhotographerSearchQuery
     {
         if ($ids = $this->filters['specialty_ids'] ?? null) {
             $ids = is_array($ids) ? $ids : [$ids];
-            $this->query->whereHas('specialties', fn($sq) => $sq->whereIn('specialties.id', $ids));
+            $this->query->whereHas('specialties', fn ($sq) => $sq->whereIn('specialties.id', $ids));
         }
 
         return $this;

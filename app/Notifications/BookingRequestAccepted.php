@@ -62,7 +62,7 @@ class BookingRequestAccepted extends Notification implements ShouldQueue
             'project_title' => $project->title,
             'photographer_id' => $photographer->id,
             'photographer_name' => $photographer->user->name,
-            'message' => $photographer->user->name . ' a accepté votre demande pour "' . $project->title . '"',
+            'message' => $photographer->user->name.' a accepté votre demande pour "'.$project->title.'"',
         ];
     }
 }

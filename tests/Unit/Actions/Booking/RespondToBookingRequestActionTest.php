@@ -19,7 +19,7 @@ class RespondToBookingRequestActionTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->action = new RespondToBookingRequestAction();
+        $this->action = new RespondToBookingRequestAction;
     }
 
     public function test_it_accepts_booking_request(): void

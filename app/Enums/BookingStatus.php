@@ -11,7 +11,7 @@ enum BookingStatus: string
 
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::Pending => 'En attente',
             self::Accepted => 'Acceptée',
             self::Declined => 'Déclinée',
@@ -21,7 +21,7 @@ enum BookingStatus: string
 
     public function color(): string
     {
-        return match($this) {
+        return match ($this) {
             self::Pending => 'yellow',
             self::Accepted => 'green',
             self::Declined => 'red',
@@ -31,7 +31,7 @@ enum BookingStatus: string
 
     public function badgeClasses(): string
     {
-        return match($this) {
+        return match ($this) {
             self::Pending => 'bg-yellow-100 text-yellow-800',
             self::Accepted => 'bg-green-100 text-green-800',
             self::Declined => 'bg-red-100 text-red-800',
@@ -42,7 +42,7 @@ enum BookingStatus: string
     public static function options(): array
     {
         return collect(self::cases())->mapWithKeys(
-            fn(self $case) => [$case->value => $case->label()]
+            fn (self $case) => [$case->value => $case->label()]
         )->toArray();
     }
 }

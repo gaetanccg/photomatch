@@ -3,8 +3,8 @@
 namespace Tests\Feature\Http\Controllers;
 
 use App\Models\BookingRequest;
-use App\Models\PhotoProject;
 use App\Models\Photographer;
+use App\Models\PhotoProject;
 use App\Models\Review;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;

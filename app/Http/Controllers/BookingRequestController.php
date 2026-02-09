@@ -8,8 +8,8 @@ use App\Actions\Booking\RespondToBookingRequestAction;
 use App\Http\Requests\StoreBookingRequestRequest;
 use App\Http\Requests\UpdateBookingRequestRequest;
 use App\Models\BookingRequest;
-use App\Models\PhotoProject;
 use App\Models\Photographer;
+use App\Models\PhotoProject;
 use App\Services\PhotographerStatisticsService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Gate;
@@ -34,7 +34,7 @@ class BookingRequestController extends Controller
         }
 
         $errors = $this->createAction->canCreate($project, $photographer);
-        if (!empty($errors)) {
+        if (! empty($errors)) {
             return back()->with('error', $errors[0]);
         }
 
@@ -112,7 +112,7 @@ class BookingRequestController extends Controller
     {
         Gate::authorize('update', $bookingRequest);
 
-        if (!$this->respondAction->canRespond($bookingRequest)) {
+        if (! $this->respondAction->canRespond($bookingRequest)) {
             return back()->with('error', 'Cette demande a déjà été traitée.');
         }
 

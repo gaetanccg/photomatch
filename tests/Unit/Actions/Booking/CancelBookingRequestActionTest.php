@@ -4,8 +4,8 @@ namespace Tests\Unit\Actions\Booking;
 
 use App\Actions\Booking\CancelBookingRequestAction;
 use App\Models\BookingRequest;
-use App\Models\PhotoProject;
 use App\Models\Photographer;
+use App\Models\PhotoProject;
 use App\Models\User;
 use App\Notifications\BookingRequestCancelled;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -21,7 +21,7 @@ class CancelBookingRequestActionTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->action = new CancelBookingRequestAction();
+        $this->action = new CancelBookingRequestAction;
     }
 
     public function test_client_cancel_notifies_photographer(): void

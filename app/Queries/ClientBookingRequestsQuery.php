@@ -15,7 +15,7 @@ class ClientBookingRequestsQuery
 
     public function base(): Builder
     {
-        return BookingRequest::whereHas('project', fn($q) => $q->where('client_id', $this->client->id));
+        return BookingRequest::whereHas('project', fn ($q) => $q->where('client_id', $this->client->id));
     }
 
     public function withRelations(array $relations = ['photographer.user', 'project']): Builder
@@ -63,6 +63,6 @@ class ClientBookingRequestsQuery
             ->distinct()
             ->orderByDesc('year')
             ->pluck('year')
-            ->map(fn($year) => (int) $year);
+            ->map(fn ($year) => (int) $year);
     }
 }

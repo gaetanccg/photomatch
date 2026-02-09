@@ -4,8 +4,8 @@ namespace Tests\Feature\Http\Controllers;
 
 use App\Enums\ProjectType;
 use App\Models\BookingRequest;
-use App\Models\PhotoProject;
 use App\Models\Photographer;
+use App\Models\PhotoProject;
 use App\Models\Specialty;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;

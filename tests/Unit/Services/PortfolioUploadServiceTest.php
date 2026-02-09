@@ -19,7 +19,7 @@ class PortfolioUploadServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new PortfolioUploadService();
+        $this->service = new PortfolioUploadService;
         Storage::fake('s3');
     }
 

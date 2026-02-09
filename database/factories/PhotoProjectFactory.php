@@ -27,7 +27,7 @@ class PhotoProjectFactory extends Factory
             'event_date' => $dateStart,
             'date_start' => $dateStart,
             'date_end' => $dateEnd,
-            'location' => fake()->city() . ', France',
+            'location' => fake()->city().', France',
             'latitude' => fake()->latitude(42, 51),
             'longitude' => fake()->longitude(-5, 8),
             'budget_min' => fake()->randomFloat(2, 100, 500),

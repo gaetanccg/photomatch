@@ -54,7 +54,7 @@ class PhotographerSeeder extends Seeder
                 [
                     'bio' => $bios[$index % count($bios)],
                     'experience_years' => rand(1, 15),
-                    'portfolio_url' => 'https://portfolio.example.com/' . strtolower(str_replace(' ', '-', $user->name)),
+                    'portfolio_url' => 'https://portfolio.example.com/'.strtolower(str_replace(' ', '-', $user->name)),
                     'hourly_rate' => rand(50, 150),
                     'daily_rate' => rand(300, 1000),
                     'is_verified' => rand(0, 1) === 1,
@@ -71,7 +71,7 @@ class PhotographerSeeder extends Seeder
             $randomSpecialties = $specialties->random($numSpecialties);
 
             foreach ($randomSpecialties as $specialty) {
-                if (!$photographer->specialties()->where('specialty_id', $specialty->id)->exists()) {
+                if (! $photographer->specialties()->where('specialty_id', $specialty->id)->exists()) {
                     $photographer->specialties()->attach($specialty->id, [
                         'experience_level' => $experienceLevels[array_rand($experienceLevels)],
                     ]);

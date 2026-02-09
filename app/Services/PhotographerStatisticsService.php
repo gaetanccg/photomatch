@@ -45,6 +45,6 @@ class PhotographerStatisticsService
             ->distinct()
             ->orderByDesc('year')
             ->pluck('year')
-            ->map(fn($year) => (int) $year);
+            ->map(fn ($year) => (int) $year);
     }
 }

@@ -62,6 +62,7 @@ class PhotoProject extends Model
     public function scopeByType(Builder $query, string|ProjectType $type): Builder
     {
         $value = $type instanceof ProjectType ? $type->value : $type;
+
         return $query->where('project_type', $value);
     }
 
@@ -73,6 +74,7 @@ class PhotoProject extends Model
         if ($max !== null) {
             $query->where('budget_max', '<=', $max);
         }
+
         return $query;
     }
 }

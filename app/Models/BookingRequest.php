@@ -76,6 +76,6 @@ class BookingRequest extends Model
 
     public function canBeReviewed(): bool
     {
-        return $this->status === BookingStatus::Accepted && !$this->hasReview();
+        return $this->status === BookingStatus::Accepted && ! $this->hasReview();
     }
 }

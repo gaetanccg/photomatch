@@ -10,6 +10,7 @@ use Illuminate\Support\Collection;
 class PortfolioUploadService
 {
     public const MAX_IMAGES_PER_PORTFOLIO = 50;
+
     public const MAX_IMAGES_PER_UPLOAD = 10;
 
     public function uploadImages(Photographer $photographer, array $files): Collection
@@ -27,8 +28,8 @@ class PortfolioUploadService
 
     public function uploadSingleImage(Photographer $photographer, UploadedFile $file, int $sortOrder): PortfolioImage
     {
-        $filename = uniqid() . '_' . time() . '.' . $file->getClientOriginalExtension();
-        $path = $file->storeAs('portfolios/' . $photographer->id, $filename, 's3');
+        $filename = uniqid().'_'.time().'.'.$file->getClientOriginalExtension();
+        $path = $file->storeAs('portfolios/'.$photographer->id, $filename, 's3');
 
         return PortfolioImage::create([
             'photographer_id' => $photographer->id,
@@ -46,7 +47,7 @@ class PortfolioUploadService
 
         if ($currentCount + $newImageCount > self::MAX_IMAGES_PER_PORTFOLIO) {
             $remaining = self::MAX_IMAGES_PER_PORTFOLIO - $currentCount;
-            $errors[] = "Vous ne pouvez pas avoir plus de " . self::MAX_IMAGES_PER_PORTFOLIO . " images dans votre portfolio. Il vous reste {$remaining} emplacement(s).";
+            $errors[] = 'Vous ne pouvez pas avoir plus de '.self::MAX_IMAGES_PER_PORTFOLIO." images dans votre portfolio. Il vous reste {$remaining} emplacement(s).";
         }
 
         return $errors;
@@ -55,6 +56,7 @@ class PortfolioUploadService
     public function getRemainingSlots(Photographer $photographer): int
     {
         $currentCount = $photographer->portfolioImages()->count();
+
         return max(0, self::MAX_IMAGES_PER_PORTFOLIO - $currentCount);
     }
 }

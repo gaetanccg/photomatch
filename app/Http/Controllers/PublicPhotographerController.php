@@ -73,7 +73,7 @@ class PublicPhotographerController extends Controller
             '@type' => 'LocalBusiness',
             '@id' => $profileUrl,
             'name' => $photographer->user->name,
-            'description' => $photographer->bio ?? "Photographe professionnel",
+            'description' => $photographer->bio ?? 'Photographe professionnel',
             'url' => $profileUrl,
             'image' => $photographer->portfolioImages->first()?->url ?? $photographer->user->profile_photo_url,
             'address' => [
@@ -81,7 +81,7 @@ class PublicPhotographerController extends Controller
                 'addressLocality' => $photographer->location,
                 'addressCountry' => 'FR',
             ],
-            'priceRange' => $photographer->hourly_rate ? $photographer->hourly_rate . '€/h' : null,
+            'priceRange' => $photographer->hourly_rate ? $photographer->hourly_rate.'€/h' : null,
             'additionalType' => 'https://schema.org/Photographer',
         ];
 
@@ -98,7 +98,7 @@ class PublicPhotographerController extends Controller
 
         // Add individual reviews
         if ($photographer->reviews->count() > 0) {
-            $schema['review'] = $photographer->reviews->take(5)->map(fn($review) => [
+            $schema['review'] = $photographer->reviews->take(5)->map(fn ($review) => [
                 '@type' => 'Review',
                 'reviewRating' => [
                     '@type' => 'Rating',
@@ -117,7 +117,7 @@ class PublicPhotographerController extends Controller
 
         // Add services offered (specialties)
         if ($photographer->specialties->count() > 0) {
-            $schema['makesOffer'] = $photographer->specialties->map(fn($specialty) => [
+            $schema['makesOffer'] = $photographer->specialties->map(fn ($specialty) => [
                 '@type' => 'Offer',
                 'itemOffered' => [
                     '@type' => 'Service',

@@ -17,7 +17,7 @@ class PhotographerMapTransformerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->transformer = new PhotographerMapTransformer();
+        $this->transformer = new PhotographerMapTransformer;
     }
 
     public function test_transform_returns_correct_structure(): void

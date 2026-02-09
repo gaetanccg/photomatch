@@ -16,13 +16,13 @@ class PortfolioImageFactory extends Factory
 
     public function definition(): array
     {
-        $filename = fake()->uuid() . '.jpg';
+        $filename = fake()->uuid().'.jpg';
 
         return [
             'photographer_id' => Photographer::factory(),
             'filename' => $filename,
-            'original_name' => fake()->words(3, true) . '.jpg',
-            'path' => 'portfolios/1/' . $filename,
+            'original_name' => fake()->words(3, true).'.jpg',
+            'path' => 'portfolios/1/'.$filename,
             'thumbnail_path' => null,
             'caption' => fake()->optional()->sentence(),
             'specialty_id' => null,
@@ -41,9 +41,10 @@ class PortfolioImageFactory extends Factory
     public function withThumbnail(): static
     {
         return $this->state(function (array $attributes) {
-            $thumbnailFilename = 'thumb_' . $attributes['filename'];
+            $thumbnailFilename = 'thumb_'.$attributes['filename'];
+
             return [
-                'thumbnail_path' => 'portfolios/1/thumbnails/' . $thumbnailFilename,
+                'thumbnail_path' => 'portfolios/1/thumbnails/'.$thumbnailFilename,
             ];
         });
     }
@@ -52,7 +53,7 @@ class PortfolioImageFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'photographer_id' => $photographer->id,
-            'path' => 'portfolios/' . $photographer->id . '/' . $attributes['filename'],
+            'path' => 'portfolios/'.$photographer->id.'/'.$attributes['filename'],
         ]);
     }
 

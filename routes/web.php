@@ -6,15 +6,15 @@ use App\Http\Controllers\BookingRequestController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LegalController;
-use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\NotificationController;
-use App\Http\Controllers\PhotoProjectController;
 use App\Http\Controllers\PhotographerController;
+use App\Http\Controllers\PhotoProjectController;
 use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicPhotographerController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\SitemapController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -134,6 +134,7 @@ require __DIR__.'/auth.php';
 Route::fallback(function () {
     if (auth()->check()) {
         $user = auth()->user();
+
         return match ($user->role) {
             'photographer' => redirect()->route('photographer.dashboard')->with('error', 'Page non trouvee.'),
             'client' => redirect()->route('search.index')->with('error', 'Page non trouvee.'),

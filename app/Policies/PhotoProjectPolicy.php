@@ -51,7 +51,7 @@ class PhotoProjectPolicy
         }
 
         // Cannot delete if has accepted requests
-        return !$photoProject->bookingRequests()
+        return ! $photoProject->bookingRequests()
             ->where('status', BookingStatus::Accepted)
             ->exists();
     }

@@ -2,20 +2,24 @@
 
 namespace App\Services;
 
-use App\Models\PhotoProject;
 use App\Models\Photographer;
+use App\Models\PhotoProject;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 
 class PhotographerMatchingService
 {
     // Pondérations des critères (total = 100)
     private const WEIGHT_SPECIALTY = 25;
+
     private const WEIGHT_KEYWORDS = 15;
+
     private const WEIGHT_DISTANCE = 15;
+
     private const WEIGHT_RATING = 20;
+
     private const WEIGHT_EXPERIENCE = 10;
+
     private const WEIGHT_PRICE = 15;
 
     private const MAX_DISTANCE_KM = 50; // Distance max pour le scoring
@@ -25,12 +29,12 @@ class PhotographerMatchingService
      */
     public function findMatchingPhotographers(
         PhotoProject $project,
-        array        $filters = [],
-        int          $perPage = 12
+        array $filters = [],
+        int $perPage = 12
     ): LengthAwarePaginator {
         $query = Photographer::query()
-                             ->whereHas('user')
-                             ->with(['user', 'specialties', 'portfolioImages' => fn($q) => $q->featured()->limit(1)]);
+            ->whereHas('user')
+            ->with(['user', 'specialties', 'portfolioImages' => fn ($q) => $q->featured()->limit(1)]);
 
         // Apply strict filters
         $this->applyStrictFilters($query, $project, $filters);
@@ -46,7 +50,7 @@ class PhotographerMatchingService
         });
 
         // Sort by total score descending
-        $sorted = $scoredPhotographers->sortByDesc(fn($p) => $p->matching_score['total']);
+        $sorted = $scoredPhotographers->sortByDesc(fn ($p) => $p->matching_score['total']);
 
         // Manual pagination
         $page = request()->get('page', 1);
@@ -81,7 +85,7 @@ class PhotographerMatchingService
         if ($project->event_date) {
             $query->whereHas('availabilities', function ($aq) use ($project) {
                 $aq->where('date', $project->event_date)
-                   ->where('is_available', true);
+                    ->where('is_available', true);
             });
         }
 
@@ -91,32 +95,32 @@ class PhotographerMatchingService
         }
 
         // Additional filters from user
-        if (!empty($filters['specialty_ids'])) {
+        if (! empty($filters['specialty_ids'])) {
             $query->whereHas('specialties', function ($sq) use ($filters) {
-                $sq->whereIn('specialties.id', (array)$filters['specialty_ids']);
+                $sq->whereIn('specialties.id', (array) $filters['specialty_ids']);
             });
         }
 
-        if (!empty($filters['max_budget'])) {
+        if (! empty($filters['max_budget'])) {
             $query->where('hourly_rate', '<=', $filters['max_budget']);
         }
 
-        if (!empty($filters['min_budget'])) {
+        if (! empty($filters['min_budget'])) {
             $query->where('hourly_rate', '>=', $filters['min_budget']);
         }
 
-        if (!empty($filters['available_date'])) {
+        if (! empty($filters['available_date'])) {
             $query->whereHas('availabilities', function ($aq) use ($filters) {
                 $aq->where('date', $filters['available_date'])
-                   ->where('is_available', true);
+                    ->where('is_available', true);
             });
         }
 
-        if (!empty($filters['min_rating'])) {
+        if (! empty($filters['min_rating'])) {
             $query->where('rating', '>=', $filters['min_rating']);
         }
 
-        if (!empty($filters['location'])) {
+        if (! empty($filters['location'])) {
             $query->where('location', 'LIKE', '%'.$filters['location'].'%');
         }
     }
@@ -151,14 +155,14 @@ class PhotographerMatchingService
      */
     public function calculateSpecialtyScore(Photographer $photographer, PhotoProject $project): float
     {
-        if (!$project->project_type) {
+        if (! $project->project_type) {
             return self::WEIGHT_SPECIALTY; // No type specified = full score
         }
 
         $matchingSpecialty = $photographer->specialties
             ->firstWhere('slug', $project->project_type);
 
-        if (!$matchingSpecialty) {
+        if (! $matchingSpecialty) {
             return 0;
         }
 
@@ -177,7 +181,7 @@ class PhotographerMatchingService
      */
     public function calculateKeywordScore(Photographer $photographer, PhotoProject $project): float
     {
-        if (!$photographer->keywords || !$project->description) {
+        if (! $photographer->keywords || ! $project->description) {
             return self::WEIGHT_KEYWORDS * 0.5; // Score neutre si pas de mots-clés ou pas de description
         }
 
@@ -186,7 +190,7 @@ class PhotographerMatchingService
 
         $matches = 0;
         foreach ($keywords as $keyword) {
-            if (!empty($keyword) && str_contains($description, $keyword)) {
+            if (! empty($keyword) && str_contains($description, $keyword)) {
                 $matches++;
             }
         }
@@ -202,8 +206,8 @@ class PhotographerMatchingService
     public function calculateDistanceScore(Photographer $photographer, PhotoProject $project): float
     {
         // If no coordinates, return full score (cannot penalize)
-        if (!$photographer->latitude || !$photographer->longitude ||
-            !$project->latitude || !$project->longitude) {
+        if (! $photographer->latitude || ! $photographer->longitude ||
+            ! $project->latitude || ! $project->longitude) {
             return self::WEIGHT_DISTANCE;
         }
 
@@ -227,7 +231,7 @@ class PhotographerMatchingService
         $reviewsCount = $photographer->reviews()->count();
         $avgRating = $photographer->getRawOriginal('rating');
 
-        if ($reviewsCount === 0 || !$avgRating) {
+        if ($reviewsCount === 0 || ! $avgRating) {
             return self::WEIGHT_RATING * 0.3; // Pénalité pour nouveaux photographes
         }
 
@@ -266,7 +270,7 @@ class PhotographerMatchingService
     public function calculatePriceScore(Photographer $photographer, PhotoProject $project): float
     {
         // No budget specified = full score
-        if (!$project->budget_max) {
+        if (! $project->budget_max) {
             return self::WEIGHT_PRICE;
         }
 

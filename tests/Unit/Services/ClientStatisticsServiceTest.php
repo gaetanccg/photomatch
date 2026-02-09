@@ -20,7 +20,7 @@ class ClientStatisticsServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new ClientStatisticsService();
+        $this->service = new ClientStatisticsService;
     }
 
     public function test_get_dashboard_stats_returns_correct_data(): void

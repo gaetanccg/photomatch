@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\BulkUpdateAvailabilityRequest;
 use App\Http\Requests\StoreAvailabilityRequest;
 use App\Http\Requests\UpdateAvailabilityRequest;
-use App\Http\Requests\BulkUpdateAvailabilityRequest;
 use App\Models\Availability;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
@@ -24,28 +24,28 @@ class AvailabilityController extends Controller
             ->get();
 
         // Prepare data for JavaScript calendar (keyed by date)
-        $availabilitiesData = $availabilities->mapWithKeys(fn($a) => [
+        $availabilitiesData = $availabilities->mapWithKeys(fn ($a) => [
             $a->date->format('Y-m-d') => [
                 'is_available' => $a->is_available,
                 'note' => $a->note,
-            ]
+            ],
         ]);
 
         // Get accepted bookings to show on calendar
         $bookings = $photographer->bookingRequests()
             ->with(['project.client'])
             ->where('status', 'accepted')
-            ->whereHas('project', fn($q) => $q->whereNotNull('event_date'))
+            ->whereHas('project', fn ($q) => $q->whereNotNull('event_date'))
             ->get();
 
         $bookingsData = $bookings
-            ->filter(fn($b) => $b->project && $b->project->event_date)
-            ->mapWithKeys(fn($b) => [
+            ->filter(fn ($b) => $b->project && $b->project->event_date)
+            ->mapWithKeys(fn ($b) => [
                 $b->project->event_date->format('Y-m-d') => [
                     'client' => $b->project->client->name ?? 'Client',
                     'project' => $b->project->title,
                     'url' => route('photographer.requests.show', $b),
-                ]
+                ],
             ]);
 
         return view('photographer.availabilities.index', compact(

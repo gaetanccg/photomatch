@@ -27,7 +27,7 @@ class PhotographerFactory extends Factory
             'is_verified' => true,
             'rating' => fake()->randomFloat(1, 3.0, 5.0),
             'total_missions' => fake()->numberBetween(0, 100),
-            'location' => fake()->city() . ', France',
+            'location' => fake()->city().', France',
             'latitude' => fake()->latitude(42, 51),
             'longitude' => fake()->longitude(-5, 8),
         ];

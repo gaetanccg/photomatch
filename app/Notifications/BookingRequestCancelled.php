@@ -59,8 +59,8 @@ class BookingRequestCancelled extends Notification implements ShouldQueue
         $photographer = $this->bookingRequest->photographer;
 
         $message = $this->cancelledBy === 'client'
-            ? $project->client->name . ' a annulé sa demande pour "' . $project->title . '"'
-            : $photographer->user->name . ' a annulé la demande pour "' . $project->title . '"';
+            ? $project->client->name.' a annulé sa demande pour "'.$project->title.'"'
+            : $photographer->user->name.' a annulé la demande pour "'.$project->title.'"';
 
         return [
             'type' => 'booking_request_cancelled',

@@ -37,7 +37,7 @@ class BookingRequestReceived extends Notification implements ShouldQueue
         $project = $this->bookingRequest->project;
 
         return (new MailMessage)
-            ->subject('Nouvelle demande de réservation - ' . $project->title)
+            ->subject('Nouvelle demande de réservation - '.$project->title)
             ->view('emails.booking-request-received', [
                 'bookingRequest' => $this->bookingRequest,
                 'photographer' => $this->bookingRequest->photographer,
@@ -62,7 +62,7 @@ class BookingRequestReceived extends Notification implements ShouldQueue
             'project_title' => $project->title,
             'client_id' => $client->id,
             'client_name' => $client->name,
-            'message' => 'Nouvelle demande de ' . $client->name . ' pour "' . $project->title . '"',
+            'message' => 'Nouvelle demande de '.$client->name.' pour "'.$project->title.'"',
         ];
     }
 

@@ -22,7 +22,7 @@ class ReviewController extends Controller
             abort(403);
         }
 
-        if (!$bookingRequest->canBeReviewed()) {
+        if (! $bookingRequest->canBeReviewed()) {
             return redirect()
                 ->route('client.requests.show', $bookingRequest)
                 ->with('error', 'Cette mission ne peut pas être évaluée.');
@@ -39,7 +39,7 @@ class ReviewController extends Controller
             abort(403);
         }
 
-        if (!$bookingRequest->canBeReviewed()) {
+        if (! $bookingRequest->canBeReviewed()) {
             return redirect()
                 ->route('client.requests.show', $bookingRequest)
                 ->with('error', 'Cette mission ne peut pas être évaluée.');

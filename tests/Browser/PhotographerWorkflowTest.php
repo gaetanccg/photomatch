@@ -4,8 +4,8 @@ namespace Tests\Browser;
 
 use App\Enums\BookingStatus;
 use App\Models\BookingRequest;
-use App\Models\PhotoProject;
 use App\Models\Photographer;
+use App\Models\PhotoProject;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Laravel\Dusk\Browser;
@@ -16,6 +16,7 @@ class PhotographerWorkflowTest extends DuskTestCase
     use DatabaseMigrations;
 
     protected User $photographerUser;
+
     protected Photographer $photographer;
 
     protected function setUp(): void
@@ -92,7 +93,7 @@ class PhotographerWorkflowTest extends DuskTestCase
 
         $this->browse(function (Browser $browser) use ($bookingRequest) {
             $browser->loginAs($this->photographerUser)
-                ->visit('/photographer/requests/' . $bookingRequest->id)
+                ->visit('/photographer/requests/'.$bookingRequest->id)
                 ->assertSee('Details de la demande')
                 ->type('photographer_response', 'Je suis disponible et interesse!')
                 ->type('proposed_price', '750')
@@ -117,7 +118,7 @@ class PhotographerWorkflowTest extends DuskTestCase
 
         $this->browse(function (Browser $browser) use ($bookingRequest) {
             $browser->loginAs($this->photographerUser)
-                ->visit('/photographer/requests/' . $bookingRequest->id)
+                ->visit('/photographer/requests/'.$bookingRequest->id)
                 ->type('photographer_response', 'Desole, je ne suis pas disponible a cette date.')
                 ->press('Refuser')
                 ->waitForText('Demande refusee')

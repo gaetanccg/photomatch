@@ -17,7 +17,7 @@ class PhotographerSearchQueryTest extends TestCase
         Photographer::factory()->verified()->count(3)->create();
         Photographer::factory()->unverified()->count(2)->create();
 
-        $query = new PhotographerSearchQuery();
+        $query = new PhotographerSearchQuery;
         $results = $query->applyFilters()->get();
 
         $this->assertCount(3, $results);
@@ -92,7 +92,7 @@ class PhotographerSearchQueryTest extends TestCase
         Photographer::factory()->verified()->create(['rating' => 5.0]);
         Photographer::factory()->verified()->create(['rating' => 4.0]);
 
-        $query = new PhotographerSearchQuery();
+        $query = new PhotographerSearchQuery;
         $results = $query->applyFilters()->get();
 
         $this->assertEquals(5.0, $results->first()->getRawOriginal('rating'));
@@ -104,7 +104,7 @@ class PhotographerSearchQueryTest extends TestCase
         Photographer::factory()->verified()->create(['hourly_rate' => 50]);
         Photographer::factory()->verified()->create(['hourly_rate' => 100]);
 
-        $query = new PhotographerSearchQuery();
+        $query = new PhotographerSearchQuery;
         $results = $query->applyFilters()->sortBy('hourly_rate', 'asc')->get();
 
         $this->assertEquals(50, $results->first()->getRawOriginal('hourly_rate'));
@@ -114,7 +114,7 @@ class PhotographerSearchQueryTest extends TestCase
     {
         Photographer::factory()->verified()->count(3)->create();
 
-        $query = new PhotographerSearchQuery();
+        $query = new PhotographerSearchQuery;
         $results = $query->applyFilters()->sortBy('invalid_column', 'desc')->get();
 
         $this->assertCount(3, $results);
@@ -124,7 +124,7 @@ class PhotographerSearchQueryTest extends TestCase
     {
         Photographer::factory()->verified()->count(25)->create();
 
-        $query = new PhotographerSearchQuery();
+        $query = new PhotographerSearchQuery;
         $results = $query->applyFilters()->paginate(10);
 
         $this->assertEquals(10, $results->count());
@@ -135,7 +135,7 @@ class PhotographerSearchQueryTest extends TestCase
     {
         Photographer::factory()->verified()->create();
 
-        $query = new PhotographerSearchQuery();
+        $query = new PhotographerSearchQuery;
         $result = $query->applyFilters()->withRelations()->get()->first();
 
         $this->assertTrue($result->relationLoaded('user'));

@@ -16,6 +16,7 @@ class PortfolioControllerTest extends TestCase
     use RefreshDatabase;
 
     private User $user;
+
     private Photographer $photographer;
 
     protected function setUp(): void

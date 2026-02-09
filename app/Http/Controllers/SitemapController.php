@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Photographer;
-use App\Models\Specialty;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cache;
 
@@ -41,7 +40,7 @@ class SitemapController extends Controller
 
         foreach ($staticPages as $page) {
             $xml .= $this->buildUrlElement(
-                $siteUrl . $page['url'],
+                $siteUrl.$page['url'],
                 now()->toIso8601String(),
                 $page['changefreq'],
                 $page['priority']

@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use App\Enums\ProjectType;
 use App\Http\Requests\StorePhotoProjectRequest;
 use App\Http\Requests\UpdatePhotoProjectRequest;
-use App\Models\PhotoProject;
 use App\Models\Photographer;
+use App\Models\PhotoProject;
 use App\Models\Specialty;
 use App\Services\PhotographerMatchingService;
 use Illuminate\Http\RedirectResponse;
@@ -18,9 +18,9 @@ class PhotoProjectController extends Controller
     {
         $this->authorize('viewAny', PhotoProject::class);
         $projects = auth()->user()->photoProjects()
-                          ->withCount('bookingRequests')
-                          ->latest()
-                          ->paginate(10);
+            ->withCount('bookingRequests')
+            ->latest()
+            ->paginate(10);
 
         return view('client.projects.index', compact('projects'));
     }
@@ -71,8 +71,8 @@ class PhotoProjectController extends Controller
     private function getTopMatchingPhotographers(PhotoProject $project, PhotographerMatchingService $matchingService, int $limit = 6)
     {
         $query = Photographer::query()
-                             ->whereHas('user')
-                             ->with(['user', 'specialties']);
+            ->whereHas('user')
+            ->with(['user', 'specialties']);
 
         $query->verified();
 
@@ -85,7 +85,7 @@ class PhotoProjectController extends Controller
         });
 
         return $scoredPhotographers
-            ->sortByDesc(fn($p) => $p->matching_score['total'])
+            ->sortByDesc(fn ($p) => $p->matching_score['total'])
             ->take($limit)
             ->values();
     }
@@ -94,7 +94,7 @@ class PhotoProjectController extends Controller
     {
         $this->authorize('update', $project);
 
-        if (!in_array($project->status, ['draft', 'published'])) {
+        if (! in_array($project->status, ['draft', 'published'])) {
             return redirect()
                 ->route('client.projects.show', $project)
                 ->with('error', 'Ce projet ne peut plus être modifié.');
@@ -110,7 +110,7 @@ class PhotoProjectController extends Controller
     {
         $this->authorize('update', $project);
 
-        if (!in_array($project->status, ['draft', 'published'])) {
+        if (! in_array($project->status, ['draft', 'published'])) {
             return redirect()
                 ->route('client.projects.show', $project)
                 ->with('error', 'Ce projet ne peut plus être modifié.');
@@ -128,8 +128,8 @@ class PhotoProjectController extends Controller
         $this->authorize('delete', $project);
 
         $hasAcceptedRequests = $project->bookingRequests()
-                                       ->where('status', 'accepted')
-                                       ->exists();
+            ->where('status', 'accepted')
+            ->exists();
 
         if ($hasAcceptedRequests) {
             return redirect()

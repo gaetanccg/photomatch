@@ -48,6 +48,7 @@ class MakeAdminCommand extends Command
             foreach ($validator->errors()->all() as $error) {
                 $this->error($error);
             }
+
             return Command::FAILURE;
         }
 
@@ -63,8 +64,9 @@ class MakeAdminCommand extends Command
             ]
         );
 
-        if (!$this->option('email') && !$this->confirm('Confirmer la creation ?', true)) {
+        if (! $this->option('email') && ! $this->confirm('Confirmer la creation ?', true)) {
             $this->warn('Creation annulee.');
+
             return Command::SUCCESS;
         }
 
@@ -80,7 +82,7 @@ class MakeAdminCommand extends Command
         $this->info('Admin cree avec succes !');
         $this->line("ID: {$user->id}");
         $this->line("Email: {$user->email}");
-        $this->line("Connexion: /login");
+        $this->line('Connexion: /login');
 
         return Command::SUCCESS;
     }

@@ -10,11 +10,11 @@ class RoleMiddleware
 {
     public function handle(Request $request, Closure $next, string ...$roles): Response
     {
-        if (!$request->user()) {
+        if (! $request->user()) {
             return redirect()->route('login');
         }
 
-        if (!in_array($request->user()->role, $roles)) {
+        if (! in_array($request->user()->role, $roles)) {
             // Redirect to the appropriate page based on user's actual role
             $redirectRoute = match ($request->user()->role) {
                 'photographer' => 'photographer.dashboard',

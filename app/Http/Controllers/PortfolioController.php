@@ -37,13 +37,13 @@ class PortfolioController extends Controller
         $files = $request->file('images');
 
         $errors = $this->uploadService->canUpload($photographer, count($files));
-        if (!empty($errors)) {
+        if (! empty($errors)) {
             return back()->with('error', $errors[0]);
         }
 
         $uploadedImages = $this->uploadService->uploadImages($photographer, $files);
 
-        return back()->with('success', $uploadedImages->count() . ' image(s) ajoutée(s) avec succès.');
+        return back()->with('success', $uploadedImages->count().' image(s) ajoutée(s) avec succès.');
     }
 
     public function update(UpdatePortfolioImageRequest $request, PortfolioImage $portfolioImage): RedirectResponse

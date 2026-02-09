@@ -114,6 +114,7 @@ class Photographer extends Model
         if ($max !== null) {
             $query->where('hourly_rate', '<=', $max);
         }
+
         return $query;
     }
 
@@ -124,8 +125,7 @@ class Photographer extends Model
 
     public function scopeAvailableOn(Builder $query, string $date): Builder
     {
-        return $query->whereHas('availabilities', fn($aq) =>
-            $aq->where('date', $date)->where('is_available', true)
+        return $query->whereHas('availabilities', fn ($aq) => $aq->where('date', $date)->where('is_available', true)
         );
     }
 

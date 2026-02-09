@@ -42,7 +42,7 @@ class AdminController extends Controller
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%");
+                    ->orWhere('email', 'like', "%{$search}%");
             });
         }
 
@@ -67,7 +67,7 @@ class AdminController extends Controller
             $search = $request->search;
             $query->whereHas('user', function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%");
+                    ->orWhere('email', 'like', "%{$search}%");
             });
         }
 
@@ -80,7 +80,7 @@ class AdminController extends Controller
     public function toggleVerification(Photographer $photographer): RedirectResponse
     {
         $photographer->update([
-            'is_verified' => !$photographer->is_verified,
+            'is_verified' => ! $photographer->is_verified,
         ]);
 
         $status = $photographer->is_verified ? 'vérifié' : 'non vérifié';

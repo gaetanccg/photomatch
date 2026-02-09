@@ -6,8 +6,8 @@ use App\Actions\Booking\CreateBookingRequestAction;
 use App\Enums\BookingStatus;
 use App\Events\BookingRequestCreated;
 use App\Models\BookingRequest;
-use App\Models\PhotoProject;
 use App\Models\Photographer;
+use App\Models\PhotoProject;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
@@ -22,7 +22,7 @@ class CreateBookingRequestActionTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->action = new CreateBookingRequestAction();
+        $this->action = new CreateBookingRequestAction;
     }
 
     public function test_it_creates_booking_request(): void

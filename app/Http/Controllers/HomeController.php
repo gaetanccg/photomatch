@@ -54,7 +54,7 @@ class HomeController extends Controller
             '@graph' => [
                 [
                     '@type' => 'WebSite',
-                    '@id' => config('seo.site_url') . '/#website',
+                    '@id' => config('seo.site_url').'/#website',
                     'url' => config('seo.site_url'),
                     'name' => config('seo.site_name'),
                     'description' => config('seo.default.description'),
@@ -63,19 +63,19 @@ class HomeController extends Controller
                         '@type' => 'SearchAction',
                         'target' => [
                             '@type' => 'EntryPoint',
-                            'urlTemplate' => config('seo.site_url') . '/search-photographers?location={search_term}',
+                            'urlTemplate' => config('seo.site_url').'/search-photographers?location={search_term}',
                         ],
                         'query-input' => 'required name=search_term',
                     ],
                 ],
                 [
                     '@type' => 'Organization',
-                    '@id' => config('seo.site_url') . '/#organization',
+                    '@id' => config('seo.site_url').'/#organization',
                     'name' => config('seo.site_name'),
                     'url' => config('seo.site_url'),
                     'logo' => [
                         '@type' => 'ImageObject',
-                        'url' => config('seo.site_url') . '/images/logo.png',
+                        'url' => config('seo.site_url').'/images/logo.png',
                     ],
                     'contactPoint' => [
                         '@type' => 'ContactPoint',

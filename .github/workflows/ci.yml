@@ -35,8 +35,12 @@ jobs:
         run: |
           cp .env.example .env
           php artisan key:generate
+          touch database/database.sqlite
 
       - name: Run tests
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: ':memory:'
         run: php artisan test
 
   lint:

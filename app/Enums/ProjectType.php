@@ -13,7 +13,7 @@ enum ProjectType: string
 
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::Event => 'Événement',
             self::Product => 'Produit',
             self::RealEstate => 'Immobilier',
@@ -26,7 +26,7 @@ enum ProjectType: string
     public static function options(): array
     {
         return collect(self::cases())->mapWithKeys(
-            fn(self $case) => [$case->value => $case->label()]
+            fn (self $case) => [$case->value => $case->label()]
         )->toArray();
     }
 }

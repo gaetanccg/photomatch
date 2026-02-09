@@ -2,8 +2,8 @@
 
 namespace Tests\Browser;
 
-use App\Models\PhotoProject;
 use App\Models\Photographer;
+use App\Models\PhotoProject;
 use App\Models\Specialty;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
@@ -95,7 +95,7 @@ class ClientWorkflowTest extends DuskTestCase
 
         $this->browse(function (Browser $browser) use ($photographer) {
             $browser->loginAs($this->client)
-                ->visit('/photographers/' . $photographer->id)
+                ->visit('/photographers/'.$photographer->id)
                 ->assertSee($photographer->user->name)
                 ->assertSee('Photographe professionnel');
         });
@@ -113,7 +113,7 @@ class ClientWorkflowTest extends DuskTestCase
 
         $this->browse(function (Browser $browser) use ($photographer) {
             $browser->loginAs($this->client)
-                ->visit('/photographers/' . $photographer->id)
+                ->visit('/photographers/'.$photographer->id)
                 ->press('Envoyer une demande')
                 ->waitFor('#booking-modal')
                 ->type('message', 'Bonjour, je suis interesse par vos services.')

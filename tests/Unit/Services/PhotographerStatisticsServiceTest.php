@@ -18,7 +18,7 @@ class PhotographerStatisticsServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new PhotographerStatisticsService();
+        $this->service = new PhotographerStatisticsService;
     }
 
     public function test_get_history_stats_returns_correct_data(): void

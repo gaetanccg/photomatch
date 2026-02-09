@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UpdatePhotographerProfileRequest;
 use App\Http\Requests\UpdatePhotographerSpecialtiesRequest;
-use App\Models\Photographer;
 use App\Models\Specialty;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
@@ -36,7 +35,7 @@ class PhotographerController extends Controller
         $calendarDays = collect();
 
         // Index availabilities by date string for faster lookup
-        $availabilitiesIndexed = $photographer->availabilities->keyBy(fn($a) => $a->date->format('Y-m-d'));
+        $availabilitiesIndexed = $photographer->availabilities->keyBy(fn ($a) => $a->date->format('Y-m-d'));
 
         for ($i = 0; $i < 28; $i++) {
             $date = $today->copy()->addDays($i);

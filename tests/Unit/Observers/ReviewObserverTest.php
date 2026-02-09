@@ -5,7 +5,6 @@ namespace Tests\Unit\Observers;
 use App\Models\BookingRequest;
 use App\Models\Photographer;
 use App\Models\Review;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 

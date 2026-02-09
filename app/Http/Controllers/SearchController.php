@@ -20,7 +20,7 @@ class SearchController extends Controller
 
     private function getCachedSpecialties()
     {
-        return Cache::remember('specialties:all', 86400, fn() => Specialty::all());
+        return Cache::remember('specialties:all', 86400, fn () => Specialty::all());
     }
 
     public function index(Request $request): View
@@ -31,7 +31,7 @@ class SearchController extends Controller
             'min_budget',
             'max_budget',
             'available_date',
-            'min_rating'
+            'min_rating',
         ]);
 
         $sortBy = $this->validateSort($request->get('sort', 'rating'));
@@ -96,6 +96,7 @@ class SearchController extends Controller
     private function validateSort(string $sort): string
     {
         $allowedSorts = ['rating', 'hourly_rate', 'experience_years', 'total_missions'];
+
         return in_array($sort, $allowedSorts) ? $sort : 'rating';
     }
 }

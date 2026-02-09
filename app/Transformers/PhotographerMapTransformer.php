@@ -10,8 +10,8 @@ class PhotographerMapTransformer
     public function transformCollection(Collection $photographers): Collection
     {
         return $photographers
-            ->filter(fn($p) => $p->latitude && $p->longitude)
-            ->map(fn($p) => $this->transform($p))
+            ->filter(fn ($p) => $p->latitude && $p->longitude)
+            ->map(fn ($p) => $this->transform($p))
             ->values();
     }
 
