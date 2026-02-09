@@ -17,6 +17,7 @@ RUN apk add --no-cache \
     icu-dev \
     oniguruma-dev \
     libxml2-dev \
+    libpq-dev \
     mysql-client \
     nodejs \
     npm \
@@ -28,6 +29,7 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) \
         pdo \
         pdo_mysql \
+        pdo_pgsql \
         mbstring \
         exif \
         pcntl \

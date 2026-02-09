@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UpdatePhotographerProfileRequest;
 use App\Http\Requests\UpdatePhotographerSpecialtiesRequest;
+use App\Http\Requests\UpdatePhotographerTagsRequest;
 use App\Models\Specialty;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
@@ -58,7 +59,7 @@ class PhotographerController extends Controller
     public function edit(): View
     {
         $user = auth()->user();
-        $photographer = $user->photographer()->with('specialties')->firstOrFail();
+        $photographer = $user->photographer()->with(['specialties', 'tags'])->firstOrFail();
         $specialties = Specialty::all();
 
         return view('photographer.profile.edit', compact('photographer', 'specialties'));
@@ -76,6 +77,23 @@ class PhotographerController extends Controller
         }
 
         return back()->with('success', 'Profil mis à jour avec succès.');
+    }
+
+    public function updateTags(UpdatePhotographerTagsRequest $request): RedirectResponse
+    {
+        $photographer = auth()->user()->photographer;
+        $photographer->tags()->delete();
+
+        if ($request->filled('tags')) {
+            $tags = collect($request->tags)
+                ->map(fn ($tag) => trim($tag))
+                ->filter(fn ($tag) => ! empty($tag))
+                ->unique()
+                ->map(fn ($tag) => ['name' => $tag]);
+            $photographer->tags()->createMany($tags->toArray());
+        }
+
+        return back()->with('success', 'Tags mis à jour avec succès.');
     }
 
     public function updateSpecialties(UpdatePhotographerSpecialtiesRequest $request): RedirectResponse

@@ -90,6 +90,7 @@ Route::middleware(['auth', 'role:photographer'])->prefix('photographer')->name('
     Route::get('/profile', [PhotographerController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [PhotographerController::class, 'update'])->name('profile.update');
     Route::put('/profile/specialties', [PhotographerController::class, 'updateSpecialties'])->name('profile.specialties');
+    Route::put('/profile/tags', [PhotographerController::class, 'updateTags'])->name('profile.tags');
 
     // Portfolio
     Route::get('/portfolio', [PortfolioController::class, 'index'])->name('portfolio.index');

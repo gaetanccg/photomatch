@@ -63,6 +63,8 @@
                         @php
                             $criteriaLabels = [
                                 'specialty' => 'Spécialité',
+                                'tags' => 'Tags',
+                                'keywords' => 'Mots-clés',
                                 'distance' => 'Distance',
                                 'rating' => 'Note',
                                 'experience' => 'Expérience',

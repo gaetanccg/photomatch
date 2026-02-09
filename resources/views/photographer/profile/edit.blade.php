@@ -108,6 +108,64 @@
             </form>
         </div>
 
+        <!-- Tags Form -->
+        <div class="bg-white rounded-xl shadow-sm">
+            <form action="{{ route('photographer.profile.tags') }}" method="POST">
+                @csrf
+                @method('PUT')
+
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h2 class="text-lg font-semibold text-gray-900">Mes tags</h2>
+                    <p class="mt-1 text-sm text-gray-500">Ajoutez des tags pour améliorer la correspondance avec les projets des clients (max 15)</p>
+                </div>
+
+                <div class="p-6">
+                    @error('tags')
+                        <p class="mb-4 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                    @error('tags.*')
+                        <p class="mb-4 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+
+                    <div id="tags-container" class="space-y-3">
+                        @forelse($photographer->tags as $tag)
+                            <div class="tag-row flex items-center gap-2">
+                                <input type="text" name="tags[]" value="{{ $tag->name }}"
+                                    class="flex-1 rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"
+                                    placeholder="Ex: mariage, portrait, retouche HDR..."
+                                    minlength="2" maxlength="50">
+                                <button type="button" onclick="this.closest('.tag-row').remove(); updateTagCount()"
+                                    class="inline-flex items-center p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        @empty
+                            <p id="no-tags-message" class="text-sm text-gray-500">Aucun tag pour le moment.</p>
+                        @endforelse
+                    </div>
+
+                    <div class="mt-4 flex items-center gap-3">
+                        <button type="button" id="add-tag-btn" onclick="addTag()"
+                            class="inline-flex items-center px-3 py-1.5 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50">
+                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                            </svg>
+                            Ajouter un tag
+                        </button>
+                        <span id="tag-count" class="text-xs text-gray-500">{{ $photographer->tags->count() }}/15</span>
+                    </div>
+                </div>
+
+                <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 rounded-b-xl">
+                    <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Mettre à jour mes tags
+                    </button>
+                </div>
+            </form>
+        </div>
+
         <!-- Specialties Form -->
         <div class="bg-white rounded-xl shadow-sm">
             <form action="{{ route('photographer.profile.specialties') }}" method="POST">
@@ -124,7 +182,7 @@
                         <p class="mb-4 text-sm text-red-600">{{ $message }}</p>
                     @enderror
 
-                    <div class="space-y-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         @foreach($specialties as $specialty)
                             @php
                                 $photographerSpecialty = $photographer->specialties->firstWhere('id', $specialty->id);
@@ -132,27 +190,49 @@
                                 $level = $photographerSpecialty?->pivot->experience_level ?? 'intermediate';
                             @endphp
 
-                            <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg {{ $isSelected ? 'bg-indigo-50 border-indigo-200' : '' }}">
-                                <label class="flex items-center cursor-pointer flex-1">
+                            <div class="specialty-card relative rounded-lg border-2 p-4 transition-all cursor-pointer
+                                {{ $isSelected ? 'border-indigo-500 bg-indigo-50/50' : 'border-gray-200 hover:border-gray-300' }}"
+                                data-index="{{ $loop->index }}">
+
+                                <label class="flex items-start cursor-pointer">
                                     <input type="checkbox"
                                         name="specialties[{{ $loop->index }}][id]"
                                         value="{{ $specialty->id }}"
                                         {{ $isSelected ? 'checked' : '' }}
-                                        class="specialty-checkbox h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                                        class="specialty-checkbox sr-only"
                                         data-index="{{ $loop->index }}">
-                                    <span class="ml-3">
-                                        <span class="block text-sm font-medium text-gray-900">{{ $specialty->name }}</span>
-                                        <span class="block text-sm text-gray-500">{{ $specialty->description }}</span>
-                                    </span>
+                                    <div class="flex-1">
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-sm font-semibold text-gray-900">{{ $specialty->name }}</span>
+                                            <span class="specialty-check w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 transition-colors
+                                                {{ $isSelected ? 'bg-indigo-500 text-white' : 'border-2 border-gray-300' }}">
+                                                <svg class="w-3 h-3 {{ $isSelected ? '' : 'hidden' }}" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                                </svg>
+                                            </span>
+                                        </div>
+                                        @if($specialty->description)
+                                            <p class="text-xs text-gray-500 mt-1">{{ $specialty->description }}</p>
+                                        @endif
+                                    </div>
                                 </label>
 
-                                <select name="specialties[{{ $loop->index }}][level]"
-                                    class="specialty-level ml-4 rounded-lg border-gray-300 text-sm focus:border-indigo-500 focus:ring-indigo-500 {{ !$isSelected ? 'hidden' : '' }}"
-                                    data-index="{{ $loop->index }}">
-                                    <option value="beginner" {{ $level === 'beginner' ? 'selected' : '' }}>Débutant</option>
-                                    <option value="intermediate" {{ $level === 'intermediate' ? 'selected' : '' }}>Intermédiaire</option>
-                                    <option value="expert" {{ $level === 'expert' ? 'selected' : '' }}>Expert</option>
-                                </select>
+                                <div class="specialty-level mt-3 flex gap-1 {{ !$isSelected ? 'hidden' : '' }}" data-index="{{ $loop->index }}">
+                                    @foreach(['beginner' => 'Débutant', 'intermediate' => 'Intermédiaire', 'expert' => 'Expert'] as $value => $label)
+                                        <label class="flex-1">
+                                            <input type="radio"
+                                                name="specialties[{{ $loop->parent->index }}][level]"
+                                                value="{{ $value }}"
+                                                {{ $level === $value ? 'checked' : '' }}
+                                                class="sr-only peer">
+                                            <span class="block text-center text-xs py-1.5 rounded-md cursor-pointer transition-all border
+                                                peer-checked:bg-indigo-500 peer-checked:text-white peer-checked:border-indigo-500
+                                                bg-white text-gray-600 border-gray-200 hover:border-gray-300">
+                                                {{ $label }}
+                                            </span>
+                                        </label>
+                                    @endforeach
+                                </div>
                             </div>
                         @endforeach
                     </div>
@@ -168,20 +248,75 @@
     </div>
 
     <script>
-        document.querySelectorAll('.specialty-checkbox').forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
-                const index = this.dataset.index;
-                const levelSelect = document.querySelector(`.specialty-level[data-index="${index}"]`);
-                const container = this.closest('.flex');
+        const MAX_TAGS = 15;
 
-                if (this.checked) {
-                    levelSelect.classList.remove('hidden');
-                    container.classList.add('bg-indigo-50', 'border-indigo-200');
-                } else {
-                    levelSelect.classList.add('hidden');
-                    container.classList.remove('bg-indigo-50', 'border-indigo-200');
-                }
+        function updateTagCount() {
+            const count = document.querySelectorAll('.tag-row').length;
+            document.getElementById('tag-count').textContent = count + '/15';
+            document.getElementById('add-tag-btn').disabled = count >= MAX_TAGS;
+
+            const noTagsMsg = document.getElementById('no-tags-message');
+            if (noTagsMsg && count > 0) {
+                noTagsMsg.remove();
+            }
+        }
+
+        function addTag() {
+            const container = document.getElementById('tags-container');
+            const count = container.querySelectorAll('.tag-row').length;
+            if (count >= MAX_TAGS) return;
+
+            const noTagsMsg = document.getElementById('no-tags-message');
+            if (noTagsMsg) noTagsMsg.remove();
+
+            const row = document.createElement('div');
+            row.className = 'tag-row flex items-center gap-2';
+            row.innerHTML = `
+                <input type="text" name="tags[]" value=""
+                    class="flex-1 rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"
+                    placeholder="Ex: mariage, portrait, retouche HDR..."
+                    minlength="2" maxlength="50">
+                <button type="button" onclick="this.closest('.tag-row').remove(); updateTagCount()"
+                    class="inline-flex items-center p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            `;
+            container.appendChild(row);
+            row.querySelector('input').focus();
+            updateTagCount();
+        }
+
+        document.querySelectorAll('.specialty-card').forEach(card => {
+            const checkbox = card.querySelector('.specialty-checkbox');
+            const check = card.querySelector('.specialty-check');
+            const checkSvg = check.querySelector('svg');
+            const levelGroup = card.querySelector('.specialty-level');
+
+            card.addEventListener('click', function(e) {
+                if (e.target.closest('.specialty-level')) return;
+                checkbox.checked = !checkbox.checked;
+                updateCard();
             });
+
+            function updateCard() {
+                if (checkbox.checked) {
+                    card.classList.add('border-indigo-500', 'bg-indigo-50/50');
+                    card.classList.remove('border-gray-200');
+                    check.classList.add('bg-indigo-500', 'text-white');
+                    check.classList.remove('border-2', 'border-gray-300');
+                    checkSvg.classList.remove('hidden');
+                    levelGroup.classList.remove('hidden');
+                } else {
+                    card.classList.remove('border-indigo-500', 'bg-indigo-50/50');
+                    card.classList.add('border-gray-200');
+                    check.classList.remove('bg-indigo-500', 'text-white');
+                    check.classList.add('border-2', 'border-gray-300');
+                    checkSvg.classList.add('hidden');
+                    levelGroup.classList.add('hidden');
+                }
+            }
         });
     </script>
 </x-photographer-layout>

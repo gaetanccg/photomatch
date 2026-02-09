@@ -40,7 +40,7 @@ class PublicPhotographerController extends Controller
 
     public function show(Photographer $photographer): View
     {
-        $photographer->load(['user', 'specialties', 'reviews.client', 'portfolioImages']);
+        $photographer->load(['user', 'specialties', 'tags', 'reviews.client', 'portfolioImages']);
 
         // Get availabilities for next 30 days
         $availabilities = $photographer->availabilities()
