@@ -34,9 +34,10 @@ class PhotographerStatisticsService
     {
         $driver = DB::connection()->getDriverName();
 
-        $yearExpression = $driver === 'sqlite'
-            ? "strftime('%Y', responded_at) as year"
-            : 'YEAR(responded_at) as year';
+        $yearExpression = match ($driver) {
+            'sqlite' => "strftime('%Y', responded_at) as year",
+            default => 'EXTRACT(YEAR FROM responded_at) as year',
+        };
 
         return $photographer->bookingRequests()
             ->where('status', 'accepted')
